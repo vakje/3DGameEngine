@@ -2,11 +2,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "WindowComponent.cpp"
+#include "WindowComponent.h"
 
 
 
-struct Engine 
+struct WindowConfig 
 {
     const int WIDTH = 800;
     const int HEIGHT = 600;
@@ -18,11 +18,11 @@ struct Engine
 
 int main(void)
 {
-    Engine E;
+    WindowConfig E;
     
     Window win;
     win.SetWindow(E.WIDTH, E.HEIGHT, E.TITLE);
-   
+    std::cout << "---------------------------"<<std::flush;
 
 
 }

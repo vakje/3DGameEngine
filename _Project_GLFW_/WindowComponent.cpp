@@ -1,7 +1,9 @@
+#include "InputSystem.h"
 #include "WindowComponent.h"
 
+GLFWwindow* Window::mywindow;
 
-Window::Window() = default;
+
 void Window::SetWindow(int width, int height, const char* title)
 {
 
@@ -46,6 +48,14 @@ void Window::SetWindow(int width, int height, const char* title)
 		double currentTime = glfwGetTime() * 1000.0;
 		//adding frames 
 		frames++;
+
+		
+		if (Input::getKeyPress(GLFW_KEY_W)) {
+			std::cout << "we just pressed some key" << std::endl;
+		}
+		if (Input::getKeyReleased(GLFW_KEY_E)) {
+			std::cout << "we just released some key" << std::endl;
+		}
 		//if the time in the loop - time before loop  is more than 1 miliseconds
 		if (currentTime - lastTime >= 1000.0) // Print every second
 		{

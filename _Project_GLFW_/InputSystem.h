@@ -5,7 +5,7 @@
 #include <list>
 #include <algorithm>
 class Window;
-bool Contains(const std::list<int>& mylist, int num);
+
 class Vector2F 
 {
     float X;
@@ -31,14 +31,24 @@ std::ostream& operator<<(std::ostream& os, const Vector2F& v);
    static std::list<int> pressedkeys;
    static std::list<int> Releasedkeys;
 
+   static std::list<int> CurrentMouseKeys;
+   static std::list<int> MousePressed;
+   static std::list<int> MouseReleased;
+
 public:
   
-    static bool getKey(int keycode);
+    static bool getKey(const int& keycode);
+    static bool getMouseKey(const int& keycode);
     static void update();
     static bool getKeyPress(const int& keycode);
     static bool getKeyReleased(const int& keycode);
+    static bool getMousePress(const int& keycode);
+    static bool getMouseReleased(const int& keycode);
+    static Vector2F cursorPos();
+ 
 public:
     const static int NUM_KEYCODES = 256;
+    const static int NUM_MOUSEKEYCODES = 5;
 
 
 };

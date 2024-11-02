@@ -49,13 +49,24 @@ void Window::SetWindow(int width, int height, const char* title)
 		//adding frames 
 		frames++;
 
-		
-		if (Input::getKeyPress(GLFW_KEY_W)) {
+		Input::update();
+		if (Input::getKeyPress(GLFW_KEY_E)) 
+		{
 			std::cout << "we just pressed some key" << std::endl;
 		}
-		if (Input::getKeyReleased(GLFW_KEY_E)) {
+		if (Input::getKeyReleased(GLFW_KEY_E)) 
+		{
 			std::cout << "we just released some key" << std::endl;
 		}
+		if (Input::getMousePress(GLFW_MOUSE_BUTTON_LEFT))
+		{
+			std::cout << "we just pressed some mouse key at "<<" "<<Input::cursorPos() << " " << std::endl;
+		}
+		if(Input::getMouseReleased(GLFW_MOUSE_BUTTON_LEFT))
+		{
+			std::cout << "we just released some mouse key" << std::endl;
+		}
+		
 		//if the time in the loop - time before loop  is more than 1 miliseconds
 		if (currentTime - lastTime >= 1000.0) // Print every second
 		{

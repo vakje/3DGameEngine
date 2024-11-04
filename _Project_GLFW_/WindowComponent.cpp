@@ -50,19 +50,19 @@ void Window::SetWindow(int width, int height, const char* title)
 		frames++;
 
 		Input::update();
-		if (Input::getKeyPress(GLFW_KEY_E)) 
+		if (Input::GetStates(false,true,GLFW_KEY_E))
 		{
 			std::cout << "we just pressed some key" << std::endl;
 		}
-		if (Input::getKeyReleased(GLFW_KEY_E)) 
+		if (Input::GetStates(false,false,GLFW_KEY_E))
 		{
 			std::cout << "we just released some key" << std::endl;
 		}
-		if (Input::getMousePress(GLFW_MOUSE_BUTTON_LEFT))
+		if (Input::GetStates(true,true,GLFW_MOUSE_BUTTON_LEFT))
 		{
 			std::cout << "we just pressed some mouse key at "<<" "<<Input::cursorPos() << " " << std::endl;
 		}
-		if(Input::getMouseReleased(GLFW_MOUSE_BUTTON_LEFT))
+		if(Input::GetStates(true,false,GLFW_MOUSE_BUTTON_LEFT))
 		{
 			std::cout << "we just released some mouse key" << std::endl;
 		}

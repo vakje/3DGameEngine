@@ -8,16 +8,16 @@ class Window;
 
 class Vector2F 
 {
-    float X;
-    float Y;
+    double X;
+    double Y;
 
 public:
-    Vector2F(float x, float y);
+    Vector2F(double x, double y);
 
-    float get_X() const;
-    float get_Y() const;
-    void set_X(float x);
-    void set_Y(float y);
+    double get_X() const;
+    double get_Y() const;
+    void set_X(double x);
+    void set_Y(double y);
 
     std::string ToString() const;
 };
@@ -40,11 +40,10 @@ public:
     static bool getKey(const int& keycode);
     static bool getMouseKey(const int& keycode);
     static void update();
-    static bool getKeyPress(const int& keycode);
-    static bool getKeyReleased(const int& keycode);
-    static bool getMousePress(const int& keycode);
-    static bool getMouseReleased(const int& keycode);
     static Vector2F cursorPos();
+    static void FillStates(bool iskeyboardkey, const int& allkeycode, std::list<int>& keyboardkeys, std::list<int>& releasedkeyboardkeys);
+    static void FillCurrents(bool iskeyboard, const int& allkeycodes, std::list<int>& currents);
+    static bool GetStates(bool isMouse,bool ispressed ,const int& keycodes);
  
 public:
     const static int NUM_KEYCODES = 256;

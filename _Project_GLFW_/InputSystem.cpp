@@ -3,7 +3,7 @@
 #include "Util.h"
 
 /// <summary>
-/// declaring it before using cause they are static c++ feature:)
+/// declaring it before using cause they are static c++ feature ;)
 /// </summary>
 std::list<int> Input::currentkeys;
 std::list<int> Input::pressedkeys;
@@ -31,23 +31,31 @@ void Vector2F::set_Y(double y) { Y = y; }
 std::string Vector2F::ToString() const {
 	return "(" + std::to_string(X) + "," + std::to_string(Y) + ")";
 }
-
+/*
+---------------------------------------------------------------------
+this vector2f and vector3f classes containning basic mathematic opera
+tions, which includes operators overloading like *,/,+,- 
+also i have functions of calculating length of a vector 
+operators for other vectors and other numbers are overloaded 
+also rotations for vectors were added and there normalizations 
+---------------------------------------------------------------------
+*/
 double Vector2F::Length_Vector2f()
 {
 	return sqrt(X * X + Y * Y);
 }
 
-double Vector2F::dotproduct(Vector2F r)
+double Vector2F::dotproduct(const Vector2F& r)
 {
 	return X * r.get_X() + Y * r.get_Y();
 }
 
-Vector2F Vector2F::operator+(Vector2F other)
+Vector2F Vector2F::operator+(const Vector2F& other)
 {
 	return Vector2F(X+other.get_X(),Y+other.get_Y());
 }
 
-Vector2F Vector2F::operator-(Vector2F other)
+Vector2F Vector2F::operator-(const Vector2F& other)
 {
 	return Vector2F(X - other.get_X(), Y - other.get_Y());
 }
@@ -58,22 +66,22 @@ Vector2F Vector2F::operator*(const Vector2F& other)
 
 
 
-Vector2F Vector2F::operator+(double num)
+Vector2F Vector2F::operator+(const double& num)
 {
 	return Vector2F(X + num, Y + num);
 }
 
-Vector2F Vector2F::operator-(double num)
+Vector2F Vector2F::operator-(const double& num)
 {
 	return Vector2F(X - num, Y - num);
 }
 
-Vector2F Vector2F::operator*(double num)
+Vector2F Vector2F::operator*(const double& num)
 {
 	return Vector2F(X * num, Y * num);
 }
 
-Vector2F Vector2F::Rotate(double angle)
+Vector2F Vector2F::Rotate(const double& angle)
 {
 	double rad = angle * (3.14159265358 / 180);
 	double sin = std::sin(rad);
@@ -100,6 +108,111 @@ std::ostream& operator<<(std::ostream& os, const Vector2F& v) {
 	os << v.ToString();
 	return os;
 }
+
+std::ostream& operator<<(std::ostream& os, const Vector3F& v)
+{
+	os << v.to_String();
+	return os;
+}
+Vector3F::Vector3F(double X, double Y, double Z) :x(X), y(Y), z(Z) {}
+
+double Vector3F::getX3D()const
+{
+	return x;
+}
+double Vector3F::getY3D()const
+{
+	return y;
+}
+double Vector3F::getZ3D()const
+{
+	return z;
+}
+
+void Vector3F::setX3D(double x)
+{
+	this->x = x;
+}
+void Vector3F::setY3D(double y)
+{
+	this->y = y;
+}
+void Vector3F::setZ3D(double z)
+{
+	this->z = z;
+}
+
+double Vector3F::Length_Vector3f()
+{
+	return  sqrt(x * x + y * y + z * z);
+}
+
+Vector3F Vector3F::normalize3d()
+{
+	double length = Length_Vector3f();
+
+	x /= length;
+	y /= length;
+	z /= length;
+
+
+	return *this;
+}
+
+double Vector3F::dotproduct(const Vector3F& r)
+{
+	return x * r.getX3D() + y * r.getY3D() + z * r.getZ3D();
+}
+
+Vector3F Vector3F::operator+(const Vector3F& other)
+{
+	return Vector3F(x + other.getX3D(), y + other.getY3D(), z + other.getZ3D());
+}
+Vector3F Vector3F::operator-(const Vector3F& other)
+{
+	return Vector3F(x - other.getX3D(), y - other.getY3D(), z - other.getZ3D());
+}
+Vector3F Vector3F::operator*(const Vector3F& other)
+{
+	return Vector3F(x * other.getX3D(), y * other.getY3D(), z * other.getZ3D());
+}
+Vector3F Vector3F::operator/(const Vector3F& other)
+{
+	return Vector3F(x / other.getX3D(), y / other.getY3D(), z / other.getZ3D());
+}
+Vector3F Vector3F::operator+(const double& other)
+{
+	return Vector3F(x + other, y + other, z + other);
+}
+Vector3F Vector3F::operator-(const double& other)
+{
+	return Vector3F(x - other, y - other, z - other);
+}
+Vector3F Vector3F::operator*(const double& other)
+{
+	return Vector3F(x * other, y * other, z * other);
+}
+
+Vector3F Vector3F::operator/(const double& other)
+{
+	return Vector3F(x / other, y / other, z / other);
+}
+
+Vector3F  Vector3F::crossproduct(Vector3F vector)
+{
+	double X_x = y * vector.getZ3D() - z * vector.getY3D();
+	double Y_y = z * vector.getX3D() - x * vector.getZ3D();
+	double Z_z = x * vector.getY3D() - y * vector.getX3D();
+
+
+	return Vector3F(X_x, Y_y, Z_z);
+}
+
+std::string Vector3F::to_String() const
+{
+	return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
+}
+
 
 
 
@@ -276,87 +389,3 @@ bool Input::GetStates(bool isMouse,bool ispressed, const int& keycodes)
 
 }
 
-Vector3F::Vector3F(double X, double Y, double Z):x(X),y(Y),z(Z){}
-
-double Vector3F::getX3D()const
-{
-	return x;
-}
-double Vector3F::getY3D()const
-{
-	return y;
-}
-double Vector3F::getZ3D()const
-{
-	return z;
-}
-
-void Vector3F::setX3D(double x)
-{
-	this->x = x;
-}
-void Vector3F::setY3D(double y)
-{
-	this->y = y;
-}
-void Vector3F::setZ3D(double z)
-{
-	this->z = z;
-}
-
-double Vector3F::Length_Vector3f()
-{
-	return  sqrt(x*x+y*y+z*z);
-}
-
-Vector3F Vector3F::normalize3d()
-{
-	double length = Length_Vector3f();
-
-	x /= length;
-	y /= length;
-	z /= length;
-	
-
-	return *this;
-}
-
-double Vector3F::dotproduct(Vector3F r)
-{
-	return x * r.getX3D() + y * r.getY3D() + z * r.getZ3D();
-}
-
-Vector3F Vector3F::operator+(Vector3F other)
-{
-	return Vector3F(x+other.getX3D(),y+other.getY3D(),z+other.getZ3D());
-}
-Vector3F Vector3F::operator-(Vector3F other)
-{
-	return Vector3F(x - other.getX3D(), y - other.getY3D(), z - other.getZ3D());
-}
-Vector3F Vector3F::operator*(const Vector3F& other)
-{
-	return Vector3F(x * other.getX3D(), y * other.getY3D(), z * other.getZ3D());
-}
-Vector3F Vector3F::operator+(double other)
-{
-	return Vector3F(x + other, y + other, z + other);
-}
-Vector3F Vector3F::operator-(double other)
-{
-	return Vector3F(x - other, y - other, z - other);
-}
-Vector3F Vector3F::operator*(double other)
-{
-	return Vector3F(x * other, y * other, z * other);
-}
-
-Vector3F  Vector3F::crossproduct(Vector3F vector)
-{
-	double X_x = y * vector.getZ3D() - z * vector.getY3D();
-	double Y_y = z * vector.getX3D() - x * vector.getZ3D();
-	double Z_z = x * vector.getY3D() - y * vector.getX3D();
-
-
-	return Vector3F(X_x, Y_y, Z_z);
-}

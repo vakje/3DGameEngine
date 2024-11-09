@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "WindowComponent.h"
+#include "InputSystem.h"
 
 
 
@@ -22,7 +23,6 @@ int main(void)
     
     Window win;
     win.SetWindow(E.WIDTH, E.HEIGHT, E.TITLE);
-    std::cout << "---------------------------"<<std::flush;
-
-
+    std::cout << "----------------------------------------------- 3d now\n" << std::flush;
+   
 }

@@ -1,5 +1,7 @@
 #include "InputSystem.h"
 #include "WindowComponent.h"
+#include "MathClasses.h"
+
 
 GLFWwindow* Window::mywindow;
 
@@ -60,7 +62,7 @@ void Window::SetWindow(int width, int height, const char* title)
 		}
 		if (Input::GetStates(true,true,GLFW_MOUSE_BUTTON_LEFT))
 		{
-			std::cout << "we just pressed some mouse key at "<<" "<<Input::cursorPos() << " " << std::endl;
+			std::cout << "we just pressed some mouse key at "<<" "<<Vector2F<float>::cursorPos() << " ";
 		}
 		if(Input::GetStates(true,false,GLFW_MOUSE_BUTTON_LEFT))
 		{

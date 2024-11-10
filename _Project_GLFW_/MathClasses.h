@@ -19,6 +19,21 @@ class Vector2F
 public:
     Vector2F(T x, T y) :X(x), Y(y) {}
 
+    Vector2F& operator=(const Vector2F<T>& other)
+    {
+        if (this == &other) 
+        {
+            return *this;
+        }
+        X = other.get_X();
+        Y = other.get_Y();
+        return *this;
+    }
+    Vector2F(const Vector2F<T>& other)
+    {
+        X = other.get_X();
+        Y = other.get_Y();
+    }
     T get_X() const
     {
         return X;
@@ -74,13 +89,33 @@ public:
     {
         return Vector2F(X + other.get_X(), Y + other.get_Y());
     }
+    Vector2F operator+=(const Vector2F& other)
+    {
+        return Vector2F(X += other.get_X(), Y += other.get_Y());
+    }
     Vector2F operator-(const Vector2F& other)
     {
         return Vector2F(X - other.get_X(), Y - other.get_Y());
     }
+    Vector2F operator-=(const Vector2F& other)
+    {
+        return Vector2F(X -= other.get_X(), Y -= other.get_Y());
+    }
     Vector2F operator*(const Vector2F& other)
     {
         return Vector2F(X * other.get_X(), Y * other.get_Y());
+    }
+    Vector2F operator/(const Vector2F& other)
+    {
+        return Vector2F(X / other.get_X(), Y / other.get_Y());
+    }
+    Vector2F operator/=(const Vector2F& other)
+    {
+        return Vector2F(X /= other.get_X(), Y /= other.get_Y());
+    }
+    Vector2F operator*=(const Vector2F& other)
+    {
+        return Vector2F(X *= other.get_X(), Y *= other.get_Y());
     }
     Vector2F operator+(const T& num)
     {
@@ -93,6 +128,10 @@ public:
     Vector2F operator*(const T& num) 
     {
         return Vector2F(X * num, Y * num);
+    }
+    Vector2F operator/(const T& num)
+    {
+        return Vector2F(X / num, Y / num);
     }
 
     Vector2F Rotate(const T& angle) 
@@ -118,6 +157,23 @@ class Vector3F
     T z;
 public:
     Vector3F(T X, T Y, T Z):x(X),y(Y),z(Z){}
+    Vector3F& operator=(const Vector3F<T>& other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+        x = other.getX3D();
+        y = other.getY3D();
+        z = other.getX3D();
+        return *this;
+    }
+    Vector3F(const Vector3F<T>& other)
+    {
+        x = other.getX3D();
+        y = other.getY3D();
+        z = other.getZ3D();
+    }
     T getX3D()const 
     {
         return x;
@@ -166,17 +222,33 @@ public:
     {
         return Vector3F(x + other.getX3D(), y + other.getY3D(), z + other.getZ3D());
     }
+    Vector3F operator+=(const Vector3F& other)
+    {
+        return Vector3F(x += other.getX3D(), y += other.getY3D(), z += other.getZ3D());
+    }
     Vector3F operator-(const Vector3F& other) 
     {
         return Vector3F(x - other.getX3D(), y - other.getY3D(), z - other.getZ3D());
+    }
+    Vector3F operator-=(const Vector3F& other)
+    {
+        return Vector3F(x -= other.getX3D(), y -= other.getY3D(), z -= other.getZ3D());
     }
     Vector3F operator*(const Vector3F& other) 
     {
         return Vector3F(x * other.getX3D(), y * other.getY3D(), z * other.getZ3D());
     }
+    Vector3F operator*=(const Vector3F& other)
+    {
+        return Vector3F(x *= other.getX3D(), y *= other.getY3D(), z *= other.getZ3D());
+    }
     Vector3F operator/(const Vector3F& other) 
     {
         return Vector3F(x / other.getX3D(), y / other.getY3D(), z / other.getZ3D());
+    }
+    Vector3F operator/=(const Vector3F& other)
+    {
+        return Vector3F(x /= other.getX3D(), y /= other.getY3D(), z /= other.getZ3D());
     }
     Vector3F operator+(const T& other) 
     {

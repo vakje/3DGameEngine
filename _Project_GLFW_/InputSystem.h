@@ -21,7 +21,7 @@ public:
     static bool getKey(const int& keycode);
     static bool getMouseKey(const int& keycode);
     static void update();
-    static Vector2F cursorPos();
+   
     static void FillStates(bool iskeyboardkey, const int& allkeycode, std::list<int>& keyboardkeys, std::list<int>& releasedkeyboardkeys);
     static void FillCurrents(bool iskeyboard, const int& allkeycodes, std::list<int>& currents);
     static bool GetStates(bool isMouse,bool ispressed ,const int& keycodes);

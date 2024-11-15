@@ -13,12 +13,6 @@ std::list<int> Input::MousePressed;
 std::list<int> Input::MouseReleased;
 
 
-
-
-
-
-
-
 //in my case it its getting the state of the key that was pressed or not 
 bool Input::getKey(const int& keycode)
 {

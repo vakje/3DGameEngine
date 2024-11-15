@@ -4,6 +4,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <vector>
 #include <cmath>
 #include <type_traits>
 
@@ -85,7 +86,7 @@ public:
     }
     // functions for basic operations with vectors 
     //this is to add another vector 2f 
-    Vector2F operator+(const Vector2F& other)
+    Vector2F operator+(const Vector2F& other)const
     {
         return Vector2F(X + other.get_X(), Y + other.get_Y());
     }
@@ -93,7 +94,7 @@ public:
     {
         return Vector2F(X += other.get_X(), Y += other.get_Y());
     }
-    Vector2F operator-(const Vector2F& other)
+    Vector2F operator-(const Vector2F& other)const
     {
         return Vector2F(X - other.get_X(), Y - other.get_Y());
     }
@@ -101,11 +102,11 @@ public:
     {
         return Vector2F(X -= other.get_X(), Y -= other.get_Y());
     }
-    Vector2F operator*(const Vector2F& other)
+    Vector2F operator*(const Vector2F& other)const
     {
         return Vector2F(X * other.get_X(), Y * other.get_Y());
     }
-    Vector2F operator/(const Vector2F& other)
+    Vector2F operator/(const Vector2F& other)const
     {
         return Vector2F(X / other.get_X(), Y / other.get_Y());
     }
@@ -117,19 +118,19 @@ public:
     {
         return Vector2F(X *= other.get_X(), Y *= other.get_Y());
     }
-    Vector2F operator+(const T& num)
+    Vector2F operator+(const T& num)const
     {
         return Vector2F(X + num, Y + num);
     }
-    Vector2F operator-(const T& num) 
+    Vector2F operator-(const T& num)const
     {
         return Vector2F(X - num, Y - num);
     }
-    Vector2F operator*(const T& num) 
+    Vector2F operator*(const T& num)const
     {
         return Vector2F(X * num, Y * num);
     }
-    Vector2F operator/(const T& num)
+    Vector2F operator/(const T& num)const
     {
         return Vector2F(X / num, Y / num);
     }
@@ -218,7 +219,7 @@ public:
     {
         return x * r.getX3D() + y * r.getY3D() + z * r.getZ3D();
     }
-    Vector3F operator+(const Vector3F& other)
+    Vector3F operator+(const Vector3F& other)const
     {
         return Vector3F(x + other.getX3D(), y + other.getY3D(), z + other.getZ3D());
     }
@@ -226,7 +227,7 @@ public:
     {
         return Vector3F(x += other.getX3D(), y += other.getY3D(), z += other.getZ3D());
     }
-    Vector3F operator-(const Vector3F& other) 
+    Vector3F operator-(const Vector3F& other)const
     {
         return Vector3F(x - other.getX3D(), y - other.getY3D(), z - other.getZ3D());
     }
@@ -234,7 +235,7 @@ public:
     {
         return Vector3F(x -= other.getX3D(), y -= other.getY3D(), z -= other.getZ3D());
     }
-    Vector3F operator*(const Vector3F& other) 
+    Vector3F operator*(const Vector3F& other) const
     {
         return Vector3F(x * other.getX3D(), y * other.getY3D(), z * other.getZ3D());
     }
@@ -242,7 +243,7 @@ public:
     {
         return Vector3F(x *= other.getX3D(), y *= other.getY3D(), z *= other.getZ3D());
     }
-    Vector3F operator/(const Vector3F& other) 
+    Vector3F operator/(const Vector3F& other) const
     {
         return Vector3F(x / other.getX3D(), y / other.getY3D(), z / other.getZ3D());
     }
@@ -250,19 +251,19 @@ public:
     {
         return Vector3F(x /= other.getX3D(), y /= other.getY3D(), z /= other.getZ3D());
     }
-    Vector3F operator+(const T& other) 
+    Vector3F operator+(const T& other) const
     {
         return Vector3F(x + other, y + other, z + other);
     }
-    Vector3F operator-(const T& other)
+    Vector3F operator-(const T& other)const
     {
         return Vector3F(x - other, y - other, z - other);
     }
-    Vector3F operator*(const T& other)
+    Vector3F operator*(const T& other)const
     {
         return Vector3F(x * other, y * other, z * other);
     }
-    Vector3F operator/(const T& other)
+    Vector3F operator/(const T& other)const
     {
         return Vector3F(x / other, y / other, z / other);
     }
@@ -289,3 +290,213 @@ std::ostream& operator<<(std::ostream& os, const Vector3F<T>& v)
     os << v.to_String();
     return os;
 }
+
+template<Numeric T>
+class Matrix 
+{
+    int M;
+    int N;
+public:
+    //standart tools/operators
+    std::vector<std::vector<T>> matrix;
+    Matrix(int m, int n , const T& initial ) 
+    {
+        
+        if (m <= 0 || n <= 0) 
+        {
+            std::cerr << "you cant make this type of matrix with negative dimensions" << std::endl;
+            return;
+        }
+        matrix.resize(m);
+        for (int i = 0; i < matrix.size(); i++) 
+        {
+            matrix[i].resize(n, initial);
+        }
+        M = m;
+        N = n;
+
+    }
+    // copy constructor
+    Matrix(const Matrix& other) 
+    {
+        matrix = other.matrix;
+        M = other.M;
+        N = other.N;
+    }
+    //assignment operator
+    Matrix operator=( Matrix& other) 
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+        int newrow = other.M;
+        int newcol = other.N;
+
+        matrix.resize(newrow);
+        for (int i = 0; i < matrix.size(); i++) 
+        {
+            matrix[i].resize(newcol);
+        }
+        for (int i = 0; i < newrow; i++) {
+            for (int j = 0; j < newcol; j++) {
+                matrix[i][j] = other(i, j);
+            }
+        }
+        M = newrow;
+        N = newcol;
+
+        return *this;
+    }
+    const T& operator()(const int& row, const int& col) const
+    {
+        return this->matrix[row][col];
+    }
+   
+    T& operator()(const int& row, const int& col) {
+        return this->matrix[row][col];
+    }
+public:
+    //mathmatical operations
+    Matrix<T> operator*(const Matrix<T>& other) 
+    {
+        if (this->N != other.M) {
+           throw std::invalid_argument("Matrix dimensions do not match for multiplication");
+        }
+        int rows = other.M;
+        int cols = other.N;
+        Matrix result(rows, cols, 0.0);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                for (int k = 0; k < rows; k++) {
+                    result(i, j) += (*this)(i,k) * other(k, j);
+                }
+            }
+        }
+
+        return result;
+    }
+    Matrix operator*=(const Matrix& other)
+    {
+        Matrix result = (*this) * other;
+        (*this) = result;
+        return *this;
+
+    }
+    Matrix operator*(const T& other)
+    {
+        Matrix result(M, N, 0.0);
+
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                result(i, j) = this->matrix[i][j] * other;
+            }
+        }
+
+        return result;
+    }
+    Matrix initidentity()
+    {
+        (*this).setElement(0, 0, 1);
+        (*this).setElement(0, 1, 0);
+        (*this).setElement(0, 2, 0);
+        (*this).setElement(0, 3, 0);
+        (*this).setElement(1, 0, 0);
+        (*this).setElement(1, 1, 1);
+        (*this).setElement(1, 2, 0);
+        (*this).setElement(1, 3, 0);
+        (*this).setElement(2, 0, 0);
+        (*this).setElement(2, 1, 0);
+        (*this).setElement(2, 2, 1);
+        (*this).setElement(2, 3, 0);
+        (*this).setElement(3, 0, 0);
+        (*this).setElement(3, 1, 0);
+        (*this).setElement(3, 2, 0);
+        (*this).setElement(3, 3, 1);
+
+        return *this;
+    }
+  
+
+
+public:
+    //encapsulation tools
+    std::vector<std::vector<T>> getMatrix() 
+    {
+        return matrix;
+    }
+    void setMatrix(std::vector<std::vector<T>> mat) 
+    {
+        this->matrix = mat;
+    }
+    void setElement(int x, int y, const T& value) 
+    {
+        matrix[x][y] = value;
+    }
+    int get_row()const { return this->M; }
+    int get_cols()const { return this->N; }
+    
+    
+};
+template<Numeric T>
+class Quatornion 
+{
+    T x;
+    T y;
+    T z;
+    T w;
+public:
+    //functions
+    Quatornion(T x, T y, T z, T w ):x(x),y(y),z(z),w(w){}
+    //todo  *  operators and alos << operator
+    Quatornion operator*(const Quatornion& other) 
+    {
+        T w_ = w * other.get_w() - x * other.get_x() - y * other.get_y() - z * other.get_z();
+        T x_ = x * other.get_w() + w * other.get_x() + y * other.get_z() - z * other.get_y();
+        T y_ = y * other.get_w() + w * other.get_y() + z * other.get_x() - x * other.get_z();
+        T z_ = z * other.get_w() + w * other.get_z() + x * other.get_y() - y * other.get_x();
+        
+        return  Quatornion(x_, y_, z_, w_);
+    }
+    Quatornion operator*(const Vector3F<T>& other) 
+    {
+        T w_ = -x * other.getX3D() - y * other.getY3D() - z * other.getZ3D();
+        T x_ = w * other.getX3D() + y * other.getZ3D() - z * other.getY3D();
+        T y_ = w * other.getY3D() + z * other.getX3D() - x * other.getZ3D();
+        T z_ = w * other.getZ3D() + x * other.getY3D() - y * other.getX3D();
+
+        return  Quaternion(x_, y_, z_, w_);
+    }
+   
+public:
+    T quatornion_Length() 
+    {
+        return sqrt(x * x + y * y + z * z + w * w);
+    }
+    Quatornion normalization() 
+    {
+        T length = quatornion_Length();
+        x /= length;
+        y /= length;
+        z /= length;
+        w /= length;
+
+        return *this;
+    }
+    Quatornion conjugate() 
+    {
+        return  Quatornion(-x, -y, -z, w);
+    }
+public: 
+    // getters and setters
+    T get_x()const { return this->x; }
+    T get_y()const { return this->y; }
+    T get_z()const { return this->z; }
+    T get_w()const { return this->w; }
+    void set_x(T& x) {  this->x=x; }
+    void set_y(T& y) {  this->y=y; }
+    void set_z(T& z) {  this->z=z; }
+    void set_w(T& w) {  this->w=w; }
+};
+

@@ -7,6 +7,7 @@
 
 
 
+
 struct WindowConfig 
 {
     const int WIDTH = 800;
@@ -24,7 +25,6 @@ int main(void)
     Window win;
     win.SetWindow(E.WIDTH, E.HEIGHT, E.TITLE);
     std::cout << "----------------------------------------------- \n" << std::flush;
-   
-    
+  
    
 }

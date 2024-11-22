@@ -163,11 +163,13 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="WindowComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="MathClasses.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="WindowComponent.h" />
   </ItemGroup>

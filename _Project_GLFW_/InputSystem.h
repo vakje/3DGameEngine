@@ -27,7 +27,7 @@ public:
     static bool GetStates(bool isMouse,bool ispressed ,const int& keycodes);
  
 public:
-    const static int NUM_KEYCODES = 256;
+    const static int NUM_KEYCODES = 348;
     const static int NUM_MOUSEKEYCODES = 5;
 
 

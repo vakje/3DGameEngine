@@ -295,25 +295,25 @@ template<Numeric T>
 class Matrix 
 {
     int M;
-    int N;
+    int N; 
+    std::vector<std::vector<T>> matrix;
 public:
     //standart tools/operators
-    std::vector<std::vector<T>> matrix;
-    Matrix(int m, int n , const T& initial ) 
+   
+    Matrix(int m , int n  , const T& initial ):M(m), N(n)
     {
         
         if (m <= 0 || n <= 0) 
         {
-            std::cerr << "you cant make this type of matrix with negative dimensions" << std::endl;
-            return;
+            throw std::invalid_argument("Matrix dimensions cant be negative/0");
+            
         }
         matrix.resize(m);
         for (int i = 0; i < matrix.size(); i++) 
         {
             matrix[i].resize(n, initial);
         }
-        M = m;
-        N = n;
+        
 
     }
     // copy constructor

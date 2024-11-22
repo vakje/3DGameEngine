@@ -9,4 +9,5 @@ namespace UTils
     {
         return std::find(std::begin(container), std::end(container), value) != std::end(container);
     }
+
 }

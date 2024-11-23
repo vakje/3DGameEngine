@@ -9,7 +9,7 @@ void Renderer::ClearScreen()
 
 void Renderer::InitializeGraphics()
 {
-  glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
   //frontface will be draw clockwise
   glFrontFace(GL_CW);
   //get rid of the back face 

@@ -30,6 +30,8 @@ void Renderer::SetWindowICON()
 	std::string path = fullpath.string();
 	
 	GLFWimage images[1];
+
+	//github dedac movtyan
 	
 
 	glfwSetWindowIcon(Window::mywindow, 1, images);

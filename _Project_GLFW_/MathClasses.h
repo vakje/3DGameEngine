@@ -353,9 +353,11 @@ public:
         return this->matrix[row][col];
     }
    
-    T& operator()(const int& row, const int& col) {
+    T& operator()(const int& row, const int& col) 
+    {
         return this->matrix[row][col];
     }
+  
 public:
     //mathmatical operations
     Matrix<T> operator*(const Matrix<T>& other) 
@@ -398,22 +400,22 @@ public:
     }
     Matrix initidentity()
     {
-        (*this).setElement(0, 0, 1);
-        (*this).setElement(0, 1, 0);
-        (*this).setElement(0, 2, 0);
-        (*this).setElement(0, 3, 0);
-        (*this).setElement(1, 0, 0);
-        (*this).setElement(1, 1, 1);
-        (*this).setElement(1, 2, 0);
-        (*this).setElement(1, 3, 0);
-        (*this).setElement(2, 0, 0);
-        (*this).setElement(2, 1, 0);
-        (*this).setElement(2, 2, 1);
-        (*this).setElement(2, 3, 0);
-        (*this).setElement(3, 0, 0);
-        (*this).setElement(3, 1, 0);
-        (*this).setElement(3, 2, 0);
-        (*this).setElement(3, 3, 1);
+        this->setElement(0, 0, 1);
+        this->setElement(0, 1, 0);
+        this->setElement(0, 2, 0);
+        this->setElement(0, 3, 0);
+        this->setElement(1, 0, 0);
+        this->setElement(1, 1, 1);
+        this->setElement(1, 2, 0);
+        this->setElement(1, 3, 0);
+        this->setElement(2, 0, 0);
+        this->setElement(2, 1, 0);
+        this->setElement(2, 2, 1);
+        this->setElement(2, 3, 0);
+        this->setElement(3, 0, 0);
+        this->setElement(3, 1, 0);
+        this->setElement(3, 2, 0);
+        this->setElement(3, 3, 1);
 
         return *this;
     }
@@ -436,9 +438,24 @@ public:
     }
     int get_row()const { return this->M; }
     int get_cols()const { return this->N; }
-    
+    template<Numeric T>
+    friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& M) 
+    {
+        for (int i = 0; i < M.get_row(); i++)
+        {
+            for (int j = 0; j < M.get_cols(); j++)
+            {
+                os << M(i,j) << ",";
+            }
+            os << std::endl;
+
+        }
+        return os;
+
+    }
     
 };
+
 template<Numeric T>
 class Quatornion 
 {

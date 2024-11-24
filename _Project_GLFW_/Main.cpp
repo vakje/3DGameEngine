@@ -25,6 +25,11 @@ int main(void)
     Window win;
     win.SetWindow(E.WIDTH, E.HEIGHT, E.TITLE);
     std::cout << "----------------------------------------------- \n" << std::flush;
-  
+    Matrix<int> m1(4,4,1);
+
+    m1.initidentity();
+
+    std::cout << m1;
+
    
 }

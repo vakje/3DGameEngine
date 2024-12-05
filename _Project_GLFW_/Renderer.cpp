@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-
+std::filesystem::path fullpath = std::filesystem::current_path();
 
 void Renderer::ClearScreen()
 {
@@ -30,8 +30,8 @@ void Renderer::InitializeGraphics()
 void Renderer::SetWindowICON()
 {
 	//TODO icon 
-	std::filesystem::path fullpath = std::filesystem::current_path() / "TOOLS";
-	std::string path = fullpath.string();
+	std::filesystem::path Toolspath = std::filesystem::current_path() / "TOOLS";
+	std::string path = Toolspath.string();
 
 	GLFWimage images[1];
 
@@ -44,29 +44,17 @@ void Renderer::SetWindowICON()
 
 void Renderer::Initilize_opengl()
 {
-	//shaders  will be here also functions that connected with shaders 
-	VertexShaderSource =
-		"#version 330 core\n"
-		"\n"
-		"layout(location =0)in vec4 position;"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"gl_Position = position;\n"
-		"}\n";
+	std::filesystem::path Toolspath = fullpath / "TOOLS\\M_Shaders.txt";
+	std::string PATH = Toolspath.string();
+	std::pair<std::string, std::string> Shaders;
+	try {
+		Shaders = ReadFromShaderFile(PATH);
+	}
+	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
 
-	FragmentShaderSource =
-		"#version 330 core\n"
-		"\n"
-		"layout(location =0) out vec4 color;"
-		"\n"
-		"void main()\n"
-		"{\n"
-		"color = vec4(1.0,0.0,0.0,1.0);\n"
-		"}\n";
-
-	ShaderProgram = CreateShaderFromStrings(VertexShaderSource, FragmentShaderSource);
-
+	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
+	
+	
 	static const float g_vertex_buffer_data[] = {
 	-0.25f, -0.25f, 0.0f,
 	 0.25f, -0.25f, 0.0f,
@@ -141,8 +129,50 @@ void Renderer::drawTriangle()
 
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 	glBindVertexArray(0);
+}
+
+std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::string& path)
+{
+	std::ifstream ifs(path);
+	std::string line;
+	std::stringstream ss[2];
+	enum class shadertype
+	{
+		NONE = -1,
+		VERTEX = 0,
+		FRAGMENT = 1
+	};
+	shadertype type = shadertype::NONE;
+	if (!ifs.is_open()) {
+		throw std::runtime_error("Failed to open file: " + path);
+	}
+	while (std::getline(ifs, line))
+	{
+		
+		if (line.find("#shader") != std::string::npos)
+		{
+			if (line.find("vertex") != std::string::npos)
+			{
+				type = shadertype::VERTEX;
+				
+			}
+			else if (line.find("fragment") != std::string::npos)
+			{
+				type = shadertype::FRAGMENT;
+				
+			}
+		}else 
+		{
+			ss[(int)type] << line << "\n";
+		}
+	}
+	if (ss[0].str().empty() || ss[1].str().empty()) {
+		throw std::runtime_error("Incomplete shader file: " + path);
+	}
+
+	return {ss[0].str(),ss[1].str()};
 }
 
 

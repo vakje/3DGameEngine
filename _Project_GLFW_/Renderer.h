@@ -1,5 +1,6 @@
 #pragma once
 #include "WindowComponent.h"
+#include "MathClasses.h"
 #include <filesystem>
 #include <string>
 #include <utility>

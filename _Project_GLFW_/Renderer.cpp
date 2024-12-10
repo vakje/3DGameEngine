@@ -55,21 +55,28 @@ void Renderer::Initilize_opengl()
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
 	
-	static const float g_vertex_buffer_data[] = {
-	-0.25f, -0.25f, 0.0f,
-	 0.25f, -0.25f, 0.0f,
-	 0.0f,  0.25f, 0.0f
+
+	Vertex V1,V2,V3;
+	V1.addVertex(-0.25f, -0.25f, 0.0f);
+	V2.addVertex(0.25f, -0.25f, 0.0f);
+	V3.addVertex(0.0f, 0.25f, 0.0f);
+	static const Vector3F<float> vertex_bufferdata[] =
+	{
+		V1.get_points(),V2.get_points(),V3.get_points()
 	};
+	 
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
+
+	
 
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	glGenBuffers(1, &VBO);
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_bufferdata), vertex_bufferdata, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -88,11 +95,13 @@ unsigned int Renderer::CompileShaderFromSource(unsigned int TYPE, std::string& s
 	glShaderSource(shader, 1, &source, nullptr);
 	glCompileShader(shader);
 	int success;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	glGetProgramiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-		std::cerr << "Shader Compilation Error: " << infoLog << std::endl;
+		std::cerr << "Shader Compilation Error (" << (TYPE == GL_VERTEX_SHADER ? "Vertex" : "Fragment") << "): " << infoLog << std::endl;
+		glDeleteShader(shader); // Cleanup in case of failure.
+		return 0; // Indicate failure with invalid ID.
 	}
 
 	return shader;
@@ -110,7 +119,7 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 	glValidateProgram(program);
 
 	int success;
-	glGetShaderiv(program, GL_LINK_STATUS, &success);
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(program, 512, nullptr, infoLog);
@@ -145,7 +154,8 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 		FRAGMENT = 1
 	};
 	shadertype type = shadertype::NONE;
-	if (!ifs.is_open()) {
+	if (!ifs.is_open()) 
+	{
 		throw std::runtime_error("Failed to open file: " + path);
 	}
 	while (std::getline(ifs, line))
@@ -160,8 +170,7 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 			}
 			else if (line.find("fragment") != std::string::npos)
 			{
-				type = shadertype::FRAGMENT;
-				
+				type = shadertype::FRAGMENT;				
 			}
 		}else 
 		{

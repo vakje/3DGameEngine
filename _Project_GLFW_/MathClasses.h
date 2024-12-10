@@ -19,6 +19,7 @@ class Vector2F
 
 public:
     Vector2F(T x, T y) :X(x), Y(y) {}
+    Vector2F() = default;
 
     Vector2F& operator=(const Vector2F<T>& other)
     {
@@ -158,6 +159,7 @@ class Vector3F
     T z;
 public:
     Vector3F(T X, T Y, T Z):x(X),y(Y),z(Z){}
+    Vector3F() = default;
     Vector3F& operator=(const Vector3F<T>& other)
     {
         if (this == &other)
@@ -466,6 +468,7 @@ class Quatornion
 public:
     //functions
     Quatornion(T x, T y, T z, T w ):x(x),y(y),z(z),w(w){}
+    Quatornion() = default;
     //todo  *  operators and alos << operator
     Quatornion operator*(const Quatornion& other) 
     {
@@ -517,3 +520,29 @@ public:
     void set_w(T& w) {  this->w=w; }
 };
 
+
+class Vertex 
+{
+    Vector3F<float> Points;
+    
+public:
+    void addVertex(float x , float y , float z )
+    {
+        Points.setX3D(x);
+        Points.setY3D(y);
+        Points.setZ3D(z);
+    }
+
+public:
+    Vertex (Vector3F<float> point):Points(point){}
+    Vertex() = default;
+    Vector3F<float> get_points() 
+    {
+        return Points;
+    }
+    void set_points(Vector3F<float> mypoint)
+    {
+        Points = mypoint;
+    }
+    
+};

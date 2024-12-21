@@ -53,24 +53,54 @@ void Renderer::Initilize_opengl()
 	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
 
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
-	
-	
 
-	Vertex V1,V2,V3;
-	V1.addVertex(-0.25f, -0.25f, 0.0f);
-	V2.addVertex(0.25f, -0.25f, 0.0f);
-	V3.addVertex(0.0f, 0.25f, 0.0f);
-	static const Vector3F<float> vertex_bufferdata[] =
+
+
+
+	static const Vertex vertex_bufferdata[] =
 	{
-		V1.get_points(),V2.get_points(),V3.get_points()
+		//front face 
+		Vertex(-0.25f,-0.25f,0.25f),
+		Vertex(0.25f,-0.25f,0.25f),
+		Vertex(0.25f,0.25f,0.25f),
+		Vertex(-0.25f,0.25f,0.25f),
+
+		//back face 
+		Vertex(-0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,0.25f,-0.25f),
+		Vertex(-0.25f,0.25f,-0.25f),
+
+		//left face 
+		Vertex(-0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,-0.25f,0.25f),
+		Vertex(-0.25f,0.25f,0.25f),
+		Vertex(-0.25f,0.25f,-0.25f),
+
+		//right face 
+		Vertex(0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,-0.25f,0.25f),
+		Vertex(0.25f,0.25f,0.25f),
+		Vertex(0.25f,0.25f,-0.25f),
+
+		//top face 
+		Vertex(-0.25f,0.25f,-0.25f),
+		Vertex(0.25f,0.25f,-0.25f),
+		Vertex(0.25f,0.25f,0.25f),
+		Vertex(-0.25f,0.25f,0.25f),
+
+		//Bottom face 
+		Vertex(-0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,-0.25f,-0.25f),
+		Vertex(0.25f,-0.25f,0.25f),
+		Vertex(-0.25f,-0.25f,0.25f)
+
 	};
-	 
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	
-
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	glGenBuffers(1, &VBO);
 	// The following commands will talk about our 'vertexbuffer' buffer
@@ -80,6 +110,8 @@ void Renderer::Initilize_opengl()
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	
 
 	// Unbind VAO
 	glBindVertexArray(0);
@@ -138,7 +170,8 @@ void Renderer::drawTriangle()
 
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
 	glBindVertexArray(0);
 }
 
@@ -154,25 +187,26 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 		FRAGMENT = 1
 	};
 	shadertype type = shadertype::NONE;
-	if (!ifs.is_open()) 
+	if (!ifs.is_open())
 	{
 		throw std::runtime_error("Failed to open file: " + path);
 	}
 	while (std::getline(ifs, line))
 	{
-		
+
 		if (line.find("#shader") != std::string::npos)
 		{
 			if (line.find("vertex") != std::string::npos)
 			{
 				type = shadertype::VERTEX;
-				
+
 			}
 			else if (line.find("fragment") != std::string::npos)
 			{
-				type = shadertype::FRAGMENT;				
+				type = shadertype::FRAGMENT;
 			}
-		}else 
+		}
+		else
 		{
 			ss[(int)type] << line << "\n";
 		}
@@ -181,7 +215,14 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 		throw std::runtime_error("Incomplete shader file: " + path);
 	}
 
-	return {ss[0].str(),ss[1].str()};
+	return { ss[0].str(),ss[1].str() };
+}
+
+Renderer::~Renderer()
+{
+	glDeleteBuffers(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+
 }
 
 

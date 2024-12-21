@@ -78,11 +78,11 @@ public:
 
         return *this;
     }
-    static Vector2F cursorPos() {
+    static Vector2F<double> cursorPos() {
 
         double xpos, ypos;
         glfwGetCursorPos(Window::mywindow, &xpos, &ypos);
-        return Vector2F(xpos, ypos);
+        return Vector2F<double>(xpos, ypos);
 
     }
     // functions for basic operations with vectors 
@@ -402,6 +402,12 @@ public:
     }
     Matrix initidentity()
     {
+        if (this->get_row() != 4 && this->get_cols() != 4) 
+        {
+             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
+            
+        }
+
         this->setElement(0, 0, 1);
         this->setElement(0, 1, 0);
         this->setElement(0, 2, 0);
@@ -421,9 +427,77 @@ public:
 
         return *this;
     }
-  
+    //todo view,projection, uniformmatrixes functions
+    // ---------------------------------------------------------
+    // Rotations in 3d space 
+    //ROLL Rotation
+    Matrix RollRotation(double alpha)
+    {
+        if (this->get_row() != 3 && this->get_cols() != 3)
+        {
+            throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
+
+        }
+        double rad = alpha * 3.14159265358979323846 / 180.0;
+        this->setElement(0, 0, 1);
+        this->setElement(0, 1, 0);
+        this->setElement(0, 2, 0);
+        this->setElement(1, 0, 0);
+        this->setElement(1, 1, cos(rad));
+        this->setElement(1, 2, -sin(rad));
+        this->setElement(2, 0, 0);
+        this->setElement(2, 1, sin(rad));
+        this->setElement(2, 2, cos(rad));
+        
 
 
+        return *this;
+
+    }
+    //PITCH Rotation
+    Matrix PitchRotation(double alpha)
+    {
+        if (this->get_row() != 3 || this->get_cols() != 3)
+        {
+            throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
+
+        }
+        double rad = alpha * 3.14159265358979323846 / 180.0;
+        this->setElement(0, 0, cos(rad));
+        this->setElement(0, 1, 0);
+        this->setElement(0, 2, sin(rad));
+        this->setElement(1, 0, 0);
+        this->setElement(1, 1, 1);
+        this->setElement(1, 2, 0);
+        this->setElement(2, 0, -sin(rad));
+        this->setElement(2, 1, 0);
+        this->setElement(2, 2, cos(rad));
+
+        return *this;
+
+    }
+    //YAW Rotation
+    Matrix YawRotation(double alpha)
+     {
+         if (this->get_row() != 3 && this->get_cols() != 3)
+         {
+             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
+
+         }
+         double rad = alpha * 3.14159265358979323846 / 180.0;
+         this->setElement(0, 0, cos(rad));
+         this->setElement(0, 1, -sin(rad));
+         this->setElement(0, 2, 0);
+         this->setElement(1, 0, sin(rad));
+         this->setElement(1, 1, cos(rad));
+         this->setElement(1, 2, 0);
+         this->setElement(2, 0, 0);
+         this->setElement(2, 1, 0);
+         this->setElement(2, 2, 1);
+
+         return *this;
+
+     }
 public:
     //encapsulation tools
     std::vector<std::vector<T>> getMatrix() 
@@ -440,23 +514,31 @@ public:
     }
     int get_row()const { return this->M; }
     int get_cols()const { return this->N; }
+    
     template<Numeric T>
-    friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& M) 
-    {
-        for (int i = 0; i < M.get_row(); i++)
-        {
-            for (int j = 0; j < M.get_cols(); j++)
-            {
-                os << M(i,j) << ",";
-            }
-            os << std::endl;
-
-        }
-        return os;
-
-    }
+    friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& M);
     
 };
+template<Numeric T> 
+std::ostream& operator<<(std::ostream& os, const Matrix<T>& M) 
+{
+    for (int i = 0; i < M.get_row(); i++)
+    {
+        for (int j = 0; j < M.get_cols(); j++)
+        {
+            os << M(i, j);
+            // Only print a comma if it's not the last element in the row
+            if (j < M.get_cols() - 1)
+            {
+                os << ", ";
+            }
+        }
+        os << std::endl;
+
+    }
+    return os;
+
+}
 
 template<Numeric T>
 class Quatornion 
@@ -525,17 +607,15 @@ class Vertex
 {
     Vector3F<float> Points;
     
+
+
 public:
-    void addVertex(float x , float y , float z )
-    {
+   
+    Vertex(float x, float y, float z) {
         Points.setX3D(x);
         Points.setY3D(y);
         Points.setZ3D(z);
     }
-
-public:
-    Vertex (Vector3F<float> point):Points(point){}
-    Vertex() = default;
     Vector3F<float> get_points() 
     {
         return Points;

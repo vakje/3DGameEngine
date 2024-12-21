@@ -13,7 +13,8 @@ class Renderer
 {
 	 std::string VertexShaderSource;
 	 std::string FragmentShaderSource;
-	 unsigned int ShaderProgram,VAO,VBO,CBO;
+	 unsigned int ShaderProgram,VAO,VBO,CBO,EBO;
+	
 	 //ShaderProgram actual shaders that are compiled are stored in here
 	 //VAO vertex atribute
 	 //vertex buffer
@@ -28,10 +29,12 @@ public:
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
 	void drawTriangle();
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);
+	~Renderer();
 
 public:
 	 std::string get_vertex()const;
 	 std::string get_fragment()const;
+	 
 
 };
 

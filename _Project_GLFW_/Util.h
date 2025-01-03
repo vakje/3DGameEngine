@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <iterator>
+#include <map>
 
 namespace UTils
 {
@@ -9,5 +10,11 @@ namespace UTils
     {
         return std::find(std::begin(container), std::end(container), value) != std::end(container);
     }
+    template<typename K,typename V>
+    void InsertElement(std::map<K, V>& m_map, const K& key, const V& value) 
+    {
+        m_map[key] = value;
+        std::cout << "inserted [" << key << "," << value << "]" << std::endl;
 
+    }
 }

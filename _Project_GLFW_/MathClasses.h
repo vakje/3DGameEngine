@@ -8,6 +8,11 @@
 #include <cmath>
 #include <type_traits>
 
+const double PI = 3.14159265358979323846;
+const int Width = 800;
+const int Height = 600;
+
+
 template<typename T>
 concept Numeric = std::is_arithmetic_v<T>;
 
@@ -400,31 +405,26 @@ public:
 
         return result;
     }
-    Matrix initidentity()
+    Matrix initidentity(int M)
     {
-        if (this->get_row() != 4 && this->get_cols() != 4) 
+
+        if (this->get_row() != M || this->get_cols() != M) 
         {
-             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
-            
+            throw std::invalid_argument("parameter must be same as the column/row of the matrix");
         }
-
-        this->setElement(0, 0, 1);
-        this->setElement(0, 1, 0);
-        this->setElement(0, 2, 0);
-        this->setElement(0, 3, 0);
-        this->setElement(1, 0, 0);
-        this->setElement(1, 1, 1);
-        this->setElement(1, 2, 0);
-        this->setElement(1, 3, 0);
-        this->setElement(2, 0, 0);
-        this->setElement(2, 1, 0);
-        this->setElement(2, 2, 1);
-        this->setElement(2, 3, 0);
-        this->setElement(3, 0, 0);
-        this->setElement(3, 1, 0);
-        this->setElement(3, 2, 0);
-        this->setElement(3, 3, 1);
-
+        for (int i = 0; i < this->get_row(); i++) 
+        {
+            for (int j = 0; j < this->get_cols(); j++)
+            {
+                if (i == j) 
+                {
+                    this->setElement(i, j, 1);
+                }
+                else {
+                    this->setElement(i, j, 0);
+                }
+            }
+        }
         return *this;
     }
     //todo view,projection, uniformmatrixes functions
@@ -433,12 +433,12 @@ public:
     //ROLL Rotation
     Matrix RollRotation(double alpha)
     {
-        if (this->get_row() != 3 && this->get_cols() != 3)
+        if (this->get_row() != 3 || this->get_cols() != 3)
         {
             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
 
         }
-        double rad = alpha * 3.14159265358979323846 / 180.0;
+        double rad = alpha * PI / 180.0;
         this->setElement(0, 0, 1);
         this->setElement(0, 1, 0);
         this->setElement(0, 2, 0);
@@ -462,7 +462,7 @@ public:
             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
 
         }
-        double rad = alpha * 3.14159265358979323846 / 180.0;
+        double rad = alpha * PI / 180.0;
         this->setElement(0, 0, cos(rad));
         this->setElement(0, 1, 0);
         this->setElement(0, 2, sin(rad));
@@ -479,12 +479,12 @@ public:
     //YAW Rotation
     Matrix YawRotation(double alpha)
      {
-         if (this->get_row() != 3 && this->get_cols() != 3)
+         if (this->get_row() != 3 || this->get_cols() != 3)
          {
              throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
 
          }
-         double rad = alpha * 3.14159265358979323846 / 180.0;
+         double rad = alpha * PI / 180.0;
          this->setElement(0, 0, cos(rad));
          this->setElement(0, 1, -sin(rad));
          this->setElement(0, 2, 0);
@@ -498,6 +498,97 @@ public:
          return *this;
 
      }
+
+    //mvp Model View Projection Matrix 
+    void SetupMVP(unsigned int ShaderProgram)
+    {
+        Matrix<float> I(4, 4, 1.0f);
+        I.initidentity(4);
+
+            // Translate the object
+
+             // Rotate the object
+
+             // Scale the object
+
+        //camera viewing and projection 
+        Vector3F<float> CameraPosition = Vector3F(3.0f, 3.0f, 3.0f);
+        Vector3F<float> CameraTarget = Vector3F(0.0f, 0.0f, 0.0f);
+        Vector3F<float> CameraUp = Vector3F(0.0f, 1.0f, 0.0f);
+
+        //view matrix creation
+
+        //perspective projection
+        float FOV = 45.0 * PI / 180.0;
+        float AspectRatio = Width / height;
+        float NearPlane = 0.1f;
+        float FarPlane = 100.0f;
+
+        //making projection formula mvp = projection * view * model;
+
+        //mvp matrix realization 
+        /*unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
+        Renderer::setUniformiMatrix4(mvplocation,)*/
+
+    }
+    //Translate matrix function 
+    Matrix Translate(Matrix<float>& model, Vector3F<float>& Vec) 
+    {
+
+
+    }
+
+    //Rotate Matrix functin
+    Matrix Rotate(Matrix<float>& model,double& radians ,Vector3F<float>& Vec)
+    {
+
+
+    }
+    
+    // Scale matrix function
+    Matrix Scale(Matrix<float>& model, Vector3F<float>& Vec)
+    {
+
+
+    }
+    //look at function 
+    Matrix LookOfCamera(Vector3F<float>& CameraP, Vector3F<float>& CameraT, Vector3F<float>& CameraU) 
+    {
+       
+       float DistanceTP = Vector3F::Length_Vector3f(CameraT - CameraP);
+       Vector3F<float> forward = (CameraT - CameraP) / Distance;
+
+       float DistanceUF = Vector3F::Length_Vector3f(CameraU * forward);
+       Vector3F<float> right = (CameraU * forward) / DistanceUF;
+
+       Vector3F<float> true_up= forward * right;
+       //first row
+       this->setElement(0, 0, right.getX3D());
+       this->setElement(0, 1, right.getY3D());
+       this->setElement(0, 2, right.getZ3D());
+       this->setElement(0, 3, Vector3F::dotproduct(-right * CameraP));
+       //second row
+       this->setElement(1, 0, true_up.getX3D());
+       this->setElement(1, 1, true_up.getY3D());
+       this->setElement(1, 2, true_up.getZ3D());
+       this->setElement(1, 3, Vector3F::dotproduct ( - true_up * CameraP));
+       //third row 
+       this->setElement(2, 0, -forward.getX3D());
+       this->setElement(2, 1, -forward.getY3D());
+       this->setElement(2, 2, -forward.getZ3D());
+       this->setElement(2, 3, Vector3F::dotproduct(forward * CameraU));
+       //forth row
+       this->setElement(3, 0, 0);
+       this->setElement(3, 1, 0);
+       this->setElement(3, 2, 0);
+       this->setElement(3, 3, 1);
+    }
+    //perspective function
+    Matrix Projection(float& fov, float& aspectRatio, float& nearplane, float& farplane) 
+    {
+
+
+    }
 public:
     //encapsulation tools
     std::vector<std::vector<T>> getMatrix() 

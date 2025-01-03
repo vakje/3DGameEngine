@@ -218,6 +218,40 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 	return { ss[0].str(),ss[1].str() };
 }
 
+void Renderer::addUniform(std::string uniform)
+{
+	int UniformLocation = glGetUniformLocation(ShaderProgram, uniform.c_str());
+	if (UniformLocation == 0XFFFFFFF) {
+		throw (std::overflow_error("UniformLocation Error could not find it"));
+	}
+	UTils::InsertElement(Uniforms, uniform, UniformLocation);
+}
+
+void Renderer::setUniformi(std::string Key, int value)
+{
+	glUniform1i(Uniforms.at(Key), value);
+}
+
+void Renderer::setUniformf(std::string Key, float value)
+{
+	glUniform1f(Uniforms.at(Key), value);
+}
+
+void Renderer::setUniformVector3(std::string Key, Vector3F<float>& value)
+{
+	glUniform3f(Uniforms.at(Key), value.getX3D(),value.getY3D(),value.getZ3D());
+}
+
+void Renderer::setUniformiMatrix4(std::string Key, Matrix<float>& value)
+{
+	//flattening 2d vector into 1d to get rif of error from opengl
+	std::vector<float> glmatrix;
+	for (const auto& row : value.getMatrix()) {
+		glmatrix.insert(glmatrix.end(), row.begin(), row.end());
+	}
+	glUniformMatrix4fv(Uniforms.at(Key), 1, false, glmatrix.data());
+}
+
 Renderer::~Renderer()
 {
 	glDeleteBuffers(1, &VAO);

@@ -35,10 +35,15 @@ void Window::SetWindow(int width, int height, const char* title)
 	double lastTime = glfwGetTime() * 1000.0;//to make it in miliseconds
 
 	//--------------------------------------------------------------
+	glEnable(GL_DEPTH_TEST);          // Enable depth testing
+	glDepthFunc(GL_LESS);
 
+	//// Clear settings
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Set clear color
+	glClearDepth(1.0f);
 	
 	MyRenderer.Initilize_opengl();
-
+	
 	//--------------------------------------------------------------
 
 
@@ -58,7 +63,7 @@ void Window::SetWindow(int width, int height, const char* title)
 		/* Swap front and back buffers */
 
 
-		MyRenderer.drawTriangle();
+		MyRenderer.draw();
 
 		glfwSwapBuffers(mywindow);
 		/* Poll for and process events */

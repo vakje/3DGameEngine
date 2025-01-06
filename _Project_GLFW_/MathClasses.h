@@ -206,11 +206,17 @@ public:
     {
         this->z = z;
     }
+public:
+    
     T Length_Vector3f() 
     {
         return  sqrt(x * x + y * y + z * z);
     }
-    Vector3F normalize3d() 
+    Vector3F CrossProduct(const Vector3F& Vec) const 
+    {
+        return Vector3F( y * Vec.z - z * Vec.y, z * Vec.x - x * Vec.z, x * Vec.y - y * Vec.x);
+    }
+    Vector3F& normalize3d() 
     {
         T length = Length_Vector3f();
 
@@ -221,11 +227,12 @@ public:
 
         return *this;
     }
-
+    
     T dotproduct(const Vector3F& r) 
     {
         return x * r.getX3D() + y * r.getY3D() + z * r.getZ3D();
     }
+   
     Vector3F operator+(const Vector3F& other)const
     {
         return Vector3F(x + other.getX3D(), y + other.getY3D(), z + other.getZ3D());
@@ -306,7 +313,7 @@ class Matrix
     std::vector<std::vector<T>> matrix;
 public:
     //standart tools/operators
-   
+    Matrix() = default;
     Matrix(int m , int n  , const T& initial ):M(m), N(n)
     {
         
@@ -331,7 +338,7 @@ public:
         N = other.N;
     }
     //assignment operator
-    Matrix operator=( Matrix& other) 
+    Matrix& operator=( const Matrix<T>& other) 
     {
         if (this == &other)
         {
@@ -347,7 +354,7 @@ public:
         }
         for (int i = 0; i < newrow; i++) {
             for (int j = 0; j < newcol; j++) {
-                matrix[i][j] = other(i, j);
+                matrix[i][j] = other.matrix[i][j];
             }
         }
         M = newrow;
@@ -405,7 +412,7 @@ public:
 
         return result;
     }
-    Matrix initidentity(int M)
+    Matrix& initidentity(int M)
     {
 
         if (this->get_row() != M || this->get_cols() != M) 
@@ -431,163 +438,231 @@ public:
     // ---------------------------------------------------------
     // Rotations in 3d space 
     //ROLL Rotation
-    Matrix RollRotation(double alpha)
+    Matrix& RollRotation(double alpha)
     {
-        if (this->get_row() != 3 || this->get_cols() != 3)
+        if (this->get_row() != 4 || this->get_cols() != 4)
         {
-            throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
+            throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
 
         }
         double rad = alpha * PI / 180.0;
-        this->setElement(0, 0, 1);
-        this->setElement(0, 1, 0);
-        this->setElement(0, 2, 0);
-        this->setElement(1, 0, 0);
-        this->setElement(1, 1, cos(rad));
-        this->setElement(1, 2, -sin(rad));
-        this->setElement(2, 0, 0);
-        this->setElement(2, 1, sin(rad));
-        this->setElement(2, 2, cos(rad));
-        
+
+        this->setElement(0, 0, cos(rad));  this->setElement(0, 1,-sin(rad));  this->setElement(0, 2, 0);  this->setElement(0, 3, 0);
+        this->setElement(1, 0, sin(rad));  this->setElement(1, 1, cos(rad));  this->setElement(1, 2, 0);  this->setElement(1, 3, 0);
+        this->setElement(2, 0, 0);         this->setElement(2, 1, 0);         this->setElement(2, 2, 1);  this->setElement(2, 3, 0);
+        this->setElement(3, 0, 0);         this->setElement(3, 1, 0);         this->setElement(3, 2, 0);  this->setElement(3, 3, 1);
+
 
 
         return *this;
 
     }
     //PITCH Rotation
-    Matrix PitchRotation(double alpha)
-    {
-        if (this->get_row() != 3 || this->get_cols() != 3)
-        {
-            throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 3x3!!!.");
-
+    Matrix& PitchRotation(double alpha) {
+        // Ensure matrix is 4x4
+        if (this->get_row() != 4 || this->get_cols() != 4) {
+            throw std::invalid_argument("Invalid argument: Matrix dimensions must be 4x4.");
         }
+
+        // Convert degrees to radians
         double rad = alpha * PI / 180.0;
-        this->setElement(0, 0, cos(rad));
-        this->setElement(0, 1, 0);
-        this->setElement(0, 2, sin(rad));
-        this->setElement(1, 0, 0);
-        this->setElement(1, 1, 1);
-        this->setElement(1, 2, 0);
-        this->setElement(2, 0, -sin(rad));
-        this->setElement(2, 1, 0);
-        this->setElement(2, 2, cos(rad));
 
+       
+        this->setElement(0, 0, 1);  this->setElement(0, 1, 0);          this->setElement(0, 2, 0);          this->setElement(0, 3, 0);
+        this->setElement(1, 0, 0);  this->setElement(1, 1, cos(rad));   this->setElement(1, 2, sin(rad));   this->setElement(1, 3, 0);
+        this->setElement(2, 0, 0);  this->setElement(2, 1,-sin(rad));   this->setElement(2, 2, cos(rad));   this->setElement(2, 3, 0);
+        this->setElement(3, 0, 0);  this->setElement(3, 1, 0);          this->setElement(3, 2, 0);          this->setElement(3, 3, 1);
+
+        // Return reference to the current matrix
         return *this;
-
     }
     //YAW Rotation
-    Matrix YawRotation(double alpha)
+    Matrix& YawRotation(double alpha)
      {
-         if (this->get_row() != 3 || this->get_cols() != 3)
+         if (this->get_row() != 4 || this->get_cols() != 4)
          {
              throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
 
          }
          double rad = alpha * PI / 180.0;
-         this->setElement(0, 0, cos(rad));
-         this->setElement(0, 1, -sin(rad));
-         this->setElement(0, 2, 0);
-         this->setElement(1, 0, sin(rad));
-         this->setElement(1, 1, cos(rad));
-         this->setElement(1, 2, 0);
-         this->setElement(2, 0, 0);
-         this->setElement(2, 1, 0);
-         this->setElement(2, 2, 1);
+
+         this->setElement(0, 0, cos(rad));  this->setElement(0, 1, 0);  this->setElement(0, 2,sin(rad));  this->setElement(0, 3, 0);     
+         this->setElement(1, 0, 0);         this->setElement(1, 1, 1);  this->setElement(1, 2, 0);         this->setElement(1, 3, 0);
+         this->setElement(2, 0, -sin(rad));  this->setElement(2, 1, 0);  this->setElement(2, 2, cos(rad));  this->setElement(2, 3, 0);
+         this->setElement(3, 0, 0);         this->setElement(3, 1, 0);  this->setElement(3, 2, 0 );        this->setElement(3, 3, 1);
+         
+         
 
          return *this;
 
      }
 
     //mvp Model View Projection Matrix 
-    void SetupMVP(unsigned int ShaderProgram)
-    {
-        Matrix<float> I(4, 4, 1.0f);
-        I.initidentity(4);
-
-            // Translate the object
-
-             // Rotate the object
-
-             // Scale the object
-
-        //camera viewing and projection 
-        Vector3F<float> CameraPosition = Vector3F(3.0f, 3.0f, 3.0f);
-        Vector3F<float> CameraTarget = Vector3F(0.0f, 0.0f, 0.0f);
-        Vector3F<float> CameraUp = Vector3F(0.0f, 1.0f, 0.0f);
-
-        //view matrix creation
-
-        //perspective projection
-        float FOV = 45.0 * PI / 180.0;
-        float AspectRatio = Width / height;
+    void SetupMVP(unsigned int ShaderProgram)  
+    { 
+        Vector3F<float> forTranslation(1.0f, 0.0f, 0.0f);
+        Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
+        Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
+        //perspective projection for example 45  
+        double FOV = 45.0 * PI / 180.0;
+        float AspectRatio = Width / Height;
         float NearPlane = 0.1f;
         float FarPlane = 100.0f;
 
-        //making projection formula mvp = projection * view * model;
+        Matrix<float> I(4, 4, 1.0f);
+        I.initidentity(4);
+        float x_position = 1.0f;
+       
+        I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, FOV, forRotation)  *  Matrix::Scale(I, forScale);
+  
+        //camera viewing and projection 
+        Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
+        Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);
+        Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
 
+
+        
+        //view matrix creation
+        Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);
+
+        //projection matrix calculating
+        Matrix<float> projection = Matrix::Projection(FOV, AspectRatio, NearPlane, FarPlane);
+  
+        //making projection formula mvp = projection * view * model;
+        Matrix<float> mvp = projection * view * I;
+       
         //mvp matrix realization 
-        /*unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
-        Renderer::setUniformiMatrix4(mvplocation,)*/
+        unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
+
+        std::vector<GLfloat> glvector;
+        for (size_t col = 0; col < 4; ++col) {
+            for (size_t row = 0; row < 4; ++row) {
+                glvector.push_back(mvp(row,col)); // Column-major order needed for opengl 
+            }
+        }
+        glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
+       
 
     }
     //Translate matrix function 
-    Matrix Translate(Matrix<float>& model, Vector3F<float>& Vec) 
+    Matrix& Translate(Matrix<float>& model, Vector3F<float>& Vec) 
     {
+        //sets up identity matrix 
+        model.initidentity(4);
+        //first  row
+        model.setElement(0, 3, Vec.getX3D());
+        //second row
+        model.setElement(1, 3, Vec.getY3D());
+        //third row
+        model.setElement(2, 3, Vec.getZ3D());
+      
 
+        return model;
 
     }
 
     //Rotate Matrix functin
-    Matrix Rotate(Matrix<float>& model,double& radians ,Vector3F<float>& Vec)
+    Matrix<float>& Rotate(Matrix<float>& model, double& radians, Vector3F<float>& Vec)
     {
+        try {
+            Matrix<float> MYAW(4, 4, 1.0f); 
+            MYAW = YawRotation(radians);
+            Matrix<float> MPITCH(4, 4, 1.0f);
+            MPITCH = PitchRotation(radians);
+            Matrix<float> MROLL(4, 4, 1.0f);
+            MROLL = RollRotation(radians);
 
+           
+
+            model = MYAW * MPITCH * MROLL; 
+         
+            
+            return model;
+        }
+        catch (const std::exception& ex)
+        {
+            std::cerr <<"Rotate function gives::" << ex.what() << std::endl;
+        }
+       
 
     }
     
     // Scale matrix function
-    Matrix Scale(Matrix<float>& model, Vector3F<float>& Vec)
+    Matrix& Scale(Matrix<float>& model, Vector3F<float>& Vec)
     {
+        //sets up identity matrix 
+        model.initidentity(4);
+        //first row
+        model.setElement(0, 0, Vec.getX3D());
+        //second row
+        model.setElement(1, 1, Vec.getY3D());
+        //third row
+        model.setElement(2, 2, Vec.getZ3D());
+       
 
+        return model;
 
     }
     //look at function 
-    Matrix LookOfCamera(Vector3F<float>& CameraP, Vector3F<float>& CameraT, Vector3F<float>& CameraU) 
-    {
+    Matrix& LookOfCamera(Vector3F<float>& CameraP, Vector3F<float>& CameraT, Vector3F<float>& CameraU) 
+    {  
+       //forward vector
+       Vector3F<float> forward = (CameraT - CameraP).normalize3d();
+       //right vector
+       Vector3F<float> right = CameraU.CrossProduct(forward).normalize3d();
+       //true_up vector
+       Vector3F<float> true_up= forward.CrossProduct(right);
+      
+
        
-       float DistanceTP = Vector3F::Length_Vector3f(CameraT - CameraP);
-       Vector3F<float> forward = (CameraT - CameraP) / Distance;
-
-       float DistanceUF = Vector3F::Length_Vector3f(CameraU * forward);
-       Vector3F<float> right = (CameraU * forward) / DistanceUF;
-
-       Vector3F<float> true_up= forward * right;
        //first row
        this->setElement(0, 0, right.getX3D());
        this->setElement(0, 1, right.getY3D());
        this->setElement(0, 2, right.getZ3D());
-       this->setElement(0, 3, Vector3F::dotproduct(-right * CameraP));
+       this->setElement(0, 3, -right.dotproduct(CameraP));
        //second row
        this->setElement(1, 0, true_up.getX3D());
        this->setElement(1, 1, true_up.getY3D());
        this->setElement(1, 2, true_up.getZ3D());
-       this->setElement(1, 3, Vector3F::dotproduct ( - true_up * CameraP));
+       this->setElement(1, 3, -true_up.dotproduct(CameraP));
        //third row 
        this->setElement(2, 0, -forward.getX3D());
        this->setElement(2, 1, -forward.getY3D());
        this->setElement(2, 2, -forward.getZ3D());
-       this->setElement(2, 3, Vector3F::dotproduct(forward * CameraU));
+       this->setElement(2, 3, forward.dotproduct(CameraP));
        //forth row
        this->setElement(3, 0, 0);
        this->setElement(3, 1, 0);
        this->setElement(3, 2, 0);
        this->setElement(3, 3, 1);
+
+       return *this;
     }
     //perspective function
-    Matrix Projection(float& fov, float& aspectRatio, float& nearplane, float& farplane) 
+    Matrix& Projection(double& fov, float& aspectRatio, float& nearplane, float& farplane)
     {
+        //first row
+        this->setElement(0, 0, 1 / aspectRatio * tan(fov / 2));
+        this->setElement(0, 1, 0);
+        this->setElement(0, 2, 0);
+        this->setElement(0, 3, 0);
+        //second row
+        this->setElement(1, 0, 0);
+        this->setElement(1, 1, 1/tan(fov/2));
+        this->setElement(1, 2, 0);
+        this->setElement(1, 3, 0);
+        //third row
+        this->setElement(2, 0, 0);
+        this->setElement(2, 1, 0);
+        this->setElement(2, 2, -(farplane + nearplane) / (farplane - nearplane));
+        this->setElement(2, 3, -(2 * farplane * nearplane) / (farplane - nearplane));
+        //forth row
+        this->setElement(3, 0, 0);
+        this->setElement(3, 1, 0);
+        this->setElement(3, 2, -1);
+        this->setElement(3, 3, 0);
 
-
+        return *this;
     }
 public:
     //encapsulation tools
@@ -694,26 +769,4 @@ public:
 };
 
 
-class Vertex 
-{
-    Vector3F<float> Points;
-    
 
-
-public:
-   
-    Vertex(float x, float y, float z) {
-        Points.setX3D(x);
-        Points.setY3D(y);
-        Points.setZ3D(z);
-    }
-    Vector3F<float> get_points() 
-    {
-        return Points;
-    }
-    void set_points(Vector3F<float> mypoint)
-    {
-        Points = mypoint;
-    }
-    
-};

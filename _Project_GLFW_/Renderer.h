@@ -19,7 +19,7 @@ class Renderer
 	 //VAO vertex atribute
 	 //vertex buffer
 	 // color buffer
-	 std::map<std::string, int> Uniforms;
+	
 public:
 	
 	void ClearScreen();
@@ -28,13 +28,8 @@ public:
 	void Initilize_opengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
-	void drawTriangle();
-	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);
-	void addUniform(std::string uniform);
-	void setUniformi(std::string Key,int value);
-	void setUniformf(std::string Key, float value);
-	void setUniformVector3(std::string Key, Vector3F<float>& value);
-	void setUniformiMatrix4(std::string Key, Matrix<float>& value);
+	void draw();
+	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
 	~Renderer();
 
 public:

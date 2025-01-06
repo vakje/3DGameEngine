@@ -9,8 +9,8 @@
 #include <type_traits>
 
 const double PI = 3.14159265358979323846;
-const int Width = 800;
-const int Height = 600;
+const int Width = 1920;
+const int Height = 1080;
 
 
 template<typename T>
@@ -504,14 +504,14 @@ public:
         Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
         Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
         //perspective projection for example 45  
-        double FOV = 45.0 * PI / 180.0;
+        double FOV = 75.0 * PI / 180.0;
         float AspectRatio = Width / Height;
         float NearPlane = 0.1f;
         float FarPlane = 100.0f;
 
         Matrix<float> I(4, 4, 1.0f);
         I.initidentity(4);
-        float x_position = 1.0f;
+        
        
         I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, FOV, forRotation)  *  Matrix::Scale(I, forScale);
   
@@ -520,7 +520,7 @@ public:
         Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);
         Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
 
-
+       
         
         //view matrix creation
         Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);

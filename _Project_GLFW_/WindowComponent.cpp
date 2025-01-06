@@ -2,10 +2,12 @@
 #include "WindowComponent.h"
 #include "MathClasses.h"
 #include "Renderer.h"
+#include "Game.h"
 
 
 GLFWwindow* Window::mywindow;
 Renderer MyRenderer;
+Game game;
 
 void Window::SetWindow(int width, int height, const char* title)
 {
@@ -35,14 +37,7 @@ void Window::SetWindow(int width, int height, const char* title)
 	double lastTime = glfwGetTime() * 1000.0;//to make it in miliseconds
 
 	//--------------------------------------------------------------
-	glEnable(GL_DEPTH_TEST);          // Enable depth testing
-	glDepthFunc(GL_LESS);
-
-	//// Clear settings
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Set clear color
-	glClearDepth(1.0f);
-	
-	MyRenderer.Initilize_opengl();
+	game.Initilize();
 	
 	//--------------------------------------------------------------
 
@@ -57,13 +52,14 @@ void Window::SetWindow(int width, int height, const char* title)
 		double FrameStart = glfwGetTime() * 1000;
 		/* Render here */
 
-		MyRenderer.ClearScreen();
 		
+		game.Clear();
 
 		/* Swap front and back buffers */
 
 
-		MyRenderer.draw();
+		
+		game.drawFigures();
 
 		glfwSwapBuffers(mywindow);
 		/* Poll for and process events */
@@ -73,19 +69,8 @@ void Window::SetWindow(int width, int height, const char* title)
 		//adding frames 
 		frames++;
 
-		Input::update();
-		if (Input::GetStates(true, true, GLFW_MOUSE_BUTTON_LEFT))
-		{
-			std::cout << "we just pressed some mouse key at " << " " << Vector2F<int>::cursorPos() << " ";
-		}
-		if (Input::GetStates(true, false, GLFW_MOUSE_BUTTON_LEFT))
-		{
-			std::cout << "we just released some mouse key" << std::endl;
-		}if (Input::GetStates(false, true, GLFW_KEY_ESCAPE))
-		{
-			std::cout << "Pressed Escape!" << std::endl;
-			glfwSetWindowShouldClose(mywindow, GLFW_TRUE);
-		}
+	
+		game.InputHandlers();
 
 		//if the time in the loop - time before loop  is more than 1 miliseconds
 		if (currentTime - lastTime >= 1000.0) // Print every second

@@ -58,9 +58,9 @@ void Window::SetWindow(int width, int height, const char* title)
 		/* Swap front and back buffers */
 
 
-		
 		game.drawFigures();
-
+		
+        game.InputHandlers();
 		glfwSwapBuffers(mywindow);
 		/* Poll for and process events */
 		glfwPollEvents();
@@ -70,7 +70,7 @@ void Window::SetWindow(int width, int height, const char* title)
 		frames++;
 
 	
-		game.InputHandlers();
+		
 
 		//if the time in the loop - time before loop  is more than 1 miliseconds
 		if (currentTime - lastTime >= 1000.0) // Print every second

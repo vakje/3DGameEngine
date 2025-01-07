@@ -29,6 +29,8 @@ struct Game
 	}
 	void InputHandlers() 
 	{
+		
+		
 		Input::update();
 		if (Input::GetStates(true, true, GLFW_MOUSE_BUTTON_LEFT))
 		{
@@ -42,7 +44,18 @@ struct Game
 			std::cout << "Pressed Escape!" << std::endl;
 			glfwSetWindowShouldClose(Window::mywindow, GLFW_TRUE);
 		}
-	
+		if (Input::GetStates(false, true, GLFW_KEY_W)) 
+		{
+			//y rotation
+		}
+		else if (Input::GetStates(false, true, GLFW_KEY_A)) 
+		{
+			//x rotation
+		}
+		else if (Input::GetStates(false, true, GLFW_KEY_D))
+		{
+			//z rotation
+		}
 	}
 
 };

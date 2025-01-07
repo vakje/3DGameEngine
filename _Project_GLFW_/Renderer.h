@@ -22,8 +22,7 @@ class Renderer
 	
 public:
 	
-	void ClearScreen();
-	void InitializeGraphics();
+	void ClearScreen();	
 	void SetWindowICON();
 	void Initilize_opengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);

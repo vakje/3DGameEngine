@@ -508,12 +508,15 @@ public:
         float AspectRatio = Width / Height;
         float NearPlane = 0.1f;
         float FarPlane = 100.0f;
+        float time = glfwGetTime();
+        double speed = 10.00;
+        double angle = speed *FOV * time;
 
         Matrix<float> I(4, 4, 1.0f);
         I.initidentity(4);
         
        
-        I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, FOV, forRotation)  *  Matrix::Scale(I, forScale);
+        I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation)  *  Matrix::Scale(I, forScale);
   
         //camera viewing and projection 
         Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
@@ -521,6 +524,8 @@ public:
         Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
 
        
+
+         
         
         //view matrix creation
         Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);

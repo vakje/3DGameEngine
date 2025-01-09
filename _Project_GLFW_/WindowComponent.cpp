@@ -1,12 +1,9 @@
-#include "InputSystem.h"
 #include "WindowComponent.h"
-#include "MathClasses.h"
-#include "Renderer.h"
 #include "Game.h"
 
 
 GLFWwindow* Window::mywindow;
-Renderer MyRenderer;
+
 Game game;
 
 void Window::SetWindow(int width, int height, const char* title)
@@ -58,9 +55,9 @@ void Window::SetWindow(int width, int height, const char* title)
 		/* Swap front and back buffers */
 
 
-		game.drawFigures();
+		game.MainCharacter();
 		
-        game.InputHandlers();
+       
 		glfwSwapBuffers(mywindow);
 		/* Poll for and process events */
 		glfwPollEvents();

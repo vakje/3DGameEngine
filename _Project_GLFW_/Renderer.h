@@ -34,6 +34,7 @@ public:
 public:
 	 std::string get_vertex()const;
 	 std::string get_fragment()const;
+	 unsigned int get_Shaderprogram()const;
 	 
 
 };

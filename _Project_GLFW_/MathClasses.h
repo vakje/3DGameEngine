@@ -8,6 +8,10 @@
 #include <cmath>
 #include <type_traits>
 
+
+
+
+
 const double PI = 3.14159265358979323846;
 const int Width = 1920;
 const int Height = 1080;
@@ -306,7 +310,7 @@ std::ostream& operator<<(std::ostream& os, const Vector3F<T>& v)
 }
 
 template<Numeric T>
-class Matrix 
+class Matrix  
 {
     int M;
     int N; 
@@ -515,9 +519,11 @@ public:
         Matrix<float> I(4, 4, 1.0f);
         I.initidentity(4);
         
+      
+       I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation) *  Matrix::Scale(I, forScale);
+        
        
-        I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation)  *  Matrix::Scale(I, forScale);
-  
+      
         //camera viewing and projection 
         Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
         Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);

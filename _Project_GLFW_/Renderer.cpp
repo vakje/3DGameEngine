@@ -191,8 +191,9 @@ void Renderer::draw()
 {
 	glUseProgram(ShaderProgram);
 	Matrix<float> Instance(4,4,1.0f);
-	
+	double time = glfwGetTime();
 	Instance.SetupMVP(ShaderProgram);
+	
 	
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
@@ -245,9 +246,6 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 }
 
 
-
-
-
 Renderer::~Renderer()
 {
 	glDeleteBuffers(1, &VAO);
@@ -255,10 +253,13 @@ Renderer::~Renderer()
 
 }
 
-
-
 std::string Renderer::get_vertex()const { return VertexShaderSource; }
 std::string Renderer::get_fragment()const { return FragmentShaderSource; }
+
+unsigned int Renderer::get_Shaderprogram() const
+{
+	return ShaderProgram;
+}
 
 
 

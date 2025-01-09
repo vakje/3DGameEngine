@@ -5,7 +5,7 @@
 struct Game 
 {
 	Renderer MyRenderer;
-
+	
 	void Initilize()
 	{
 		
@@ -23,9 +23,10 @@ struct Game
 		MyRenderer.ClearScreen();
 
 	}
-	void drawFigures() 
+	void MainCharacter() 
 	{
 		MyRenderer.draw();
+		InputHandlers();
 	}
 	void InputHandlers() 
 	{
@@ -44,18 +45,9 @@ struct Game
 			std::cout << "Pressed Escape!" << std::endl;
 			glfwSetWindowShouldClose(Window::mywindow, GLFW_TRUE);
 		}
-		if (Input::GetStates(false, true, GLFW_KEY_W)) 
-		{
-			//y rotation
-		}
-		else if (Input::GetStates(false, true, GLFW_KEY_A)) 
-		{
-			//x rotation
-		}
-		else if (Input::GetStates(false, true, GLFW_KEY_D))
-		{
-			//z rotation
-		}
+		
+		
+	
 	}
 
 };

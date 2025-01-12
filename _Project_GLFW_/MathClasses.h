@@ -1,5 +1,6 @@
 #pragma once
 #include "WindowComponent.h"
+#include "InputSystem.h"
 #include <string>
 #include <iostream>
 #include <list>
@@ -7,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include <type_traits>
+
 
 
 
@@ -512,9 +514,12 @@ public:
         float AspectRatio = Width / Height;
         float NearPlane = 0.1f;
         float FarPlane = 100.0f;
+        
+
         float time = glfwGetTime();
         double speed = 10.00;
         double angle = speed *FOV * time;
+      
 
         Matrix<float> I(4, 4, 1.0f);
         I.initidentity(4);
@@ -528,10 +533,11 @@ public:
         Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
         Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);
         Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
-
+        float tempPosition = CameraPosition.getX3D();
+        float TempPositiony = CameraPosition.getY3D();
        
-
-         
+          
+        
         
         //view matrix creation
         Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);
@@ -552,6 +558,9 @@ public:
             }
         }
         glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
+
+
+     
        
 
     }

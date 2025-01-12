@@ -1,6 +1,8 @@
 #pragma once
 #include "WindowComponent.h"
-#include "MathClasses.h"
+#include <list>
+
+
 class Window;
 
 

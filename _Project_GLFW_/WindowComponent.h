@@ -8,6 +8,7 @@
 
 class Window
 {
+	
 public:
 	static GLFWwindow* mywindow;	
 	Window() = default;

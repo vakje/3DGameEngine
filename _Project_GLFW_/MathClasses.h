@@ -518,27 +518,25 @@ public:
 
         float time = glfwGetTime();
         double speed = 10.00;
-        double angle = speed *FOV * time;
-      
-
+        double angle = 0.0;
+        
+        
         Matrix<float> I(4, 4, 1.0f);
         I.initidentity(4);
-        
-      
-       I =Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation) *  Matrix::Scale(I, forScale);
-        
-       
+        Matrix<float> MY(4,4,1.0f);
+        angle = speed *FOV * time;  
+     
+	   
+
+        I = Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation) *  Matrix::Scale(I, forScale);
+     
       
         //camera viewing and projection 
         Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
         Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);
         Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
-        float tempPosition = CameraPosition.getX3D();
-        float TempPositiony = CameraPosition.getY3D();
-       
-          
         
-        
+ 
         //view matrix creation
         Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);
 
@@ -547,7 +545,7 @@ public:
   
         //making projection formula mvp = projection * view * model;
         Matrix<float> mvp = projection * view * I;
-       
+     
         //mvp matrix realization 
         unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
 

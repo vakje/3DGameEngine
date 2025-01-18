@@ -27,3 +27,19 @@ double Camera::Get_Speed() const
 {
 	return speed;
 }
+
+Vector3F<float> Camera::Get_Position() const
+{
+	return Position;
+}
+
+Vector3F<float> Camera::Get_Target() const
+{
+	return Target;
+}
+
+Vector3F<float> Camera::Get_Up() const
+{
+	return up;
+}
+

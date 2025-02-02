@@ -1,12 +1,14 @@
 #pragma once
 #include "WindowComponent.h"
+#include "Camera.h"
 #include <list>
 
 
 class Window;
 
 
-namespace Input{
+namespace Input
+{
 
     bool getKey(const int& keycode);
     bool getMouseKey(const int& keycode);

@@ -36,60 +36,11 @@ void Renderer::Initilize_opengl()
 	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
 
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
+	
 
-	static const float g_color_buffer_data[] = {
-		// Face 1 (Front - 2 triangles)
-		1.0f, 0.0f, 0.0f,  // Bright Red
-		0.9f, 0.1f, 0.0f,  // Darker Red
-		0.8f, 0.2f, 0.0f,  // Orange-Red
-		0.8f, 0.2f, 0.0f,  // Orange-Red
-		0.7f, 0.3f, 0.0f,  // Orange
-		1.0f, 0.0f, 0.0f,  // Bright Red
+	
 
-		// Face 2 (Back - 2 triangles)
-		0.6f, 0.4f, 0.0f,  // Gold
-		0.5f, 0.5f, 0.0f,  // Yellow
-		0.4f, 0.6f, 0.2f,  // Yellow-Green
-		0.4f, 0.6f, 0.2f,  // Yellow-Green
-		0.3f, 0.7f, 0.3f,  // Light Green
-		0.6f, 0.4f, 0.0f,  // Gold
-
-		// Face 3 (Left - 2 triangles)
-		0.2f, 0.8f, 0.4f,  // Greenish Teal
-		0.1f, 0.9f, 0.5f,  // Aqua-Green
-		0.0f, 1.0f, 0.6f,  // Aqua
-		0.0f, 1.0f, 0.6f,  // Aqua
-		0.2f, 0.8f, 0.4f,  // Greenish Teal
-		0.1f, 0.9f, 0.5f,  // Aqua-Green
-
-		// Face 4 (Right - 2 triangles)
-		0.6f, 0.0f, 0.8f,  // Purple
-		0.7f, 0.1f, 0.9f,  // Magenta
-		0.8f, 0.2f, 1.0f,  // Violet
-		0.8f, 0.2f, 1.0f,  // Violet
-		0.6f, 0.0f, 0.8f,  // Purple
-		0.7f, 0.1f, 0.9f,  // Magenta
-
-		// Face 5 (Top - 2 triangles)
-		1.0f, 0.8f, 0.0f,  // Light Orange
-		1.0f, 0.6f, 0.2f,  // Peach
-		0.9f, 0.4f, 0.4f,  // Pinkish
-		0.9f, 0.4f, 0.4f,  // Pinkish
-		1.0f, 0.8f, 0.0f,  // Light Orange
-		1.0f, 0.6f, 0.2f,  // Peach
-
-		// Face 6 (Bottom - 2 triangles)
-		0.2f, 0.2f, 0.8f,  // Blue
-		0.3f, 0.3f, 0.7f,  // Blue-Gray
-		0.4f, 0.4f, 0.6f,  // Steel Blue
-		0.4f, 0.4f, 0.6f,  // Steel Blue
-		0.2f, 0.2f, 0.8f,  // Blue
-		0.3f, 0.3f, 0.7f   // Blue-Gray
-	};
-
-
-
-	static const GLfloat g_vertex_buffer_data[] = {
+	static const float g_vertex_buffer_data[] = {
 	-1.0f,-1.0f,-1.0f, // triangle 1 : begin
 	-1.0f,-1.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f, // triangle 1 : end
@@ -127,10 +78,17 @@ void Renderer::Initilize_opengl()
 	-1.0f, 1.0f, 1.0f,
 	1.0f,-1.0f, 1.0f
 	};
-
+	float time = glfwGetTime();
+	float* colors = new float[108];
+	for (int i = 0; i < 108; i++)
+	{
+		colors[i] = 0.5f * (sin(time + i * 0.3f) + 1.0f);  
+		
+	}
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	 
 	
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	glGenBuffers(1, &VBO);
@@ -139,19 +97,19 @@ void Renderer::Initilize_opengl()
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3* sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	 
+
 	glGenBuffers(1, &CBO);
 	glBindBuffer(GL_ARRAY_BUFFER, CBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 108*sizeof(colors), colors, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, CBO);
 
 
-	// Unbind VAO
+	// Unbind VAO 
 	glBindVertexArray(0);
 
 }
@@ -203,11 +161,11 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 void Renderer::draw()
 {
 	glUseProgram(ShaderProgram);
-	Matrix<float> Instance(4,4,1.0f);
-	
+	Matrix<float> Instance(4, 4, 1.0f);
+
 	Instance.SetupMVP(ShaderProgram);
-	
-	
+
+
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

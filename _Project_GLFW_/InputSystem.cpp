@@ -41,6 +41,7 @@ namespace Input {
 		FillStates(true, NUM_KEYCODES, pressedkeys, Releasedkeys);
 		FillCurrents(true, NUM_KEYCODES, currentkeys);
 		FillCurrents(false, NUM_MOUSEKEYCODES, CurrentMouseKeys);
+	
 	}
 
 

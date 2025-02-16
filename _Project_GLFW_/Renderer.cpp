@@ -36,9 +36,9 @@ void Renderer::Initilize_opengl()
 	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
 
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
-	
 
-	
+
+
 
 	static const float g_vertex_buffer_data[] = {
 	-1.0f,-1.0f,-1.0f, // triangle 1 : begin
@@ -82,35 +82,41 @@ void Renderer::Initilize_opengl()
 	float* colors = new float[108];
 	for (int i = 0; i < 108; i++)
 	{
-		colors[i] = 0.5f * (sin(time + i * 0.3f) + 1.0f);  
-		
+		colors[i] = 0.5f * (sin(time + i * 0.9f) + 1.0f);
 	}
+
+
+
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-
-	 
 	
+	
+
+
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	glGenBuffers(1, &VBO);
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,  sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 
+
 	glGenBuffers(1, &CBO);
 	glBindBuffer(GL_ARRAY_BUFFER, CBO);
-	glBufferData(GL_ARRAY_BUFFER, 108*sizeof(colors), colors, GL_STATIC_DRAW);
+	//size of colors array is 108
+	glBufferData(GL_ARRAY_BUFFER, 108 * sizeof(float), colors, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, CBO);
-
+	
 
 	// Unbind VAO 
 	glBindVertexArray(0);
+	delete[] colors;
 
 }
 

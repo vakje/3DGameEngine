@@ -37,8 +37,8 @@ void Renderer::Initilize_opengl()
 
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 
-
-
+	
+	 
 
 	static const float g_vertex_buffer_data[] = {
 	-1.0f,-1.0f,-1.0f, // triangle 1 : begin
@@ -175,7 +175,7 @@ void Renderer::draw()
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-
+	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -236,6 +236,21 @@ std::string Renderer::get_fragment()const { return FragmentShaderSource; }
 unsigned int Renderer::get_Shaderprogram() const
 {
 	return ShaderProgram;
+}
+
+unsigned int Renderer::get_VAO() const
+{
+	return VAO;
+}
+
+unsigned int Renderer::get_VBO() const
+{
+	return VBO;
+}
+
+unsigned int Renderer::get_EBO() const
+{
+	return EBO;
 }
 
 

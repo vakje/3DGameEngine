@@ -10,6 +10,7 @@
 
 
 
+
 class Renderer
 {
 	 std::string VertexShaderSource;
@@ -19,7 +20,10 @@ class Renderer
 	 //VAO vertex atribute
 	 //vertex buffer
 	 // color buffer
+	 std::vector<float> Vertices;
+	 std::vector<unsigned int> Indices;
 	
+	 
 public:
 	
 	void ClearScreen();	
@@ -30,11 +34,14 @@ public:
 	void draw();
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
 	~Renderer();
-
+//tools
 public:
 	 std::string get_vertex()const;
 	 std::string get_fragment()const;
 	 unsigned int get_Shaderprogram()const;
+	 unsigned int get_VAO()const;
+	 unsigned int get_VBO()const;
+	 unsigned int get_EBO()const;
 	 
 
 };

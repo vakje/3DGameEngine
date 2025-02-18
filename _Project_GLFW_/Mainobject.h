@@ -2,7 +2,7 @@
 #include "Renderer.h"
 
 
-class Object 
+class Object : public Renderer
 {
 
 private:
@@ -10,9 +10,10 @@ private:
 	std::string path;
 
 public:
-	void objfileparser(const std::string& path);
+	void objfileparser(const std::string& path, std::vector<float> Vertices, std::vector<unsigned int> Indices);
 public:
 	Object(const std::string& name, const std::string& path);
+	
 	const std::string& get_name()const;
 	const std::string& get_path()const;
 

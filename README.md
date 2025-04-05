@@ -16,7 +16,7 @@ Project that is in progress.
 
 Here’s what the renderer looks like in action:
 - Cube
-![Rendering Demo]((https://imgur.com/a/TA0ec4U))
+![Rendering Demo](![ezgif-36904d55f890b4](https://github.com/user-attachments/assets/7f362acf-97f6-4f5b-b921-0191185a73e0))
 
 - Sphere
-![Rendering Demo](https://imgur.com/a/pMNms87)
+![Rendering Demo](![2025-04-0514-40-11-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/1a0d2b31-14bc-44bc-98c8-ca1120855376))

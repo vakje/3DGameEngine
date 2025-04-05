@@ -16,6 +16,7 @@ Project that is in progress.
 
 Here’s what the renderer looks like in action:
 - Cube
+  
 ![ezgif-36904d55f890b4](https://github.com/user-attachments/assets/ef577ce1-3e7b-4ea1-a0ee-96226bc018e3)
 
 

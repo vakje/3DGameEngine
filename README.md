@@ -10,6 +10,7 @@ Project that is in progress.
 - My rendering class can visually display simple .obj files created in Blender or other 3D modeling software. It has simple graphics pipeline
   that allows my program to create 3D models with indicies and verticies data.
   this class also has simple glsl file parser to use shaders for coloring or math calculations.
+- I use windows and since it is my first pet project, I did not want to bother with compatibility for other operative systems.
 
 
   ## Demo
@@ -23,3 +24,9 @@ Here’s what the renderer looks like in action:
 - Sphere
   
 ![2025-04-0514-40-11-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/1a0d2b31-14bc-44bc-98c8-ca1120855376)
+
+
+## Installation
+
+# Clone the repository
+git clone https://github.com/vakje/_Project_GLFW_.git

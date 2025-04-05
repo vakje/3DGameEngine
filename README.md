@@ -21,4 +21,4 @@ Here’s what the renderer looks like in action:
 
 
 - Sphere
-![Rendering Demo](![2025-04-0514-40-11-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/1a0d2b31-14bc-44bc-98c8-ca1120855376))
+(![2025-04-0514-40-11-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/1a0d2b31-14bc-44bc-98c8-ca1120855376))

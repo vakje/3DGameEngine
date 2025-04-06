@@ -27,6 +27,6 @@ Here’s what the renderer looks like in action:
 
 
 ## Installation
-
+```bash
 # Clone the repository
 git clone https://github.com/vakje/_Project_GLFW_.git

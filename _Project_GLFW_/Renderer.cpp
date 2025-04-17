@@ -116,7 +116,7 @@ void Renderer::Initilize_opengl()
 
 	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
-	std::string ObjPATH = "Cube.obj";
+	std::string ObjPATH = "cube.obj";
 	
 	
 	objfileparser(ObjPATH, Vertices, Indices);
@@ -204,21 +204,73 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 	return program;
 }
 
+void Renderer::SetupMVP(unsigned int ShaderProgram)
+{
+	Vector3F<float> forTranslation(1.0f, 0.0f, 0.0f);
+	Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
+	Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
+	
+
+	//perspective projection for example 45  
+	double FOV = 75.0 * PI / 180.0;
+	float AspectRatio = Width / Height;
+	float NearPlane = 0.1f;
+	float FarPlane = 100.0f;
+
+
+	float time = glfwGetTime();
+	double speed = 10.00;
+	double angle = 0.0;
+
+
+	Matrix<float> I(4, 4, 1.0f);
+	I.initidentity(4);
+	angle = speed * FOV * time;
+	Matrix<float> M(4, 4, 1.0f);
+
+
+	I = M.Translate(I, forTranslation)* M.Rotate(I, angle, forRotation)* M.Scale(I, forScale);
+
+
+	//camera viewing and projection 
+	Vector3F<float> CameraPosition(4.0f, 2.0f, 3.0f);
+	Vector3F<float> CameraTarget(0.0f, 0.0f, 0.0f);
+	Vector3F<float> CameraUp(0.0f, 4.0f, 0.0f);
+
+
+	//view matrix creation
+	Matrix<float> view = M.LookOfCamera(CameraPosition, CameraTarget, CameraUp);
+
+	//projection matrix calculating
+	Matrix<float> projection = M.Projection(FOV, AspectRatio, NearPlane, FarPlane);
+
+	//making projection formula mvp = projection * view * model;
+	Matrix<float> mvp = projection * view * I;
+
+	//mvp matrix realization 
+	unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
+
+	std::vector<GLfloat> glvector;
+	for (size_t col = 0; col < 4; ++col) {
+		for (size_t row = 0; row < 4; ++row) {
+			glvector.push_back(mvp(row, col)); // Column-major order needed for opengl 
+		}
+	}
+	glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
+}
+
 void Renderer::draw()
 {
 	glUseProgram(ShaderProgram);
-	//this Class must instantiated to access it's core functions
-	Matrix<float> Instance(4, 4, 1.0f);
-
-	Instance.SetupMVP(ShaderProgram);
-
+	//function that setups projection and calculations for objects to rotate
+	SetupMVP(ShaderProgram);
 
 	// Bind VAO and draw the triangle
 	glBindVertexArray(VAO);
 	
 	
 	glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
-	//glDrawElements(GL_LINES, Indices.size(), GL_UNSIGNED_INT, 0);
+	
 
 	glBindVertexArray(0);
 }

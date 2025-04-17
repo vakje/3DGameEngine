@@ -310,6 +310,81 @@ std::ostream& operator<<(std::ostream& os, const Vector3F<T>& v)
     os << v.to_String();
     return os;
 }
+//TODO object's rotation by axis
+template<Numeric T>
+class Quatornion
+{
+    T x;
+    T y;
+    T z;
+    T w;
+public:
+    //functions
+    Quatornion(T x, T y, T z, T w) :x(x), y(y), z(z), w(w) {}
+    Quatornion() = default;
+    //todo  *  operators and alos << operator
+    Quatornion operator*(const Quatornion& other)
+    {
+        T w_ = w * other.get_w() - x * other.get_x() - y * other.get_y() - z * other.get_z();
+        T x_ = x * other.get_w() + w * other.get_x() + y * other.get_z() - z * other.get_y();
+        T y_ = y * other.get_w() + w * other.get_y() + z * other.get_x() - x * other.get_z();
+        T z_ = z * other.get_w() + w * other.get_z() + x * other.get_y() - y * other.get_x();
+
+        return  Quatornion(x_, y_, z_, w_);
+    }
+    Quatornion operator*(const Vector3F<T>& other)
+    {
+        T w_ = -x * other.getX3D() - y * other.getY3D() - z * other.getZ3D();
+        T x_ = w * other.getX3D() + y * other.getZ3D() - z * other.getY3D();
+        T y_ = w * other.getY3D() + z * other.getX3D() - x * other.getZ3D();
+        T z_ = w * other.getZ3D() + x * other.getY3D() - y * other.getX3D();
+
+        return  Quaternion(x_, y_, z_, w_);
+    }
+
+
+public:
+    T quatornion_Length()
+    {
+        return sqrt(x * x + y * y + z * z + w * w);
+    }
+    Quatornion normalization()
+    {
+        T length = quatornion_Length();
+        x /= length;
+        y /= length;
+        z /= length;
+        w /= length;
+
+        return *this;
+    }
+    Quatornion conjugate()
+    {
+        return  Quatornion(-x, -y, -z, w);
+    }
+    //r should be (1,1,0)normalized for vertical spinning 
+    Quatornion Rotation(double& alpha, Vector3F<int>& r)
+    {
+        r.normalize3d();
+        double rad = alpha * PI / 180.0;
+        Quatornion Q1(0, 1, 0, 0);
+        Quatornion Q2(cos(rad / 2), r.getX3D() * sin(rad / 2), r.getY3D() * sin(rad / 2), r.getZ3D() * sin(rad / 2));
+        Quatornion Q3 = Q2 * Q1 * Q2;
+
+        return Q3;
+
+    }
+public:
+    // getters and setters
+    T get_x()const { return this->x; }
+    T get_y()const { return this->y; }
+    T get_z()const { return this->z; }
+    T get_w()const { return this->w; }
+    void set_x(T& x) { this->x = x; }
+    void set_y(T& y) { this->y = y; }
+    void set_z(T& z) { this->z = z; }
+    void set_w(T& w) { this->w = w; }
+};
 
 template<Numeric T>
 class Matrix  
@@ -418,6 +493,36 @@ public:
 
         return result;
     }
+    //for 3d rotation by object's axis
+    Matrix& ConvertQuatornian(Matrix<float>& model, const Quatornion<float>& q)
+    {
+        
+        float xx = q.get_x() * q.get_x(), yy = q.get_y() * q.get_y(), zz = q.get_z() * q.get_z();
+        float xy = q.get_x() * q.get_y(), xz = q.get_x() * q.get_z(), yz = q.get_y() * q.get_z();
+        float wx = q.get_w() * q.get_x(), wy = q.get_w() * q.get_y(), wz = q.get_w() * q.get_z();
+        //first row
+        model.setElement(0, 0, 1 - 2*(yy + zz));
+        model.setElement(0, 1, 2*(xy - wz));
+        model.setElement(0, 2, 2*(xz + wy));
+        model.setElement(0, 3, 0);
+        //second row
+        model.setElement(1, 0, 2*(xy + wz));
+        model.setElement(1, 1, 1 - 2*(xx + zz));
+        model.setElement(1, 2, 2*(yz - wx));
+        model.setElement(1, 3, 0);
+        //third row
+        model.setElement(2, 0, 2*(xz - wy));
+        model.setElement(2, 1, 2*(yz + wx));
+        model.setElement(2, 2, 1 - 2*(xx + yy));
+        model.setElement(2, 3, 0);
+        //forth row
+        model.setElement(3, 0, 0);
+        model.setElement(3, 1, 0);
+        model.setElement(3, 2, 0);
+        model.setElement(3, 3, 1);
+
+        return model;
+    }
     Matrix& initidentity(int M)
     {
 
@@ -503,65 +608,7 @@ public:
 
      }
 
-    //mvp Model View Projection Matrix 
-    void SetupMVP(unsigned int ShaderProgram)  
-    { 
-        Vector3F<float> forTranslation(1.0f, 0.0f, 0.0f);
-        Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
-        Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
-        //perspective projection for example 45  
-        double FOV = 75.0 * PI / 180.0;
-        float AspectRatio = Width / Height;
-        float NearPlane = 0.1f;
-        float FarPlane = 100.0f;
-        
-
-        float time = glfwGetTime();
-        double speed = 10.00;
-        double angle = 0.0;
-        
-        
-        Matrix<float> I(4, 4, 1.0f);
-        I.initidentity(4);
-        Matrix<float> MY(4,4,1.0f);
-        angle = speed *FOV * time;  
-     
-	   
-
-        I = Matrix::Translate(I, forTranslation) * Matrix::Rotate(I, angle, forRotation) *  Matrix::Scale(I, forScale);
-     
-      
-        //camera viewing and projection 
-        Vector3F<float> CameraPosition( 4.0f, 2.0f, 3.0f);
-        Vector3F<float> CameraTarget (0.0f, 0.0f, 0.0f);
-        Vector3F<float> CameraUp (0.0f, 4.0f, 0.0f);
-        
- 
-        //view matrix creation
-        Matrix<float> view = Matrix::LookOfCamera(CameraPosition, CameraTarget, CameraUp);
-
-        //projection matrix calculating
-        Matrix<float> projection = Matrix::Projection(FOV, AspectRatio, NearPlane, FarPlane);
-  
-        //making projection formula mvp = projection * view * model;
-        Matrix<float> mvp = projection * view * I;
-     
-        //mvp matrix realization 
-        unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
-
-        std::vector<GLfloat> glvector;
-        for (size_t col = 0; col < 4; ++col) {
-            for (size_t row = 0; row < 4; ++row) {
-                glvector.push_back(mvp(row,col)); // Column-major order needed for opengl 
-            }
-        }
-        glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
-
-
-     
-       
-
-    }
+    
     //Translate matrix function 
     Matrix& Translate(Matrix<float>& model, Vector3F<float>& Vec) 
     {
@@ -578,6 +625,7 @@ public:
         return model;
 
     }
+
 
     //Rotate Matrix functin
     Matrix<float>& Rotate(Matrix<float>& model, double& radians, Vector3F<float>& Vec)
@@ -724,67 +772,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T>& M)
 
 }
 
-template<Numeric T>
-class Quatornion 
-{
-    T x;
-    T y;
-    T z;
-    T w;
-public:
-    //functions
-    Quatornion(T x, T y, T z, T w ):x(x),y(y),z(z),w(w){}
-    Quatornion() = default;
-    //todo  *  operators and alos << operator
-    Quatornion operator*(const Quatornion& other) 
-    {
-        T w_ = w * other.get_w() - x * other.get_x() - y * other.get_y() - z * other.get_z();
-        T x_ = x * other.get_w() + w * other.get_x() + y * other.get_z() - z * other.get_y();
-        T y_ = y * other.get_w() + w * other.get_y() + z * other.get_x() - x * other.get_z();
-        T z_ = z * other.get_w() + w * other.get_z() + x * other.get_y() - y * other.get_x();
-        
-        return  Quatornion(x_, y_, z_, w_);
-    }
-    Quatornion operator*(const Vector3F<T>& other) 
-    {
-        T w_ = -x * other.getX3D() - y * other.getY3D() - z * other.getZ3D();
-        T x_ = w * other.getX3D() + y * other.getZ3D() - z * other.getY3D();
-        T y_ = w * other.getY3D() + z * other.getX3D() - x * other.getZ3D();
-        T z_ = w * other.getZ3D() + x * other.getY3D() - y * other.getX3D();
 
-        return  Quaternion(x_, y_, z_, w_);
-    }
-   
-public:
-    T quatornion_Length() 
-    {
-        return sqrt(x * x + y * y + z * z + w * w);
-    }
-    Quatornion normalization() 
-    {
-        T length = quatornion_Length();
-        x /= length;
-        y /= length;
-        z /= length;
-        w /= length;
-
-        return *this;
-    }
-    Quatornion conjugate() 
-    {
-        return  Quatornion(-x, -y, -z, w);
-    }
-public: 
-    // getters and setters
-    T get_x()const { return this->x; }
-    T get_y()const { return this->y; }
-    T get_z()const { return this->z; }
-    T get_w()const { return this->w; }
-    void set_x(T& x) {  this->x=x; }
-    void set_y(T& y) {  this->y=y; }
-    void set_z(T& z) {  this->z=z; }
-    void set_w(T& w) {  this->w=w; }
-};
 
 
 

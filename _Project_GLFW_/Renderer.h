@@ -30,7 +30,9 @@ public:
 	void Initilize_opengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
+	void SetupMVP(unsigned int ShaderProgram);
 	void draw();
+
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
 	~Renderer();
 //tools

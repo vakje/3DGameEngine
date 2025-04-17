@@ -4,24 +4,24 @@
 
 
 
-class Camera 
+class Camera
 {
 private:
     double FOV;
     float AspectRatio;
     float NearPlane;
     float FarPlane;
-    double speed; 
-   
-   
+    double speed;
+    Matrix<float> Instance;
+
 
 
 public:
-    Camera(double Fov ,
-        float ascpectRatio ,
-        float NearPlane ,
-        float farplane ,
-        double speed );
+    Camera(double Fov,
+        float ascpectRatio,
+        float NearPlane,
+        float farplane,
+        double speed);
     double Get_Fov() const;
 
     float Get_AspectRatio() const;
@@ -32,6 +32,7 @@ public:
 
     double Get_Speed() const;
 
-  
+
 
 };
+

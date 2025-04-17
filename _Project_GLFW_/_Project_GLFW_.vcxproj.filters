@@ -27,7 +27,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>EngineComponents</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,7 +50,7 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>EngineComponents</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

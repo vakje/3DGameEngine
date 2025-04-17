@@ -1,6 +1,5 @@
 #pragma once
 #include "WindowComponent.h"
-#include "Camera.h"
 #include <list>
 
 

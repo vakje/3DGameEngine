@@ -1,6 +1,5 @@
 #pragma once
 #include "WindowComponent.h"
-#include "InputSystem.h"
 #include <string>
 #include <iostream>
 #include <list>
@@ -670,7 +669,7 @@ public:
 
     }
     //look at function 
-    Matrix& LookOfCamera(Vector3F<float>& CameraP, Vector3F<float>& CameraT, Vector3F<float>& CameraU) 
+    Matrix& LookOfCamera(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
     {  
        //forward vector
        Vector3F<float> forward = (CameraT - CameraP).normalize3d();
@@ -705,7 +704,7 @@ public:
        return *this;
     }
     //perspective function
-    Matrix& Projection(double& fov, float& aspectRatio, float& nearplane, float& farplane)
+    Matrix& Projection(const double& fov,const float& aspectRatio, const float& nearplane, const float& farplane)
     {
         //first row
         this->setElement(0, 0, 1 / aspectRatio * tan(fov / 2));

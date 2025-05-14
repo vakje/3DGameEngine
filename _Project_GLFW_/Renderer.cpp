@@ -212,6 +212,8 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	
 
 	Camera Cam;
+	
+	
 	float time = glfwGetTime();
 	double angle = 0.0;
 
@@ -223,8 +225,8 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	Matrix<float> M(4, 4, 1.0f);
 
 
-	I = M.Translate(I, forTranslation)* M.Rotate(I, angle, forRotation)* M.Scale(I, forScale);
-
+	I = M.Translate(I, forTranslation) * M.Rotate(I, angle, forRotation) * M.Scale(I, forScale);
+	
 	//view matrix creation
 	Matrix<float> view = Cam.Get_Lookat(Cam.Get_CameraPosition(),Cam.Get_CameraTarget(),Cam.Get_CameraUp());
 	

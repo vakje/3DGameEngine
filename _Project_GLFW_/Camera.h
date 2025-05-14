@@ -14,7 +14,7 @@ private:
     Vector3F<float> CameraPosition;
     Vector3F<float> CameraTarget;
     Vector3F<float> CameraUp;
-
+    
 
 public:
     Camera();

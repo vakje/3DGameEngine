@@ -1,6 +1,6 @@
 #include <iostream>
 #include "WindowComponent.h"
-
+#include "MathClasses.h"
 
 
 const int WIDTH = 1920;
@@ -19,7 +19,7 @@ int main(void)
     win.SetWindow(WIDTH, HEIGHT, TITLE);
     std::cout << "-----------------------------------------------\n" << std::flush;
    
-
+   
 
     
 }

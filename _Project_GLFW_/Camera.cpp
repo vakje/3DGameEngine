@@ -1,6 +1,8 @@
 #include "Camera.h"
 
-
+//CameraPosition = Vector3F<float>(4.0f, 2.0f, 3.0f);
+//CameraTarget = Vector3F<float>(0.0f, 0.0f, 0.0f);
+//CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
 
 Camera::Camera()
 {
@@ -9,10 +11,13 @@ Camera::Camera()
 	NearPlane = 0.1f;
 	FarPlane = 100.0f;
 	speed = 10.00;
-	CameraPosition = Vector3F<float>(4.0f, 2.0f, 3.0f);
-	CameraTarget = Vector3F<float>(0.0f, 0.0f, 0.0f);
-	CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
 	Instance = Matrix<float>(4, 4, 1.0f);
+	CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
+	CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
+	CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
+	
+	
+	
 }
 
 double Camera::Get_Fov() const
@@ -47,6 +52,7 @@ Vector3F<float> Camera::Get_CameraPosition() const
 
 Vector3F<float> Camera::Get_CameraTarget() const
 {
+	
 	return CameraTarget;
 }
 
@@ -57,7 +63,7 @@ Vector3F<float> Camera::Get_CameraUp() const
 
 Matrix<float> Camera::Get_Lookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
 {
-
+	
 	return Instance.LookOfCamera(CameraP, CameraT, CameraU);
 }
 
@@ -74,26 +80,31 @@ void Camera::InputValidation()
 	float currentframe = glfwGetTime();
 	deltatime = currentframe - lastframe;
 	lastframe = currentframe;
-	speed = 2.5f * deltatime;
-
+	speed = 0.05f * deltatime;
+ 
 	if (Input::getKey(GLFW_KEY_W)) 
 	{
-		CameraPosition += CameraTarget * speed;
+		
+		this->CameraPosition += this->CameraTarget * this->speed;
+		std::cout << "CameraPosition: " << this->CameraPosition << "\n";
 		std::cout << "W was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_S))
 	{
-		CameraPosition -= CameraTarget * speed;
+		this->CameraPosition -= this->CameraTarget * this->speed;
+		std::cout << "Cameraposition" << this->CameraPosition;
 		std::cout << "S was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_A))
 	{
-		CameraPosition -= (CameraTarget.crossproduct(CameraUp)).normalize3d() * speed;
+		this->CameraPosition -= (this->CameraTarget.crossproduct(this->CameraUp)).normalize3d() * this->speed;
+		std::cout << "Cameraposition" << this->CameraPosition;
 		std::cout << "A was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_D))
 	{
-		CameraPosition += (CameraTarget.crossproduct(CameraUp)).normalize3d() * speed;
+		this->CameraPosition += (this->CameraTarget.crossproduct(this->CameraUp)).normalize3d() * this->speed;
+		std::cout << "Cameraposition" << this->CameraPosition;
 		std::cout << "D was pressed" << "\n";
 	}
 }

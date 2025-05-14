@@ -82,7 +82,10 @@ public:
     Vector2F normalization()
     {
         T length = Length_Vector2f();
-
+        if (length == 0.0f) {
+            return Vector2F<float>(0, 0);
+        }
+       
         X /= length;
         Y /= length;
 
@@ -97,37 +100,49 @@ public:
     }
     // functions for basic operations with vectors 
     //this is to add another vector 2f 
-    Vector2F operator+(const Vector2F& other)const
+    Vector2F operator+(const Vector2F& num)const
     {
-        return Vector2F(X + other.get_X(), Y + other.get_Y());
+        return Vector2F(X + num.get_X(), Y + num.get_Y());
     }
-    Vector2F operator+=(const Vector2F& other)
+    Vector2F operator+=(const Vector2F& num)
     {
-        return Vector2F(X += other.get_X(), Y += other.get_Y());
+        return Vector2F(X += num.get_X(), Y += num.get_Y());
     }
-    Vector2F operator-(const Vector2F& other)const
+    Vector2F operator-(const Vector2F& num)const
     {
-        return Vector2F(X - other.get_X(), Y - other.get_Y());
+        return Vector2F(X - num.get_X(), Y - num.get_Y());
     }
-    Vector2F operator-=(const Vector2F& other)
+    Vector2F operator-=(const Vector2F& num)
     {
-        return Vector2F(X -= other.get_X(), Y -= other.get_Y());
+        return Vector2F(X -= num.get_X(), Y -= num.get_Y());
     }
-    Vector2F operator*(const Vector2F& other)const
+    Vector2F operator*(const Vector2F& num)const
     {
-        return Vector2F(X * other.get_X(), Y * other.get_Y());
+        return Vector2F(X * num.get_X(), Y * num.get_Y());
     }
-    Vector2F operator/(const Vector2F& other)const
+    Vector2F operator/(const Vector2F& num)const
     {
-        return Vector2F(X / other.get_X(), Y / other.get_Y());
+        if (num.get_X() == 0.0f) {
+            num.get_X() = 1.0f;
+        }
+        if (num.get_Y() == 0.0f) {
+            num.get_Y() = 1.0f;
+        }
+        return Vector2F(X / num.get_X(), Y / num.get_Y());
     }
-    Vector2F operator/=(const Vector2F& other)
+    Vector2F operator/=(const Vector2F& num)
     {
-        return Vector2F(X /= other.get_X(), Y /= other.get_Y());
+        if (num.get_X() == 0.0f) {
+            num.get_X() = 1.0f;
+        }
+        if (num.get_Y() == 0.0f) {
+            num.get_Y() = 1.0f;
+        }
+        return Vector2F(X /= num.get_X(), Y /= num.get_Y());
     }
-    Vector2F operator*=(const Vector2F& other)
+    Vector2F operator*=(const Vector2F& num)
     {
-        return Vector2F(X *= other.get_X(), Y *= other.get_Y());
+        return Vector2F(X *= num.get_X(), Y *= num.get_Y());
     }
     Vector2F operator+(const T& num)const
     {
@@ -143,6 +158,13 @@ public:
     }
     Vector2F operator/(const T& num)const
     {
+        if (num.get_X() == 0.0f) {
+            num.get_X() = 1.0f;
+        }
+        if (num.get_Y() == 0.0f) {
+            num.get_Y() = 1.0f;
+        }
+        
         return Vector2F(X / num, Y / num);
     }
 
@@ -221,10 +243,12 @@ public:
     {
         return Vector3F( y * Vec.z - z * Vec.y, z * Vec.x - x * Vec.z, x * Vec.y - y * Vec.x);
     }
-    Vector3F& normalize3d() 
+    Vector3F normalize3d() 
     {
         T length = Length_Vector3f();
-
+        if (length == 0.0f) {
+            return Vector3F<float>(0, 0, 0);
+        }
         x /= length;
         y /= length;
         z /= length;
@@ -264,10 +288,28 @@ public:
     }
     Vector3F operator/(const Vector3F& other) const
     {
+        if (other.getX3D() == 0.0f) {
+            other.getX3D() = 1.0f;
+        }
+        if (other.getY3D() == 0.0f) {
+            other.getY3D() = 1.0f;
+        }
+        if (other.getZ3D() == 0.0f) {
+            other.getZ3D() = 1.0f;
+        }
         return Vector3F(x / other.getX3D(), y / other.getY3D(), z / other.getZ3D());
     }
     Vector3F operator/=(const Vector3F& other)
     {
+        if (other.getX3D() == 0.0f) {
+            other.getX3D() = 1.0f;
+        }
+        if (other.getY3D() == 0.0f) {
+            other.getY3D() = 1.0f;
+        }
+        if (other.getZ3D() == 0.0f) {
+            other.getZ3D() = 1.0f;
+        }
         return Vector3F(x /= other.getX3D(), y /= other.getY3D(), z /= other.getZ3D());
     }
     Vector3F operator+(const T& other) const
@@ -284,6 +326,15 @@ public:
     }
     Vector3F operator/(const T& other)const
     {
+        if (other.getX3D() == 0.0f) {
+            other.getX3D() = 1.0f;
+        }
+        if (other.getY3D() == 0.0f) {
+            other.getY3D() = 1.0f;
+        }
+        if (other.getZ3D() == 0.0f) {
+            other.getZ3D() = 1.0f;
+        }
         return Vector3F(x / other, y / other, z / other);
     }
 
@@ -350,6 +401,10 @@ public:
     Quatornion normalization()
     {
         T length = quatornion_Length();
+
+        if (length == 0.0f) {
+            return Quatornion<float>(0, 0,0,0);
+        }
         x /= length;
         y /= length;
         z /= length;
@@ -671,8 +726,10 @@ public:
     //look at function 
     Matrix& LookOfCamera(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
     {  
+       
        //forward vector
        Vector3F<float> forward = (CameraT - CameraP).normalize3d();
+       
        //right vector
        Vector3F<float> right = CameraU.CrossProduct(forward).normalize3d();
        //true_up vector

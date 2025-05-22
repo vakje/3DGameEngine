@@ -268,7 +268,10 @@ public:
     }
     Vector3F operator+=(const Vector3F& other)
     {
-        return Vector3F(x += other.getX3D(), y += other.getY3D(), z += other.getZ3D());
+        this->x += other.getX3D();
+        this->y += other.getY3D();
+        this->z += other.getZ3D();
+        return *this;
     }
     Vector3F operator-(const Vector3F& other)const
     {
@@ -276,7 +279,10 @@ public:
     }
     Vector3F operator-=(const Vector3F& other)
     {
-        return Vector3F(x -= other.getX3D(), y -= other.getY3D(), z -= other.getZ3D());
+        this->x -= other.getX3D();
+        this->y -= other.getY3D();
+        this->z -= other.getZ3D();
+        return *this;
     }
     Vector3F operator*(const Vector3F& other) const
     {
@@ -322,6 +328,7 @@ public:
     }
     Vector3F operator*(const T& other)const
     {
+
         return Vector3F(x * other, y * other, z * other);
     }
     Vector3F operator/(const T& other)const

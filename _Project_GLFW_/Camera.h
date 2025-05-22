@@ -27,7 +27,7 @@ public:
 
     double Get_Speed() const;
     //camera's movement positions ..
-    Vector3F<float> Get_CameraPosition()const;
+    Vector3F<float>& Get_CameraPosition();
     Vector3F<float> Get_CameraTarget()const;
     Vector3F<float> Get_CameraUp()const;
 public:
@@ -37,7 +37,7 @@ public:
 
     Matrix<float> Get_Projection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
 
-    void InputValidation();
+    void InputValidation(Vector3F<float>& Camerapos);
 
 };
 

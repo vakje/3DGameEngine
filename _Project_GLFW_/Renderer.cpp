@@ -203,7 +203,7 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 
 	return program;
 }
-
+Camera Cam;
 void Renderer::SetupMVP(unsigned int ShaderProgram)
 {
 	Vector3F<float> forTranslation(1.0f, 0.0f, 0.0f);
@@ -211,9 +211,6 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
 	
 
-	Camera Cam;
-	
-	
 	float time = glfwGetTime();
 	double angle = 0.0;
 
@@ -229,8 +226,8 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	
 	//view matrix creation
 	Matrix<float> view = Cam.Get_Lookat(Cam.Get_CameraPosition(),Cam.Get_CameraTarget(),Cam.Get_CameraUp());
-	
-	Cam.InputValidation();
+	 
+	Cam.InputValidation(Cam.Get_CameraPosition());
    
 	//projection matrix calculating
 	Matrix<float> projection = Cam.Get_Projection(Cam.Get_Fov(), Cam.Get_AspectRatio(), Cam.Get_NearPlane(), Cam.Get_FarPlane());

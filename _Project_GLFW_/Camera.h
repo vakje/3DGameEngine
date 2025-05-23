@@ -5,39 +5,36 @@
 class Camera
 {
 private:
-    double FOV;
-    float AspectRatio;
-    float NearPlane;
-    float FarPlane;
-    double speed;
-    Matrix<float> Instance;
-    Vector3F<float> CameraPosition;
-    Vector3F<float> CameraTarget;
-    Vector3F<float> CameraUp;
-    
-
+    double m_FOV;
+    float m_AspectRatio;
+    float m_NearPlane;
+    float m_FarPlane;
+    double m_Speed;
+    Matrix<float> m_Instance;
+    Vector3F<float> m_CameraPosition;
+    Vector3F<float> m_CameraTarget;
+    Vector3F<float> m_CameraUp;
 public:
     Camera();
 
     //camera's perspective(view)
-    double Get_Fov() const;
-    float Get_AspectRatio() const;
-    float Get_NearPlane() const;
-    float Get_FarPlane() const;
+    double getFov() const;
+    float getAspectRatio() const;
+    float getNearPlane() const;
+    float getFarPlane() const;
 
-    double Get_Speed() const;
+    double getSpeed() const;
     //camera's movement positions ..
-    Vector3F<float>& Get_CameraPosition();
-    Vector3F<float> Get_CameraTarget()const;
-    Vector3F<float> Get_CameraUp()const;
+    Vector3F<float>& getCameraPosition();
+    Vector3F<float> getCameraTarget()const;
+    Vector3F<float> getCameraUp()const;
 public:
 
     //projection tools
-    Matrix<float> Get_Lookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU);
+    Matrix<float> getLookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU);
+    Matrix<float> getProjection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
 
-    Matrix<float> Get_Projection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
-
-    void InputValidation(Vector3F<float>& Camerapos);
+    void InputValidation();
 
 };
 

@@ -11,35 +11,37 @@
 
 class Renderer
 {
-	 std::string VertexShaderSource;
-	 std::string FragmentShaderSource;
-	 //ShaderProgram actual shaders that are compiled are stored in here
-	 //VAO vertex atribute
-	 //vertex buffer
-	 // color buffer
-	 unsigned int ShaderProgram,VAO,VBO,CBO,EBO;	 
-	 std::vector<float> Vertices;
-	 std::vector<unsigned int> Indices;
+	 //strings that represeting actual code of the file shader glcl
+	 std::string m_VertexShaderSource;
+	 std::string m_FragmentShaderSource;	
+	 // Variables related to rendering:
+     // ShaderProgram - controls how objects are Drawn (shaders)
+     // VAO - stores the state needed to supply vertex data
+     // VBO - stores vertex data (positions)
+     // CBO - stores color data 
+     // EBO - stores element/index data for indexed Drawing
+	 unsigned int m_ShaderProgram,m_VAO,m_VBO,m_CBO,m_EBO;
+	 //containers that has data about vertices and indices of an object (mesh)
+	 std::vector<float> m_Vertices;
+	 std::vector<unsigned int> m_Indices;
+	 //camera instance for function calls from this class
+	 Camera m_Cam;
 	
-	
-public:
-	
+public:	
 	void ClearScreen();	
 	void SetWindowICON();
-	void objfileparser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices);
-	
-	void Initilize_opengl();
+	void ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices);
+	void InitilizeOpengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
 	void SetupMVP(unsigned int ShaderProgram);
-	void draw();
-
+	void Draw();
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
 	~Renderer();
 //tools
 public:
-	 std::string get_vertex()const;
-	 std::string get_fragment()const;
+	 std::string getVertex()const;
+	 std::string getFragment()const;
 	
 	 
 

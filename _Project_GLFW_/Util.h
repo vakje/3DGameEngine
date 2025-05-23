@@ -31,7 +31,7 @@ namespace UTils
         }
         return token;
     }
-    static std::vector<std::string> splitString(const std::string& s, const std::string& delimiter) {
+    static std::vector<std::string> SplitString(const std::string& s, const std::string& delimiter) {
         std::vector<std::string> tokens;
         size_t pos = 0;
         std::string token;

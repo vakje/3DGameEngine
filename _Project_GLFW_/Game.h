@@ -4,7 +4,7 @@
 
 struct Game 
 {
-	Renderer MyRenderer;
+	Renderer m_MyRenderer;
 	
 	void Initilize()
 	{
@@ -16,34 +16,34 @@ struct Game
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Set clear color
 		glClearDepth(1.0f);
 
-		MyRenderer.Initilize_opengl();
+		m_MyRenderer.InitilizeOpengl();
     }
 	void Clear() 
 	{
-		MyRenderer.ClearScreen();
+		m_MyRenderer.ClearScreen();
 
 	}
 	void MainCharacter() 
 	{
-		MyRenderer.draw();
+		m_MyRenderer.Draw();
 		InputHandlers();
 	}
 	void InputHandlers() 
 	{
 		
 		
-		Input::update();
-		if (Input::GetStates(true, true, GLFW_MOUSE_BUTTON_LEFT))
+		Input::Update();
+		if (Input::getStates(true, true, GLFW_MOUSE_BUTTON_LEFT))
 		{
-			std::cout << "we just pressed some mouse key at " << " " << Vector2F<int>::cursorPos() << " ";
+			std::cout << "we just pressed some mouse key at " << " " << Vector2F<int>::CursorPos() << " ";
 		}
-		if (Input::GetStates(true, false, GLFW_MOUSE_BUTTON_LEFT))
+		if (Input::getStates(true, false, GLFW_MOUSE_BUTTON_LEFT))
 		{
 			std::cout << "we just released some mouse key" << std::endl;
-		}if (Input::GetStates(false, true, GLFW_KEY_ESCAPE))
+		}if (Input::getStates(false, true, GLFW_KEY_ESCAPE))
 		{
 			std::cout << "Pressed Escape!" << std::endl;
-			glfwSetWindowShouldClose(Window::mywindow, GLFW_TRUE);
+			glfwSetWindowShouldClose(Window::m_mywindow, GLFW_TRUE);
 		}
 		
 		

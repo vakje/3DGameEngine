@@ -10,7 +10,7 @@ class Window
 {
 	
 public:
-	static GLFWwindow* mywindow;	
+	static GLFWwindow* m_mywindow;	
 	Window() = default;
 	void SetWindow(int width, int height, const char* title);	
 	~Window();

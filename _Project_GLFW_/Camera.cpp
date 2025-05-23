@@ -1,78 +1,76 @@
 #include "Camera.h"
 
-//CameraPosition = Vector3F<float>(4.0f, 2.0f, 3.0f);
-//CameraTarget = Vector3F<float>(0.0f, 0.0f, 0.0f);
-//CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
+
 
 Camera::Camera()
 {
-	FOV = 75.0 * PI / 180.0;
-	AspectRatio = Width / Height;
-	NearPlane = 0.1f;
-	FarPlane = 100.0f;
-	speed = 10.00;
-	Instance = Matrix<float>(4, 4, 1.0f);
-	CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
-	CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
-	CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
+	m_FOV = 75.0 * PI / 180.0;
+	m_AspectRatio = Width / Height;
+	m_NearPlane = 0.1f;
+	m_FarPlane = 100.0f;
+	m_Speed = 10.00;
+	m_Instance = Matrix<float>(4, 4, 1.0f);
+	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
+	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
+	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
 	
 	
 	
 }
 
-double Camera::Get_Fov() const
+double Camera::getFov() const
 {
-	return FOV;
+	return m_FOV;
 }
 
-float Camera::Get_AspectRatio() const
+float Camera::getAspectRatio() const
 {
-	return AspectRatio;
+	return m_AspectRatio;
 }
 
-float Camera::Get_NearPlane() const
+float Camera::getNearPlane() const
 {
-	return NearPlane;
+	return m_NearPlane;
 }
 
-float Camera::Get_FarPlane() const
+float Camera::getFarPlane() const
 {
-	return  FarPlane;
+	return  m_FarPlane;
 }
 
-double Camera::Get_Speed() const
+double Camera::getSpeed() const
 {
-	return speed;
+	return m_Speed;
 }
 
-Vector3F<float>& Camera::Get_CameraPosition() 
+Vector3F<float>& Camera::getCameraPosition() 
 {
-	return CameraPosition;
+	return m_CameraPosition;
 }
 
-Vector3F<float> Camera::Get_CameraTarget() const
-{
-	
-	return CameraTarget;
-}
-
-Vector3F<float> Camera::Get_CameraUp() const
-{
-	return CameraUp;
-}
-
-Matrix<float> Camera::Get_Lookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
+Vector3F<float> Camera::getCameraTarget() const
 {
 	
-	return Instance.LookOfCamera(CameraP, CameraT, CameraU);
+	return m_CameraTarget;
 }
 
-Matrix<float> Camera::Get_Projection(const double& fov,const float& aspectRatio, const float& nearplane, const float& farplane)
+Vector3F<float> Camera::getCameraUp() const
 {
-	return Instance.Projection(fov,aspectRatio,nearplane,farplane);
+	return m_CameraUp;
 }
 
-void Camera::InputValidation(Vector3F<float>& CameraPosition)
+Matrix<float> Camera::getLookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
+{
+	
+	return m_Instance.LookOfCamera(CameraP, CameraT, CameraU);
+}
+
+Matrix<float> Camera::getProjection(const double& fov,const float& aspectRatio, const float& nearplane, const float& farplane)
+{
+	return m_Instance.Projection(fov,aspectRatio,nearplane,farplane);
+}
+
+void Camera::InputValidation()
 {
 	//to process cameramovement in time
 	float deltatime = 0.0f;
@@ -80,33 +78,33 @@ void Camera::InputValidation(Vector3F<float>& CameraPosition)
 	float currentframe = glfwGetTime();
 	deltatime = currentframe - lastframe;
 	lastframe = currentframe;
-	speed = 0.005f* deltatime;
+	m_Speed = 0.005f* deltatime;
  
 	if (Input::getKey(GLFW_KEY_W)) 
 	{
 		
-		CameraPosition += CameraTarget * speed;
+		m_CameraPosition += m_CameraTarget * m_Speed;
 		std::cout << "deltatime" << deltatime << "\n";
-		std::cout << "CameraPosition: " << CameraPosition << "\n";
+		std::cout << "CameraPosition: " << m_CameraPosition << "\n";
 		std::cout << "W was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_S))
 	{
-		CameraPosition -= CameraTarget * speed;
+		m_CameraPosition -= m_CameraTarget * m_Speed;
 		std::cout << "deltatime" << deltatime << "\n";
-		std::cout << "Cameraposition" << CameraPosition;
+		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "S was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_A))
 	{
-		CameraPosition -= (CameraTarget.crossproduct(CameraUp)).normalize3d() * speed;
-		std::cout << "Cameraposition" << CameraPosition;
+		m_CameraPosition -= (m_CameraTarget.Crossproduct(m_CameraUp)).Normalize3d() * m_Speed;
+		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "A was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_D))
 	{
-		CameraPosition += (CameraTarget.crossproduct(CameraUp)).normalize3d() * speed;
-		std::cout << "Cameraposition" << CameraPosition;
+		m_CameraPosition += (m_CameraTarget.Crossproduct(m_CameraUp)).Normalize3d() * m_Speed;
+		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "D was pressed" << "\n";
 	}
 }

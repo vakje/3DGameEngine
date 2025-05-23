@@ -15,7 +15,7 @@ namespace Input {
 	//in my case it its getting the state of the key that was pressed or not 
 	bool Input::getKey(const int& keycode)
 	{
-		if (glfwGetKey(Window::mywindow, keycode) == GLFW_PRESS)
+		if (glfwGetKey(Window::m_mywindow, keycode) == GLFW_PRESS)
 		{
 			return true;
 		}
@@ -25,7 +25,7 @@ namespace Input {
 	//geting the state of mouse clicked 
 	bool Input::getMouseKey(const int& keycode)
 	{
-		if (glfwGetMouseButton(Window::mywindow, keycode) == GLFW_PRESS)
+		if (glfwGetMouseButton(Window::m_mywindow, keycode) == GLFW_PRESS)
 		{
 			return true;
 		}
@@ -35,7 +35,7 @@ namespace Input {
 	
 	// updates the lists where  i store the states of keys that was
 	// pressed/released 	
-	void Input::update()
+	void Input::Update()
 	{
 		FillStates(false, NUM_MOUSEKEYCODES, MousePressed, MouseReleased);
 		FillStates(true, NUM_KEYCODES, pressedkeys, Releasedkeys);
@@ -128,7 +128,7 @@ namespace Input {
 		}
 	}
 
-	bool Input::GetStates(bool isMouse, bool ispressed, const int& keycodes)
+	bool Input::getStates(bool isMouse, bool ispressed, const int& keycodes)
 	{
 		if (isMouse == true)
 		{	//mouse

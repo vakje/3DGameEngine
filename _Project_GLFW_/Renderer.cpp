@@ -21,11 +21,11 @@ void Renderer::SetWindowICON()
 	 
 
 
-	glfwSetWindowIcon(Window::mywindow, 1, images);
+	glfwSetWindowIcon(Window::m_mywindow, 1, images);
 
 }
 
-void Renderer::objfileparser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices)
+void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices)
 {
 		//this line makes full path of the file must be like ..root\\user\\tools\\file.obj
 		std::filesystem::path Toolspath = std::filesystem::current_path() / "TOOLS" / path;
@@ -55,13 +55,13 @@ void Renderer::objfileparser(const std::string& path, std::vector<float>& Vertic
 
 		while (std::getline(file, line))
 		{
-
+			// 'v' lines contain vertex positions
 			if (line[0] == 'v')
 			{
 
 
 				//somehow in this chunck of code Indices are puted into the vector not vertices		
-				StringV = UTils::splitString(line, " ");
+				StringV = UTils::SplitString(line, " ");
 
 				// transfer this data to original Indices vector
 				//also parsing it to float 
@@ -77,11 +77,11 @@ void Renderer::objfileparser(const std::string& path, std::vector<float>& Vertic
 					}
 				}
 
-
+			 // 'f' lines contain face indices
 			}if (line[0] == 'f')
 			{
-				//somehow in this chunck of code vertices are puted into the vector not indices
-				StringI = UTils::splitString(line, " ");
+				
+				StringI = UTils::SplitString(line, " ");
 
 				// transfer this data to original vertex vector
 				//also parsing it to float 
@@ -104,7 +104,7 @@ void Renderer::objfileparser(const std::string& path, std::vector<float>& Vertic
 	
 }
 
-void Renderer::Initilize_opengl()
+void Renderer::InitilizeOpengl()
 {
 	std::filesystem::path Toolspath = fullpath / "TOOLS\\M_Shaders.txt";
 	std::string ShaderPATH = Toolspath.string();
@@ -114,46 +114,46 @@ void Renderer::Initilize_opengl()
 	}
 	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
 
-	ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
+	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
 	std::string ObjPATH = "cube.obj";
 	
 	
-	objfileparser(ObjPATH, Vertices, Indices);
+	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);
 
 	
 	float time = glfwGetTime();
-	int Vertices_size = Vertices.size();
+	int Vertices_size = m_Vertices.size();
 	float* colors = new float[Vertices_size];
 	for (int i = 0; i < Vertices_size; i++)
 	{
 		colors[i] = 0.5f * (sin(time + i * 0.9f) + 1.0f);
 	}
 	//now giving this data to our GPU
-   // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+    // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
+	glGenVertexArrays(1, &m_VAO);
+	glGenBuffers(1, &m_VBO);
+	glGenBuffers(1, &m_EBO);
 	
-	glBindVertexArray(VAO);
+	glBindVertexArray(m_VAO);
 	// The following commands will talk about our 'vertexbuffer' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(float), Vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(float), m_Vertices.data(), GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.size() * sizeof(unsigned int), Indices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
 
-	glGenBuffers(1, &CBO);
-	glBindBuffer(GL_ARRAY_BUFFER, CBO);
+	glGenBuffers(1, &m_CBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_CBO);
 	
 	glBufferData(GL_ARRAY_BUFFER, Vertices_size * sizeof(float), colors, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, CBO);
+	
 	// Unbind VAO 
 	glBindVertexArray(0);
 	delete[] colors;
@@ -167,7 +167,7 @@ unsigned int Renderer::CompileShaderFromSource(unsigned int TYPE, std::string& s
 	glShaderSource(shader, 1, &source, nullptr);
 	glCompileShader(shader);
 	int success;
-	glGetProgramiv(shader, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
@@ -203,7 +203,7 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 
 	return program;
 }
-Camera Cam;
+
 void Renderer::SetupMVP(unsigned int ShaderProgram)
 {
 	Vector3F<float> forTranslation(1.0f, 0.0f, 0.0f);
@@ -216,21 +216,22 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 
 
 	Matrix<float> I(4, 4, 1.0f);
-	I.initidentity(4);
-	angle = Cam.Get_Speed() * Cam.Get_Fov() * time;
+	I.Initidentity(4);
+	angle = m_Cam.getSpeed() * m_Cam.getFov() * time;
 	
 	Matrix<float> M(4, 4, 1.0f);
 
 
-	I = M.Translate(I, forTranslation) * M.Rotate(I, angle, forRotation) * M.Scale(I, forScale);
+	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
 	
+	m_Cam.InputValidation();
 	//view matrix creation
-	Matrix<float> view = Cam.Get_Lookat(Cam.Get_CameraPosition(),Cam.Get_CameraTarget(),Cam.Get_CameraUp());
-	 
-	Cam.InputValidation(Cam.Get_CameraPosition());
+	Matrix<float> view = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());
+	
+	
    
 	//projection matrix calculating
-	Matrix<float> projection = Cam.Get_Projection(Cam.Get_Fov(), Cam.Get_AspectRatio(), Cam.Get_NearPlane(), Cam.Get_FarPlane());
+	Matrix<float> projection = m_Cam.getProjection(m_Cam.getFov(), m_Cam.getAspectRatio(), m_Cam.getNearPlane(), m_Cam.getFarPlane());
 
 	
 	//making projection formula mvp = projection * view * model;
@@ -249,17 +250,17 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
 }
 
-void Renderer::draw()
+void Renderer::Draw()
 {
-	glUseProgram(ShaderProgram);
+	glUseProgram(m_ShaderProgram);
 	//function that setups projection and calculations for objects to rotate
-	SetupMVP(ShaderProgram);
+	SetupMVP(m_ShaderProgram);
 
 	// Bind VAO and draw the triangle
-	glBindVertexArray(VAO);
+	glBindVertexArray(m_VAO);
 	
 	
-	glDrawElements(GL_TRIANGLES, Indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 	
 
 	glBindVertexArray(0);
@@ -311,13 +312,14 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 
 Renderer::~Renderer()
 {
-	glDeleteBuffers(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-
+	glDeleteVertexArrays(1, &m_VAO);
+	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);
+	glDeleteBuffers(1, &m_CBO);
 }
 
-std::string Renderer::get_vertex()const { return VertexShaderSource; }
-std::string Renderer::get_fragment()const { return FragmentShaderSource; }
+std::string Renderer::getVertex()const { return m_VertexShaderSource; }
+std::string Renderer::getFragment()const { return m_FragmentShaderSource; }
 
 
 

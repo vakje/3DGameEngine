@@ -9,10 +9,6 @@
 #include <type_traits>
 
 
-
-
-
-
 const double PI = 3.14159265358979323846;
 const int Width = 1920;
 const int Height = 1080;
@@ -24,11 +20,11 @@ concept Numeric = std::is_arithmetic_v<T>;
 template<Numeric T>
 class Vector2F
 {
-    T X;
-    T Y;
+    T m_X;
+    T m_Y;
 
 public:
-    Vector2F(T x, T y) :X(x), Y(y) {}
+    Vector2F(T x, T y) :m_X(x), m_Y(y) {}
     Vector2F() = default;
 
     Vector2F& operator=(const Vector2F<T>& other)
@@ -37,64 +33,64 @@ public:
         {
             return *this;
         }
-        X = other.get_X();
-        Y = other.get_Y();
+        m_X = other.get_X();
+        m_Y = other.get_Y();
         return *this;
     }
     Vector2F(const Vector2F<T>& other)
     {
-        X = other.get_X();
-        Y = other.get_Y();
+        m_X = other.get_X();
+        m_Y = other.get_Y();
     }
     T get_X() const
     {
-        return X;
+        return m_X;
     }
     T get_Y() const
     {
-        return Y;
+        return m_Y;
     }
     void set_X(T x)
     {
-        this->X = x;
+        this->m_X = x;
     }
     void set_Y(T y)
     {
-        this->Y = y;
+        this->m_Y = y;
     }
 
     std::string ToString() const
     {
-        return "(" + std::to_string(X) + "," + std::to_string(Y)  + ")" + "\n";
+        return "(" + std::to_string(m_X) + "," + std::to_string(m_Y)  + ")" + "\n";
     }
 
     //returning the length of the vector or in another words hypotenus of the triangle 
-    T Length_Vector2f()
+    T LengthVector2f()
     {
-        return sqrt(X * X + Y * Y);
+        return sqrt(m_X * m_X + m_Y * m_Y);
     }
     // overloading dot product for my vector2f c++ feature:)
-    T dotproduct(const Vector2F& r)
+    T Dotproduct(const Vector2F& r)
     {
-        return X * r.get_X() + Y * r.get_Y();
+        return m_X * r.get_X() + m_Y * r.get_Y();
     }
     // returning vector it self after normalization(or making it equal to 1)
-    Vector2F normalization()
+    Vector2F Normalization()
     {
-        T length = Length_Vector2f();
+        T length = LengthVector2f();
         if (length == 0.0f) {
             return Vector2F<float>(0, 0);
         }
        
-        X /= length;
-        Y /= length;
+        m_X /= length;
+        m_Y /= length;
 
         return *this;
     }
-    static Vector2F<double> cursorPos() {
+    static Vector2F<double> CursorPos() {
 
         double xpos, ypos;
-        glfwGetCursorPos(Window::mywindow, &xpos, &ypos);
+        glfwGetCursorPos(Window::m_mywindow, &xpos, &ypos);
         return Vector2F<double>(xpos, ypos);
 
     }
@@ -102,23 +98,23 @@ public:
     //this is to add another vector 2f 
     Vector2F operator+(const Vector2F& num)const
     {
-        return Vector2F(X + num.get_X(), Y + num.get_Y());
+        return Vector2F(m_X + num.get_X(), m_Y + num.get_Y());
     }
     Vector2F operator+=(const Vector2F& num)
     {
-        return Vector2F(X += num.get_X(), Y += num.get_Y());
+        return Vector2F(m_X += num.get_X(), m_Y += num.get_Y());
     }
     Vector2F operator-(const Vector2F& num)const
     {
-        return Vector2F(X - num.get_X(), Y - num.get_Y());
+        return Vector2F(m_X - num.get_X(), m_Y - num.get_Y());
     }
     Vector2F operator-=(const Vector2F& num)
     {
-        return Vector2F(X -= num.get_X(), Y -= num.get_Y());
+        return Vector2F(m_X -= num.get_X(), m_Y -= num.get_Y());
     }
     Vector2F operator*(const Vector2F& num)const
     {
-        return Vector2F(X * num.get_X(), Y * num.get_Y());
+        return Vector2F(m_X * num.get_X(), m_Y * num.get_Y());
     }
     Vector2F operator/(const Vector2F& num)const
     {
@@ -128,7 +124,7 @@ public:
         if (num.get_Y() == 0.0f) {
             num.get_Y() = 1.0f;
         }
-        return Vector2F(X / num.get_X(), Y / num.get_Y());
+        return Vector2F(m_X / num.get_X(), m_Y / num.get_Y());
     }
     Vector2F operator/=(const Vector2F& num)
     {
@@ -138,23 +134,23 @@ public:
         if (num.get_Y() == 0.0f) {
             num.get_Y() = 1.0f;
         }
-        return Vector2F(X /= num.get_X(), Y /= num.get_Y());
+        return Vector2F(m_X /= num.get_X(), m_Y /= num.get_Y());
     }
     Vector2F operator*=(const Vector2F& num)
     {
-        return Vector2F(X *= num.get_X(), Y *= num.get_Y());
+        return Vector2F(m_X *= num.get_X(), m_Y *= num.get_Y());
     }
     Vector2F operator+(const T& num)const
     {
-        return Vector2F(X + num, Y + num);
+        return Vector2F(m_X + num, m_Y + num);
     }
     Vector2F operator-(const T& num)const
     {
-        return Vector2F(X - num, Y - num);
+        return Vector2F(m_X - num, m_Y - num);
     }
     Vector2F operator*(const T& num)const
     {
-        return Vector2F(X * num, Y * num);
+        return Vector2F(m_X * num, m_Y * num);
     }
     Vector2F operator/(const T& num)const
     {
@@ -165,7 +161,7 @@ public:
             num.get_Y() = 1.0f;
         }
         
-        return Vector2F(X / num, Y / num);
+        return Vector2F(m_X / num, m_Y / num);
     }
 
     Vector2F Rotate(const T& angle) 
@@ -174,7 +170,7 @@ public:
         T sin = std::sin(rad);
         T cos = std::cos(rad);
 
-        return Vector2F(cos * X - sin * Y, sin * X + cos * Y);
+        return Vector2F(cos * m_X - sin * m_Y, sin * m_X + cos * m_Y);
     }
 };
 template<Numeric T>
@@ -186,11 +182,11 @@ std::ostream& operator<<(std::ostream& os, const Vector2F<T>& v)
 template<Numeric T>
 class Vector3F
 {
-    T x;
-    T y;
-    T z;
+    T m_X;
+    T m_Y;
+    T m_Z;
 public:
-    Vector3F(T X, T Y, T Z):x(X),y(Y),z(Z){}
+    Vector3F(T x, T y, T z):m_X(x),m_Y(y),m_Z(z){}
     Vector3F() = default;
     Vector3F& operator=(const Vector3F<T>& other)
     {
@@ -198,99 +194,99 @@ public:
         {
             return *this;
         }
-        x = other.getX3D();
-        y = other.getY3D();
-        z = other.getX3D();
+        m_X = other.getX3D();
+        m_Y = other.getY3D();
+        m_Z = other.getX3D();
         return *this;
     }
     Vector3F(const Vector3F<T>& other)
     {
-        x = other.getX3D();
-        y = other.getY3D();
-        z = other.getZ3D();
+        m_X = other.getX3D();
+        m_Y = other.getY3D();
+        m_Z = other.getZ3D();
     }
     T getX3D()const 
     {
-        return x;
+        return m_X;
     }
     T getY3D()const 
     {
-        return y;
+        return m_Y;
     }
     T getZ3D()const 
     {
-        return z;
+        return m_Z;
     }
     void setX3D(T x) 
     {
-        this->x = x;
+        this->m_X = x;
     }
     void setY3D(T y) 
     {
-        this->y = y;
+        this->m_Y = y;
     }
     void setZ3D(T z) 
     {
-        this->z = z;
+        this->m_Z = z;
     }
 public:
     
-    T Length_Vector3f() 
+    T LengthVector3f() 
     {
-        return  sqrt(x * x + y * y + z * z);
+        return  sqrt(m_X * m_X + m_Y * m_Y + m_Z * m_Z);
     }
     Vector3F CrossProduct(const Vector3F& Vec) const 
     {
-        return Vector3F( y * Vec.z - z * Vec.y, z * Vec.x - x * Vec.z, x * Vec.y - y * Vec.x);
+        return Vector3F(m_Y * Vec.m_Z - m_Z * Vec.m_Y, m_Z * Vec.m_X - m_X * Vec.m_Z, m_X * Vec.m_Y - m_Y * Vec.m_X);
     }
-    Vector3F normalize3d() 
+    Vector3F Normalize3d() 
     {
-        T length = Length_Vector3f();
+        T length = LengthVector3f();
         if (length == 0.0f) {
             return Vector3F<float>(0, 0, 0);
         }
-        x /= length;
-        y /= length;
-        z /= length;
+        m_X /= length;
+        m_Y /= length;
+        m_Z /= length;
 
 
         return *this;
     }
     
-    T dotproduct(const Vector3F& r) 
+    T Dotproduct(const Vector3F& r) 
     {
-        return x * r.getX3D() + y * r.getY3D() + z * r.getZ3D();
+        return m_X * r.getX3D() + m_Y * r.getY3D() + m_Z * r.getZ3D();
     }
    
     Vector3F operator+(const Vector3F& other)const
     {
-        return Vector3F(x + other.getX3D(), y + other.getY3D(), z + other.getZ3D());
+        return Vector3F(m_X + other.getX3D(), m_Y + other.getY3D(), m_Z + other.getZ3D());
     }
     Vector3F operator+=(const Vector3F& other)
     {
-        this->x += other.getX3D();
-        this->y += other.getY3D();
-        this->z += other.getZ3D();
+        this->m_X += other.getX3D();
+        this->m_Y += other.getY3D();
+        this->m_Z += other.getZ3D();
         return *this;
     }
     Vector3F operator-(const Vector3F& other)const
     {
-        return Vector3F(x - other.getX3D(), y - other.getY3D(), z - other.getZ3D());
+        return Vector3F(m_X - other.getX3D(), m_Y - other.getY3D(), m_Z - other.getZ3D());
     }
     Vector3F operator-=(const Vector3F& other)
     {
-        this->x -= other.getX3D();
-        this->y -= other.getY3D();
-        this->z -= other.getZ3D();
+        this->m_X -= other.getX3D();
+        this->m_Y -= other.getY3D();
+        this->m_Z -= other.getZ3D();
         return *this;
     }
     Vector3F operator*(const Vector3F& other) const
     {
-        return Vector3F(x * other.getX3D(), y * other.getY3D(), z * other.getZ3D());
+        return Vector3F(m_X * other.getX3D(), m_Y * other.getY3D(), m_Z * other.getZ3D());
     }
     Vector3F operator*=(const Vector3F& other)
     {
-        return Vector3F(x *= other.getX3D(), y *= other.getY3D(), z *= other.getZ3D());
+        return Vector3F(m_X *= other.getX3D(), m_Y *= other.getY3D(), m_Z *= other.getZ3D());
     }
     Vector3F operator/(const Vector3F& other) const
     {
@@ -303,7 +299,7 @@ public:
         if (other.getZ3D() == 0.0f) {
             other.getZ3D() = 1.0f;
         }
-        return Vector3F(x / other.getX3D(), y / other.getY3D(), z / other.getZ3D());
+        return Vector3F(m_X / other.getX3D(), m_Y / other.getY3D(), m_Z / other.getZ3D());
     }
     Vector3F operator/=(const Vector3F& other)
     {
@@ -316,20 +312,20 @@ public:
         if (other.getZ3D() == 0.0f) {
             other.getZ3D() = 1.0f;
         }
-        return Vector3F(x /= other.getX3D(), y /= other.getY3D(), z /= other.getZ3D());
+        return Vector3F(m_X /= other.getX3D(), m_Y /= other.getY3D(), m_Z /= other.getZ3D());
     }
     Vector3F operator+(const T& other) const
     {
-        return Vector3F(x + other, y + other, z + other);
+        return Vector3F(m_X + other, m_Y + other, m_Z + other);
     }
     Vector3F operator-(const T& other)const
     {
-        return Vector3F(x - other, y - other, z - other);
+        return Vector3F(m_X - other, m_Y - other, m_Z - other);
     }
     Vector3F operator*(const T& other)const
     {
 
-        return Vector3F(x * other, y * other, z * other);
+        return Vector3F(m_X * other, m_Y * other, m_Z * other);
     }
     Vector3F operator/(const T& other)const
     {
@@ -342,14 +338,14 @@ public:
         if (other.getZ3D() == 0.0f) {
             other.getZ3D() = 1.0f;
         }
-        return Vector3F(x / other, y / other, z / other);
+        return Vector3F(m_X / other, m_Y / other, m_Z / other);
     }
 
-    Vector3F  crossproduct(Vector3F vector) 
+    Vector3F  Crossproduct(Vector3F vector) 
     {
-        T X_x = y * vector.getZ3D() - z * vector.getY3D();
-        T Y_y = z * vector.getX3D() - x * vector.getZ3D();
-        T Z_z = x * vector.getY3D() - y * vector.getX3D();
+        T X_x = m_Y * vector.getZ3D() - m_Z * vector.getY3D();
+        T Y_y = m_Z * vector.getX3D() - m_X * vector.getZ3D();
+        T Z_z = m_X * vector.getY3D() - m_Y * vector.getX3D();
 
 
         return Vector3F(X_x, Y_y, Z_z);
@@ -357,7 +353,7 @@ public:
 
     std::string to_String()const 
     {
-        return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")"+"\n";
+        return "(" + std::to_string(m_X) + "," + std::to_string(m_Y) + "," + std::to_string(m_Z) + ")"+"\n";
     }
 
 }; 
@@ -371,62 +367,62 @@ std::ostream& operator<<(std::ostream& os, const Vector3F<T>& v)
 template<Numeric T>
 class Quatornion
 {
-    T x;
-    T y;
-    T z;
-    T w;
+    T m_x;
+    T m_y;
+    T m_z;
+    T m_w;
 public:
     //functions
-    Quatornion(T x, T y, T z, T w) :x(x), y(y), z(z), w(w) {}
+    Quatornion(T x, T y, T z, T w) :m_x(x), m_y(y), m_z(z), m_w(w) {}
     Quatornion() = default;
     //todo  *  operators and alos << operator
     Quatornion operator*(const Quatornion& other)
     {
-        T w_ = w * other.get_w() - x * other.get_x() - y * other.get_y() - z * other.get_z();
-        T x_ = x * other.get_w() + w * other.get_x() + y * other.get_z() - z * other.get_y();
-        T y_ = y * other.get_w() + w * other.get_y() + z * other.get_x() - x * other.get_z();
-        T z_ = z * other.get_w() + w * other.get_z() + x * other.get_y() - y * other.get_x();
+        T w_ = m_w * other.get_w() - m_x * other.get_x() - m_y * other.get_y() - m_z * other.get_z();
+        T x_ = m_x * other.get_w() + m_w * other.get_x() + m_y * other.get_z() - m_z * other.get_y();
+        T y_ = m_y * other.get_w() + m_w * other.get_y() + m_z * other.get_x() - m_x * other.get_z();
+        T z_ = m_z * other.get_w() + m_w * other.get_z() + m_x * other.get_y() - m_y * other.get_x();
 
         return  Quatornion(x_, y_, z_, w_);
     }
     Quatornion operator*(const Vector3F<T>& other)
     {
-        T w_ = -x * other.getX3D() - y * other.getY3D() - z * other.getZ3D();
-        T x_ = w * other.getX3D() + y * other.getZ3D() - z * other.getY3D();
-        T y_ = w * other.getY3D() + z * other.getX3D() - x * other.getZ3D();
-        T z_ = w * other.getZ3D() + x * other.getY3D() - y * other.getX3D();
+        T w_ = -m_x * other.getX3D() - m_y * other.getY3D() - m_z * other.getZ3D();
+        T x_ = m_w * other.getX3D() + m_y * other.getZ3D() - m_z * other.getY3D();
+        T y_ = m_w * other.getY3D() + m_z * other.getX3D() - m_x * other.getZ3D();
+        T z_ = m_w * other.getZ3D() + m_x * other.getY3D() - m_y * other.getX3D();
 
         return  Quaternion(x_, y_, z_, w_);
     }
 
 
 public:
-    T quatornion_Length()
+    T QuatornionLength()
     {
-        return sqrt(x * x + y * y + z * z + w * w);
+        return sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
     }
-    Quatornion normalization()
+    Quatornion Normalization()
     {
-        T length = quatornion_Length();
+        T length = QuatornionLength();
 
         if (length == 0.0f) {
             return Quatornion<float>(0, 0,0,0);
         }
-        x /= length;
-        y /= length;
-        z /= length;
-        w /= length;
+        m_x /= length;
+        m_y /= length;
+        m_z /= length;
+        m_w /= length;
 
         return *this;
     }
-    Quatornion conjugate()
+    Quatornion Conjugate()
     {
-        return  Quatornion(-x, -y, -z, w);
+        return  Quatornion(-m_x, -m_y, -m_z, m_w);
     }
     //r should be (1,1,0)normalized for vertical spinning 
     Quatornion Rotation(double& alpha, Vector3F<int>& r)
     {
-        r.normalize3d();
+        r.Normalize3d();
         double rad = alpha * PI / 180.0;
         Quatornion Q1(0, 1, 0, 0);
         Quatornion Q2(cos(rad / 2), r.getX3D() * sin(rad / 2), r.getY3D() * sin(rad / 2), r.getZ3D() * sin(rad / 2));
@@ -437,26 +433,26 @@ public:
     }
 public:
     // getters and setters
-    T get_x()const { return this->x; }
-    T get_y()const { return this->y; }
-    T get_z()const { return this->z; }
-    T get_w()const { return this->w; }
-    void set_x(T& x) { this->x = x; }
-    void set_y(T& y) { this->y = y; }
-    void set_z(T& z) { this->z = z; }
-    void set_w(T& w) { this->w = w; }
+    T getX()const { return this->m_x; }
+    T getY()const { return this->m_y; }
+    T getZ()const { return this->m_z; }
+    T getW()const { return this->m_w; }
+    void setX(T& x) { this->m_x = x; }
+    void setY(T& y) { this->m_y = y; }
+    void setZ(T& z) { this->m_z = z; }
+    void setW(T& w) { this->m_w = w; }
 };
 
 template<Numeric T>
 class Matrix  
 {
-    int M;
-    int N; 
-    std::vector<std::vector<T>> matrix;
+    int m_M;
+    int m_N;
+    std::vector<std::vector<T>> m_matrix;
 public:
     //standart tools/operators
     Matrix() = default;
-    Matrix(int m , int n  , const T& initial ):M(m), N(n)
+    Matrix(int m , int n  , const T& initial ):m_M(m), m_N(n)
     {
         
         if (m <= 0 || n <= 0) 
@@ -464,10 +460,10 @@ public:
             throw std::invalid_argument("Matrix dimensions cant be negative/0");
             
         }
-        matrix.resize(m);
-        for (int i = 0; i < matrix.size(); i++) 
+        m_matrix.resize(m);
+        for (int i = 0; i < m_matrix.size(); i++)
         {
-            matrix[i].resize(n, initial);
+            m_matrix[i].resize(n, initial);
         }
         
 
@@ -475,9 +471,9 @@ public:
     // copy constructor
     Matrix(const Matrix& other) 
     {
-        matrix = other.matrix;
-        M = other.M;
-        N = other.N;
+        m_matrix = other.m_matrix;
+        m_M = other.m_M;
+        m_N = other.m_N;
     }
     //assignment operator
     Matrix& operator=( const Matrix<T>& other) 
@@ -486,43 +482,43 @@ public:
         {
             return *this;
         }
-        int newrow = other.M;
-        int newcol = other.N;
+        int newrow = other.m_M;
+        int newcol = other.m_N;
 
-        matrix.resize(newrow);
-        for (int i = 0; i < matrix.size(); i++) 
+        m_matrix.resize(newrow);
+        for (int i = 0; i < m_matrix.size(); i++)
         {
-            matrix[i].resize(newcol);
+            m_matrix[i].resize(newcol);
         }
         for (int i = 0; i < newrow; i++) {
             for (int j = 0; j < newcol; j++) {
-                matrix[i][j] = other.matrix[i][j];
+                m_matrix[i][j] = other.m_matrix[i][j];
             }
         }
-        M = newrow;
-        N = newcol;
+        m_M = newrow;
+        m_N = newcol;
 
         return *this;
     }
     const T& operator()(const int& row, const int& col) const
     {
-        return this->matrix[row][col];
+        return this->m_matrix[row][col];
     }
    
     T& operator()(const int& row, const int& col) 
     {
-        return this->matrix[row][col];
+        return this->m_matrix[row][col];
     }
   
 public:
     //mathmatical operations
     Matrix<T> operator*(const Matrix<T>& other) 
     {
-        if (this->N != other.M) {
+        if (this->m_N != other.m_M) {
            throw std::invalid_argument("Matrix dimensions do not match for multiplication");
         }
-        int rows = other.M;
-        int cols = other.N;
+        int rows = other.m_M;
+        int cols = other.m_N;
         Matrix result(rows, cols, 0.0);
 
         for (int i = 0; i < rows; i++) {
@@ -544,11 +540,11 @@ public:
     }
     Matrix operator*(const T& other)
     {
-        Matrix result(M, N, 0.0);
+        Matrix result(m_M, m_N, 0.0);
 
-        for (int i = 0; i < M; i++) {
-            for (int j = 0; j < N; j++) {
-                result(i, j) = this->matrix[i][j] * other;
+        for (int i = 0; i < m_M; i++) {
+            for (int j = 0; j < m_N; j++) {
+                result(i, j) = this->m_matrix[i][j] * other;
             }
         }
 
@@ -558,9 +554,9 @@ public:
     Matrix& ConvertQuatornian(Matrix<float>& model, const Quatornion<float>& q)
     {
         
-        float xx = q.get_x() * q.get_x(), yy = q.get_y() * q.get_y(), zz = q.get_z() * q.get_z();
-        float xy = q.get_x() * q.get_y(), xz = q.get_x() * q.get_z(), yz = q.get_y() * q.get_z();
-        float wx = q.get_w() * q.get_x(), wy = q.get_w() * q.get_y(), wz = q.get_w() * q.get_z();
+        float xx = q.getX() * q.getX(), yy = q.getY() * q.getY(), zz = q.getZ() * q.getZ();
+        float xy = q.getX() * q.getY(), xz = q.getX() * q.getZ(), yz = q.getY() * q.getZ();
+        float wx = q.getW() * q.getX(), wy = q.getW() * q.getY(), wz = q.getW() * q.getZ();
         //first row
         model.setElement(0, 0, 1 - 2*(yy + zz));
         model.setElement(0, 1, 2*(xy - wz));
@@ -584,16 +580,16 @@ public:
 
         return model;
     }
-    Matrix& initidentity(int M)
+    Matrix& Initidentity(int M)
     {
 
-        if (this->get_row() != M || this->get_cols() != M) 
+        if (this->getRow() != M || this->getCols() != M) 
         {
             throw std::invalid_argument("parameter must be same as the column/row of the matrix");
         }
-        for (int i = 0; i < this->get_row(); i++) 
+        for (int i = 0; i < this->getRow(); i++) 
         {
-            for (int j = 0; j < this->get_cols(); j++)
+            for (int j = 0; j < this->getCols(); j++)
             {
                 if (i == j) 
                 {
@@ -612,7 +608,7 @@ public:
     //ROLL Rotation
     Matrix& RollRotation(double alpha)
     {
-        if (this->get_row() != 4 || this->get_cols() != 4)
+        if (this->getRow() != 4 || this->getCols() != 4)
         {
             throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
 
@@ -632,7 +628,7 @@ public:
     //PITCH Rotation
     Matrix& PitchRotation(double alpha) {
         // Ensure matrix is 4x4
-        if (this->get_row() != 4 || this->get_cols() != 4) {
+        if (this->getRow() != 4 || this->getCols() != 4) {
             throw std::invalid_argument("Invalid argument: Matrix dimensions must be 4x4.");
         }
 
@@ -650,8 +646,8 @@ public:
     }
     //YAW Rotation
     Matrix& YawRotation(double alpha)
-     {
-         if (this->get_row() != 4 || this->get_cols() != 4)
+    {
+         if (this->getRow() != 4 || this->getCols() != 4)
          {
              throw std::invalid_argument("Invalid argument: value for dimenstions row/cols must be 4x4!!!.");
 
@@ -674,7 +670,7 @@ public:
     Matrix& Translate(Matrix<float>& model, Vector3F<float>& Vec) 
     {
         //sets up identity matrix 
-        model.initidentity(4);
+        model.Initidentity(4);
         //first  row
         model.setElement(0, 3, Vec.getX3D());
         //second row
@@ -718,7 +714,7 @@ public:
     Matrix& Scale(Matrix<float>& model, Vector3F<float>& Vec)
     {
         //sets up identity matrix 
-        model.initidentity(4);
+        model.Initidentity(4);
         //first row
         model.setElement(0, 0, Vec.getX3D());
         //second row
@@ -735,10 +731,10 @@ public:
     {  
        
        //forward vector
-       Vector3F<float> forward = (CameraT - CameraP).normalize3d();
+       Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
        
        //right vector
-       Vector3F<float> right = CameraU.CrossProduct(forward).normalize3d();
+       Vector3F<float> right = CameraU.CrossProduct(forward).Normalize3d();
        //true_up vector
        Vector3F<float> true_up= forward.CrossProduct(right);
       
@@ -748,17 +744,17 @@ public:
        this->setElement(0, 0, right.getX3D());
        this->setElement(0, 1, right.getY3D());
        this->setElement(0, 2, right.getZ3D());
-       this->setElement(0, 3, -right.dotproduct(CameraP));
+       this->setElement(0, 3, -right.Dotproduct(CameraP));
        //second row
        this->setElement(1, 0, true_up.getX3D());
        this->setElement(1, 1, true_up.getY3D());
        this->setElement(1, 2, true_up.getZ3D());
-       this->setElement(1, 3, -true_up.dotproduct(CameraP));
+       this->setElement(1, 3, -true_up.Dotproduct(CameraP));
        //third row 
        this->setElement(2, 0, -forward.getX3D());
        this->setElement(2, 1, -forward.getY3D());
        this->setElement(2, 2, -forward.getZ3D());
-       this->setElement(2, 3, forward.dotproduct(CameraP));
+       this->setElement(2, 3, forward.Dotproduct(CameraP));
        //forth row
        this->setElement(3, 0, 0);
        this->setElement(3, 1, 0);
@@ -797,18 +793,18 @@ public:
     //encapsulation tools
     std::vector<std::vector<T>> getMatrix() 
     {
-        return matrix;
+        return m_matrix;
     }
     void setMatrix(std::vector<std::vector<T>> mat) 
     {
-        this->matrix = mat;
+        this->m_matrix = mat;
     }
     void setElement(int x, int y, const T& value) 
     {
-        matrix[x][y] = value;
+        m_matrix[x][y] = value;
     }
-    int get_row()const { return this->M; }
-    int get_cols()const { return this->N; }
+    int getRow()const { return this->m_M; }
+    int getCols()const { return this->m_N; }
     
     template<Numeric T>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& M);
@@ -817,13 +813,13 @@ public:
 template<Numeric T> 
 std::ostream& operator<<(std::ostream& os, const Matrix<T>& M) 
 {
-    for (int i = 0; i < M.get_row(); i++)
+    for (int i = 0; i < M.getRow(); i++)
     {
-        for (int j = 0; j < M.get_cols(); j++)
+        for (int j = 0; j < M.getCols(); j++)
         {
             os << M(i, j);
             // Only print a comma if it's not the last element in the row
-            if (j < M.get_cols() - 1)
+            if (j < M.getCols() - 1)
             {
                 os << ", ";
             }

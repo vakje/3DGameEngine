@@ -2,7 +2,7 @@
 #include "Game.h"
 
 
-GLFWwindow* Window::mywindow;
+GLFWwindow* Window::m_mywindow;
 
 Game game;
 
@@ -16,14 +16,14 @@ void Window::SetWindow(int width, int height, const char* title)
 	if (!glfwInit())
 		return;
 
-	mywindow = glfwCreateWindow(width, height, title, NULL, NULL);
-	if (!mywindow)
+	m_mywindow = glfwCreateWindow(width, height, title, NULL, NULL);
+	if (!m_mywindow)
 	{
 		glfwTerminate();
 		return;
 	}
 	/* Make the window's context current */
-	glfwMakeContextCurrent(mywindow);
+	glfwMakeContextCurrent(m_mywindow);
 	glfwSwapInterval(0);
 	if (glewInit() != GLEW_OK) {
 		std::cout << "GLEW initialization failed!" << std::endl;
@@ -41,7 +41,7 @@ void Window::SetWindow(int width, int height, const char* title)
 
 
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(mywindow))
+	while (!glfwWindowShouldClose(m_mywindow))
 	{
 
 		// putting seconds in milliseconds 
@@ -58,7 +58,7 @@ void Window::SetWindow(int width, int height, const char* title)
 		game.MainCharacter();
 		
        
-		glfwSwapBuffers(mywindow);
+		glfwSwapBuffers(m_mywindow);
 		/* Poll for and process events */
 		glfwPollEvents();
 		//currenttime in the loop
@@ -95,7 +95,7 @@ void Window::SetWindow(int width, int height, const char* title)
 
 }
 Window::~Window() {
-	glfwDestroyWindow(mywindow);
+	glfwDestroyWindow(m_mywindow);
 	glfwTerminate();
 }
 

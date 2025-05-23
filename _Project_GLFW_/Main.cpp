@@ -19,7 +19,6 @@ int main(void)
     win.SetWindow(WIDTH, HEIGHT, TITLE);
     std::cout << "-----------------------------------------------\n" << std::flush;
    
-   
 
     
 }

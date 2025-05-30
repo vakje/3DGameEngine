@@ -221,7 +221,7 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	
 	Matrix<float> M(4, 4, 1.0f);
 
-
+ 
 	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
 	
 	m_Cam.InputValidation();

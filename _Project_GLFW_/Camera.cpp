@@ -13,9 +13,7 @@ Camera::Camera()
 	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
 	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
 	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
-	
-	
-	
+
 }
 
 double Camera::getFov() const
@@ -85,32 +83,26 @@ void Camera::InputValidation()
 	{
 		
 		m_CameraPosition += forward * m_Speed;
-		std::cout << "deltatime" << deltatime << "\n";
-		std::cout << "CameraPosition: " << m_CameraPosition << "\n";
-		std::cout << "W was pressed" << "\n";
+		
 	}
 	if (Input::getKey(GLFW_KEY_S))
 	{
 		
 		m_CameraPosition -= forward * m_Speed;
-		std::cout << "deltatime" << deltatime << "\n";
-		std::cout << "Cameraposition" << m_CameraPosition;
-		std::cout << "S was pressed" << "\n";
+		
 	}
 	if (Input::getKey(GLFW_KEY_A))
 	{
 		m_CameraPosition += right * m_Speed;
 		m_CameraTarget += right * m_Speed;
-		std::cout << "Cameraposition" << m_CameraPosition;
-		std::cout << "A was pressed" << "\n";
+		
 	}
 	if (Input::getKey(GLFW_KEY_D))
 	{
 		m_CameraPosition -= right * m_Speed;
 		m_CameraTarget -= right * m_Speed;
 		
-		std::cout << "Cameraposition" << m_CameraPosition;
-		std::cout << "D was pressed" << "\n";
+		
 	}
 }
 

@@ -90,7 +90,6 @@ void Window::SetWindow(int width, int height, const char* title)
 			elapsedTime = FrameEndTime - FrameStart;//recalculate elapsed time
 		}
 
-
 	}
 
 }

@@ -733,7 +733,7 @@ public:
        //forward vector
        Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
        
-       //right vector
+       //right vectorforward
        Vector3F<float> right = CameraU.CrossProduct(forward).Normalize3d();
        //true_up vector
        Vector3F<float> true_up= forward.CrossProduct(right);
@@ -767,7 +767,7 @@ public:
     Matrix& Projection(const double& fov,const float& aspectRatio, const float& nearplane, const float& farplane)
     {
         //first row
-        this->setElement(0, 0, 1 / aspectRatio * tan(fov / 2));
+        this->setElement(0, 0, 1.0f / (aspectRatio * tan(fov / 2)));
         this->setElement(0, 1, 0);
         this->setElement(0, 2, 0);
         this->setElement(0, 3, 0);

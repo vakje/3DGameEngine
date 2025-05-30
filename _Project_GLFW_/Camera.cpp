@@ -5,7 +5,7 @@
 Camera::Camera()
 {
 	m_FOV = 75.0 * PI / 180.0;
-	m_AspectRatio = Width / Height;
+	m_AspectRatio = static_cast<float>(Width) / Height;
 	m_NearPlane = 0.1f;
 	m_FarPlane = 100.0f;
 	m_Speed = 10.00;
@@ -69,41 +69,46 @@ Matrix<float> Camera::getProjection(const double& fov,const float& aspectRatio, 
 {
 	return m_Instance.Projection(fov,aspectRatio,nearplane,farplane);
 }
-
+static float lastframe = 0.0f;
+static float deltatime = 0.0f;
 void Camera::InputValidation()
 {
 	//to process cameramovement in time
-	float deltatime = 0.0f;
-	float lastframe = 0.0f;
 	float currentframe = glfwGetTime();
 	deltatime = currentframe - lastframe;
 	lastframe = currentframe;
-	m_Speed = 0.005f* deltatime;
- 
+	m_Speed = 5.0f* deltatime;
+
+	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
+	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
 	if (Input::getKey(GLFW_KEY_W)) 
 	{
 		
-		m_CameraPosition += m_CameraTarget * m_Speed;
+		m_CameraPosition += forward * m_Speed;
 		std::cout << "deltatime" << deltatime << "\n";
 		std::cout << "CameraPosition: " << m_CameraPosition << "\n";
 		std::cout << "W was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_S))
 	{
-		m_CameraPosition -= m_CameraTarget * m_Speed;
+		
+		m_CameraPosition -= forward * m_Speed;
 		std::cout << "deltatime" << deltatime << "\n";
 		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "S was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_A))
 	{
-		m_CameraPosition -= (m_CameraTarget.Crossproduct(m_CameraUp)).Normalize3d() * m_Speed;
+		m_CameraPosition += right * m_Speed;
+		m_CameraTarget += right * m_Speed;
 		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "A was pressed" << "\n";
 	}
 	if (Input::getKey(GLFW_KEY_D))
 	{
-		m_CameraPosition += (m_CameraTarget.Crossproduct(m_CameraUp)).Normalize3d() * m_Speed;
+		m_CameraPosition -= right * m_Speed;
+		m_CameraTarget -= right * m_Speed;
+		
 		std::cout << "Cameraposition" << m_CameraPosition;
 		std::cout << "D was pressed" << "\n";
 	}

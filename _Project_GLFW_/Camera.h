@@ -14,7 +14,9 @@ private:
     Vector3F<float> m_CameraPosition;
     Vector3F<float> m_CameraTarget;
     Vector3F<float> m_CameraUp;
+    
 public:
+   
     Camera();
 
     //camera's perspective(view)

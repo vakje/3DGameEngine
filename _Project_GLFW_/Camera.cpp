@@ -1,5 +1,13 @@
 #include "Camera.h"
 
+//TODO camera rotation by mouse
+
+bool firstMouse = true;
+float lastX = Width / 2.0f;
+float lastY = Height / 2.0f;
+
+float yaw = -89.0f;
+float pitch = 89.0f;
 
 
 Camera::Camera()
@@ -102,8 +110,75 @@ void Camera::InputValidation()
 		m_CameraPosition -= right * m_Speed;
 		m_CameraTarget -= right * m_Speed;
 		
+	}
+	
+}
+
+void Camera::MouseMovement()
+{
+
+	static bool wasPressed = false;
+	bool isPressed = Input::getMouseKey(GLFW_MOUSE_BUTTON_LEFT);
+
+	if (isPressed && !wasPressed) {
+		// Mouse button just pressed this frame
+		firstMouse = true;  // reset so next offset calc is clean
+	}
+
+	wasPressed = isPressed;
+	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
+	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+	if (isPressed)
+	{
+		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		Vector2F<double>mousepositions;
+		mousepositions = Vector2F<double>::CursorPos();
+		std::cout << mousepositions << "\n";
+		float xpos = mousepositions.get_X();
+		float ypos = mousepositions.get_Y();
+
+		if (firstMouse) {
+
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
+
+		lastX = xpos;
+		lastY = ypos;
+
+		float sensitivity = 0.1f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		yaw += xoffset;
+		pitch += yoffset;
+		// this code saves camera for gimbal lock 
+		if (pitch > 89.0f)
+		{
+			pitch = 89.0f;
+		}
+		if (pitch < -89.0f)
+		{
+			pitch = -89.0f;
+		}
+		std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
+		Vector3F<float> direction;
+		direction.setX3D(cos(yaw * (3.14159265358 / 180)) * cos(pitch * (3.14159265358 / 180)));
+		direction.setY3D(sin(pitch * (3.14159265358 / 180)));
+		direction.setZ3D(sin(yaw * (3.14159265358 / 180)) * cos(pitch * (3.14159265358 / 180)));
+		forward = direction.Normalize3d();
+		m_CameraTarget = m_CameraPosition + forward;
+		
+
 		
 	}
+	else {
+		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR,GLFW_CURSOR_NORMAL);
+	}
+	
 }
 
 

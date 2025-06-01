@@ -33,7 +33,7 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 		std::string PATH = Toolspath.string();
 		//this must split the string and take last file
 		std::string splitedtoken = UTils::FileChecker(PATH, "\\");
-		std::cout << "this is the final splited thing:  " << splitedtoken << "  " << std::endl;
+		std::cout << "Meshe's Name:  " << splitedtoken << "  " << std::endl;
 		if (!splitedtoken.find(".obj"))
 		{
 			std::cout << "this is not a obj file" << std::endl;
@@ -122,12 +122,12 @@ void Renderer::InitilizeOpengl()
 	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);
 
 	
-	float time = glfwGetTime();
+	float m_time = glfwGetTime();
 	int Vertices_size = m_Vertices.size();
 	float* colors = new float[Vertices_size];
 	for (int i = 0; i < Vertices_size; i++)
 	{
-		colors[i] = 0.5f * (sin(time + i * 0.9f) + 1.0f);
+		colors[i] = 0.5f * (sin(m_time + i * 0.9f) + 1.0f);
 	}
 	//now giving this data to our GPU
     // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
@@ -210,20 +210,23 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
 	Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
 	
+	
+	
+	float m_time = glfwGetTime();
+	
 
-	float time = glfwGetTime();
 	double angle = 0.0;
 
 
 	Matrix<float> I(4, 4, 1.0f);
 	I.Initidentity(4);
-	angle = m_Cam.getSpeed() * m_Cam.getFov() * time;
+	angle = m_Cam.getSpeed() * m_Cam.getFov() * m_time;
 	
 	Matrix<float> M(4, 4, 1.0f);
 
  
 	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
-	
+	m_Cam.MouseMovement();
 	m_Cam.InputValidation();
 	//view matrix creation
 	Matrix<float> view = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());

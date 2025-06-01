@@ -1,6 +1,6 @@
 #include "WindowComponent.h"
 #include "Game.h"
-
+#include <thread>
 
 GLFWwindow* Window::m_mywindow;
 
@@ -37,12 +37,13 @@ void Window::SetWindow(int width, int height, const char* title)
 	game.Initilize();
 	
 	//--------------------------------------------------------------
-
-
+	
+	
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(m_mywindow))
 	{
+		
 
 		// putting seconds in milliseconds 
 		// framestart before the loop
@@ -89,6 +90,7 @@ void Window::SetWindow(int width, int height, const char* title)
 			FrameEndTime = glfwGetTime() * 1000.0;//updating currenttime
 			elapsedTime = FrameEndTime - FrameStart;//recalculate elapsed time
 		}
+		 
 
 	}
 

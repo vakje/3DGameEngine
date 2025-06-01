@@ -37,6 +37,7 @@ public:
     Matrix<float> getProjection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
 
     void InputValidation();
+    void MouseMovement();
 
 };
 

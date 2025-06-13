@@ -44,7 +44,6 @@ void Window::SetWindow(int width, int height, const char* title)
 	while (!glfwWindowShouldClose(m_mywindow))
 	{
 		
-
 		// putting seconds in milliseconds 
 		// framestart before the loop
 		double FrameStart = glfwGetTime() * 1000;

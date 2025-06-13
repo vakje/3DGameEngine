@@ -40,7 +40,8 @@ struct Game
 		if (Input::getStates(true, false, GLFW_MOUSE_BUTTON_LEFT))
 		{
 			std::cout << "we just released some mouse key" << std::endl;
-		}if (Input::getStates(false, true, GLFW_KEY_ESCAPE))
+		}
+		if (Input::getStates(false, true, GLFW_KEY_ESCAPE))
 		{
 			std::cout << "Pressed Escape!" << std::endl;
 			glfwSetWindowShouldClose(Window::m_mywindow, GLFW_TRUE);

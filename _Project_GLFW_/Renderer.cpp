@@ -18,8 +18,6 @@ void Renderer::SetWindowICON()
 
 	GLFWimage images[1];
 
-	 
-
 
 	glfwSetWindowIcon(Window::m_mywindow, 1, images);
 
@@ -203,6 +201,8 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 
 	return program;
 }
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 void Renderer::SetupMVP(unsigned int ShaderProgram)
 {
@@ -210,24 +210,26 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
 	Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
 	
+	float current = static_cast<float>(glfwGetTime());
+	deltaTime = current - lastFrame;
+	lastFrame = current;
 	
-	
-	float m_time = glfwGetTime();
-	
-
 	double angle = 0.0;
-
+	
 
 	Matrix<float> I(4, 4, 1.0f);
 	I.Initidentity(4);
-	angle = m_Cam.getSpeed() * m_Cam.getFov() * m_time;
+	
 	
 	Matrix<float> M(4, 4, 1.0f);
-
  
-	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
-	m_Cam.MouseMovement();
-	m_Cam.InputValidation();
+	angle = m_Cam.getSpeed() * m_Cam.getFov() * deltaTime;
+	
+	angle *= ToRadians;
+	I = M.Scale(I, forScale) * M.Rotate(I, angle,forRotation) * M.Translate(I, forTranslation);
+	
+	m_Cam.InputValidation(deltaTime);
+	m_Cam.MouseMovement(deltaTime);
 	//view matrix creation
 	Matrix<float> view = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());
 	

@@ -65,6 +65,11 @@ Vector3F<float> Camera::getCameraUp() const
 	return m_CameraUp;
 }
 
+double Camera::setSpeed(double s_speed)
+{
+	return this->m_Speed=s_speed;
+}
+
 Matrix<float> Camera::getLookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
 {
 	
@@ -75,14 +80,11 @@ Matrix<float> Camera::getProjection(const double& fov,const float& aspectRatio, 
 {
 	return m_Instance.Projection(fov,aspectRatio,nearplane,farplane);
 }
-static float lastframe = 0.0f;
-static float deltatime = 0.0f;
-void Camera::InputValidation()
+
+void Camera::InputValidation(float deltatime)
 {
 	//to process cameramovement in time
-	float currentframe = glfwGetTime();
-	deltatime = currentframe - lastframe;
-	lastframe = currentframe;
+	
 	m_Speed = 5.0f* deltatime;
 
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
@@ -114,26 +116,26 @@ void Camera::InputValidation()
 	
 }
 
-void Camera::MouseMovement()
+void Camera::MouseMovement(float deltatime)
 {
 
 	static bool wasPressed = false;
 	bool isPressed = Input::getMouseKey(GLFW_MOUSE_BUTTON_LEFT);
 
-	if (isPressed && !wasPressed) {
-		// Mouse button just pressed this frame
-		firstMouse = true;  // reset so next offset calc is clean
+	if (isPressed && !wasPressed) 
+	{	 
+		firstMouse = true;   
 	}
 
 	wasPressed = isPressed;
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
-	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();	
 	if (isPressed)
 	{
 		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		Vector2F<double>mousepositions;
 		mousepositions = Vector2F<double>::CursorPos();
-		std::cout << mousepositions << "\n";
+		 
 		float xpos = mousepositions.get_X();
 		float ypos = mousepositions.get_Y();
 
@@ -145,7 +147,7 @@ void Camera::MouseMovement()
 		}
 		float xoffset = xpos - lastX;
 		float yoffset = lastY - ypos;
-
+	
 		lastX = xpos;
 		lastY = ypos;
 
@@ -164,15 +166,14 @@ void Camera::MouseMovement()
 		{
 			pitch = -89.0f;
 		}
-		std::cout << "Yaw: " << yaw << " Pitch: " << pitch << std::endl;
+		float r_Yaw = yaw * ToRadians;
+		float r_Pitch = pitch * ToRadians;
 		Vector3F<float> direction;
-		direction.setX3D(cos(yaw * (3.14159265358 / 180)) * cos(pitch * (3.14159265358 / 180)));
-		direction.setY3D(sin(pitch * (3.14159265358 / 180)));
-		direction.setZ3D(sin(yaw * (3.14159265358 / 180)) * cos(pitch * (3.14159265358 / 180)));
+		direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
+		direction.setY3D(sin(r_Pitch));
+		direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
 		forward = direction.Normalize3d();
-		m_CameraTarget = m_CameraPosition + forward;
-		
-
+		m_CameraTarget = m_CameraPosition + forward;	
 		
 	}
 	else {

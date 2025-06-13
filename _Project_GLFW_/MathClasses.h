@@ -9,7 +9,8 @@
 #include <type_traits>
 
 
-const double PI = 3.14159265358979323846;
+constexpr double PI = 3.14159265358979323846;
+constexpr float ToRadians = PI / 180;
 const int Width = 1920;
 const int Height = 1080;
 
@@ -166,7 +167,7 @@ public:
 
     Vector2F Rotate(const T& angle) 
     {
-        T rad = angle * (3.14159265358 / 180);
+        T rad = angle * ToRadians;
         T sin = std::sin(rad);
         T cos = std::cos(rad);
 

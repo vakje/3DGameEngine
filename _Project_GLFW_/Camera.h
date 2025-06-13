@@ -30,14 +30,16 @@ public:
     Vector3F<float>& getCameraPosition();
     Vector3F<float> getCameraTarget()const;
     Vector3F<float> getCameraUp()const;
+
+    double setSpeed(double s_speed);
 public:
 
     //projection tools
     Matrix<float> getLookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU);
     Matrix<float> getProjection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
 
-    void InputValidation();
-    void MouseMovement();
+    void InputValidation(float deltatime);
+    void MouseMovement(float deltatime);
 
 };
 

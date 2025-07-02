@@ -84,7 +84,7 @@ Matrix<float> Camera::getProjection(const double& fov,const float& aspectRatio, 
 void Camera::InputValidation(float deltatime)
 {
 	//to process cameramovement in time
-	
+	float position_y = m_CameraPosition.getY3D();
 	m_Speed = 5.0f* deltatime;
 
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
@@ -93,12 +93,14 @@ void Camera::InputValidation(float deltatime)
 	{
 		
 		m_CameraPosition += forward * m_Speed;
+		m_CameraTarget += forward * m_Speed;
 		
 	}
 	if (Input::getKey(GLFW_KEY_S))
 	{
 		
 		m_CameraPosition -= forward * m_Speed;
+		m_CameraTarget -= forward * m_Speed;
 		
 	}
 	if (Input::getKey(GLFW_KEY_A))
@@ -112,6 +114,23 @@ void Camera::InputValidation(float deltatime)
 		m_CameraPosition -= right * m_Speed;
 		m_CameraTarget -= right * m_Speed;
 		
+	}
+	if (Input::getKey(GLFW_KEY_E))
+	{
+		
+		//add y s 
+		position_y += m_Speed;
+		m_CameraPosition.setY3D(position_y);
+		float target_y = m_CameraTarget.getY3D();
+		m_CameraTarget.setY3D(target_y + m_Speed);
+	}
+	if (Input::getKey(GLFW_KEY_Q))
+	{
+		//sub y s
+		position_y -= m_Speed;
+		m_CameraPosition.setY3D(position_y);
+		float target_y = m_CameraTarget.getY3D();
+		m_CameraTarget.setY3D(target_y - m_Speed);
 	}
 	
 }

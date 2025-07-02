@@ -3,8 +3,8 @@
 #include "MathClasses.h"
 
 
-const int WIDTH = 1920;
-const int HEIGHT = 1080;
+const int WIDTH = 2560;
+const int HEIGHT = 1440;
 const char* TITLE = "3D GAME ENGINE";
 
 int main(void)

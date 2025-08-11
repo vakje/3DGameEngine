@@ -98,6 +98,8 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# But don't ignore .obj files inside the mesh folder
+!_Project_GLFW_/TOOLS/*.obj
 # Chutzpah Test files
 _Chutzpah*
 

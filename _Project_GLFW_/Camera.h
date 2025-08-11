@@ -14,6 +14,14 @@ private:
     Vector3F<float> m_CameraPosition;
     Vector3F<float> m_CameraTarget;
     Vector3F<float> m_CameraUp;
+
+
+
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+    float lastX = Width / 2.0f;
+    float lastY = Height / 2.0f;
+    bool firstMouse = true;
     
 public:
    

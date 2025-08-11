@@ -114,7 +114,7 @@ void Renderer::InitilizeOpengl()
 
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
-	std::string ObjPATH = "cube.obj";
+	std::string ObjPATH = "Katana.obj";
 	
 	
 	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);

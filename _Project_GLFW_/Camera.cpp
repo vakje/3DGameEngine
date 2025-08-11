@@ -2,12 +2,7 @@
 
 //TODO camera rotation by mouse
 
-bool firstMouse = true;
-float lastX = Width / 2.0f;
-float lastY = Height / 2.0f;
 
-float yaw = -89.0f;
-float pitch = 89.0f;
 
 
 Camera::Camera()
@@ -200,5 +195,6 @@ void Camera::MouseMovement(float deltatime)
 	}
 	
 }
+
 
 

@@ -66,7 +66,7 @@ public:
     }
 
     //returning the length of the vector or in another words hypotenus of the triangle 
-    T LengthVector2f()
+    T LengthVector2f() const
     {
         return sqrt(m_X * m_X + m_Y * m_Y);
     }
@@ -99,6 +99,7 @@ public:
     //this is to add another vector 2f 
     Vector2F operator+(const Vector2F& num)const
     {
+       
         return Vector2F(m_X + num.get_X(), m_Y + num.get_Y());
     }
     Vector2F operator+=(const Vector2F& num)
@@ -393,7 +394,7 @@ public:
         T y_ = m_w * other.getY3D() + m_z * other.getX3D() - m_x * other.getZ3D();
         T z_ = m_w * other.getZ3D() + m_x * other.getY3D() - m_y * other.getX3D();
 
-        return  Quaternion(x_, y_, z_, w_);
+        return  Quatornion(x_, y_, z_, w_);
     }
 
 

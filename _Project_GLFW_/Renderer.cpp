@@ -114,7 +114,7 @@ void Renderer::InitilizeOpengl()
 
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
-	std::string ObjPATH = "Katana.obj";
+	std::string ObjPATH = "cube.obj";
 	
 	
 	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);
@@ -125,7 +125,7 @@ void Renderer::InitilizeOpengl()
 	float* colors = new float[Vertices_size];
 	for (int i = 0; i < Vertices_size; i++)
 	{
-		colors[i] = 0.5f * (sin(m_time + i * 0.9f) + 1.0f);
+		colors[i] = 0.5f * (cos(m_time + i * 0.9f) + 1.0f);
 	}
 	//now giving this data to our GPU
     // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer

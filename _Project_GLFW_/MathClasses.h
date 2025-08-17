@@ -421,7 +421,7 @@ public:
     {
         return  Quatornion(-m_x, -m_y, -m_z, m_w);
     }
-    //r should be (1,1,0)normalized for vertical spinning 
+    //r should be (1,1,0)normalized for vertical spinning need to be fixed ..
     Quatornion Rotation(double& alpha, Vector3F<int>& r)
     {
         r.Normalize3d();
@@ -736,7 +736,7 @@ public:
        Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
        
        //right vectorforward
-       Vector3F<float> right = CameraU.CrossProduct(forward).Normalize3d();
+       Vector3F<float>right = CameraU.CrossProduct(forward).Normalize3d();
        //true_up vector
        Vector3F<float> true_up= forward.CrossProduct(right);
       

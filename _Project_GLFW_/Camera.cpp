@@ -1,9 +1,5 @@
 #include "Camera.h"
 
-//TODO camera rotation by mouse
-
-
-
 
 Camera::Camera()
 {
@@ -15,8 +11,7 @@ Camera::Camera()
 	m_Instance = Matrix<float>(4, 4, 1.0f);
 	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
 	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
-	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
-
+	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);	
 }
 
 double Camera::getFov() const
@@ -59,6 +54,8 @@ Vector3F<float> Camera::getCameraUp() const
 {
 	return m_CameraUp;
 }
+
+
 
 double Camera::setSpeed(double s_speed)
 {
@@ -113,7 +110,7 @@ void Camera::InputValidation(float deltatime)
 	if (Input::getKey(GLFW_KEY_E))
 	{
 		
-		//add y s 
+		
 		position_y += m_Speed;
 		m_CameraPosition.setY3D(position_y);
 		float target_y = m_CameraTarget.getY3D();
@@ -121,7 +118,7 @@ void Camera::InputValidation(float deltatime)
 	}
 	if (Input::getKey(GLFW_KEY_Q))
 	{
-		//sub y s
+		
 		position_y -= m_Speed;
 		m_CameraPosition.setY3D(position_y);
 		float target_y = m_CameraTarget.getY3D();
@@ -146,7 +143,8 @@ void Camera::MouseMovement(float deltatime)
 	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();	
 	if (isPressed)
 	{
-		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		//cursor hiddan could dis orient program fixed this with with cursor disabled 
+		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		Vector2F<double>mousepositions;
 		mousepositions = Vector2F<double>::CursorPos();
 		 
@@ -159,9 +157,9 @@ void Camera::MouseMovement(float deltatime)
 			lastY = ypos;
 			firstMouse = false;
 		}
-		float xoffset = xpos - lastX;
+		float xoffset = lastX - xpos;
 		float yoffset = lastY - ypos;
-	
+		
 		lastX = xpos;
 		lastY = ypos;
 
@@ -171,7 +169,11 @@ void Camera::MouseMovement(float deltatime)
 
 		yaw += xoffset;
 		pitch += yoffset;
-		// this code saves camera for gimbal lock 
+		
+
+
+
+		// this code saves camera from gimbal lock 
 		if (pitch > 89.0f)
 		{
 			pitch = 89.0f;

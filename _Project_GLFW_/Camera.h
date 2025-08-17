@@ -14,6 +14,7 @@ private:
     Vector3F<float> m_CameraPosition;
     Vector3F<float> m_CameraTarget;
     Vector3F<float> m_CameraUp;
+ 
 
 
 
@@ -38,6 +39,7 @@ public:
     Vector3F<float>& getCameraPosition();
     Vector3F<float> getCameraTarget()const;
     Vector3F<float> getCameraUp()const;
+ 
 
     double setSpeed(double s_speed);
 public:

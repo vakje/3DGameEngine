@@ -79,8 +79,9 @@ public:
     Vector2F Normalization()
     {
         T length = LengthVector2f();
-        if (length == static_cast<T>(0)) {
-            throw(std::runtime_error("Vector division by zero"));
+        if (length == static_cast<T>(0)) 
+        {
+            return Vector2F<T>(0, 0);
         }
         return Vector2F<T>(m_X/length,m_Y/length);
     }
@@ -125,21 +126,30 @@ public:
     }
     Vector2F operator/(const Vector2F& num)const
     {
-        if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0) )
-        { 
-            throw(std::runtime_error("Vector division by zero"));
+        T x=m_X, y=m_Y;
+        if (num.get_X() != static_cast<T>(0))         
+        {        
+             x = m_X / num.get_X();
         }
-        
-        return Vector2F(m_X / num.get_X(), m_Y / num.get_Y());
+        if (num.get_Y() != static_cast<T>(0))
+        {
+             y = m_Y / num.get_Y();
+        }
+         
+        return Vector2F(x, y);
     }
     Vector2F& operator/=(const Vector2F& num)
     {
-        if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
+
+        if (num.get_X() != static_cast<T>(0))
         {
-            throw(std::runtime_error("Vector division by zero"));
+            m_X /= num.get_X();
+            
         }
-        m_X /= num.get_X();
-        m_Y /= num.get_Y();
+        if (num.get_Y() != static_cast<T>(0))
+        {
+            m_Y /= num.get_Y();
+        }
         return *this;
     }
     Vector2F operator+(const T& num)const
@@ -176,7 +186,7 @@ public:
     {
         if (num == static_cast<T>(0))
         {
-            throw(std::runtime_error("Vector division by zero"));
+            return Vector2F(m_X/1,m_Y/1);
         }
 
         return Vector2F(m_X / num, m_Y / num);
@@ -184,8 +194,8 @@ public:
     Vector2F& operator/=(const T& num)
     {
         if (num == static_cast<T>(0))
-        {
-            throw(std::runtime_error("Vector division by zero"));
+        {      
+            return *this;        
         }
         m_X /= num;
         m_Y /= num;
@@ -274,6 +284,7 @@ public:
         if (length == static_cast<T>(0)) 
         {
             //throw(std::runtime_error("Vector division by zero"));
+            return Vector3F<T>(0, 0, 0);
         }
         return Vector3F<T>(m_X/length,m_Y/length,m_Z/length);
     }
@@ -287,29 +298,29 @@ public:
     {
         return Vector3F(m_X + other.getX3D(), m_Y + other.getY3D(), m_Z + other.getZ3D());
     }
-    Vector3F operator+=(const Vector3F& other)
+    Vector3F& operator+=(const Vector3F& other)
     {
-        this->m_X += other.getX3D();
-        this->m_Y += other.getY3D();
-        this->m_Z += other.getZ3D();
+        m_X += other.getX3D();
+        m_Y += other.getY3D();
+        m_Z += other.getZ3D();
         return *this;
     }
     Vector3F operator-(const Vector3F& other)const
     {
         return Vector3F(m_X - other.getX3D(), m_Y - other.getY3D(), m_Z - other.getZ3D());
     }
-    Vector3F operator-=(const Vector3F& other)
+    Vector3F& operator-=(const Vector3F& other)
     {
-        this->m_X -= other.getX3D();
-        this->m_Y -= other.getY3D();
-        this->m_Z -= other.getZ3D();
+        m_X -= other.getX3D();
+        m_Y -= other.getY3D();
+        m_Z -= other.getZ3D();
         return *this;
     }
     Vector3F operator*(const Vector3F& other) const
     {
         return Vector3F(m_X * other.getX3D(), m_Y * other.getY3D(), m_Z * other.getZ3D());
     }
-    Vector3F operator*=(const Vector3F& other)
+    Vector3F& operator*=(const Vector3F& other)
     {
         m_X *= other.getX3D();
         m_Y *= other.getY3D();
@@ -318,55 +329,101 @@ public:
     }
     Vector3F operator/(const Vector3F& other) const
     {
-        if (other.getX3D() == 0.0f) {
-            other.getX3D() = 1.0f;
+        T x=m_X, y=m_Y, z=m_Z;
+        
+        if (other.get_X() != static_cast<T>(0))
+        {
+            x = m_X / other.getX3D();
         }
-        if (other.getY3D() == 0.0f) {
-            other.getY3D() = 1.0f;
+       
+        if (other.get_Y() != static_cast<T>(0))
+        {
+             y = m_Y / other.getY3D();
         }
-        if (other.getZ3D() == 0.0f) {
-            other.getZ3D() = 1.0f;
+        if (other.get_Z() != static_cast<T>(0))
+        {
+             z = m_Z / other.getZ3D();
         }
-        return Vector3F(m_X / other.getX3D(), m_Y / other.getY3D(), m_Z / other.getZ3D());
+          
+        return Vector3F(x, y, z);
     }
-    Vector3F operator/=(const Vector3F& other)
+    Vector3F& operator/=(const Vector3F& other)
     {
-        if (other.getX3D() == 0.0f) {
-            other.getX3D() = 1.0f;
+        if (other.get_X() != static_cast<T>(0))
+        {
+            m_X /= other.getX3D();
         }
-        if (other.getY3D() == 0.0f) {
-            other.getY3D() = 1.0f;
+
+        if (other.get_Y() != static_cast<T>(0))
+        {
+            m_Y /= other.getY3D();
         }
-        if (other.getZ3D() == 0.0f) {
-            other.getZ3D() = 1.0f;
+        if (other.get_Z() != static_cast<T>(0))
+        {
+            m_Z /= other.getZ3D();
         }
-        return Vector3F(m_X /= other.getX3D(), m_Y /= other.getY3D(), m_Z /= other.getZ3D());
+        
+
+        return *this;
     }
     Vector3F operator+(const T& other) const
     {
         return Vector3F(m_X + other, m_Y + other, m_Z + other);
     }
+    Vector3F& operator+=(const T& other) 
+    {
+        m_X += other;
+        m_Y += other;
+        m_Z += other;
+        return *this;
+    }
     Vector3F operator-(const T& other)const
     {
         return Vector3F(m_X - other, m_Y - other, m_Z - other);
     }
+    Vector3F& operator-=(const T& other)
+    {
+        m_X -= other;
+        m_Y -= other;
+        m_Z -= other;
+        return *this;
+    }
     Vector3F operator*(const T& other)const
     {
-
         return Vector3F(m_X * other, m_Y * other, m_Z * other);
     }
+    Vector3F& operator*=(const T& other)
+    {
+        m_X -= other;
+        m_Y -= other;
+        m_Z -= other;
+        return *this;
+    }
+
     Vector3F operator/(const T& other)const
     {
-        if (other.getX3D() == 0.0f) {
-            other.getX3D() = 1.0f;
+        T x = m_X, y = m_Y, z = m_Z;
+
+        if (other != static_cast<T>(0))
+        {
+            x = m_X / other;
+            y = m_Y / other;
+            z = m_Z / other;
         }
-        if (other.getY3D() == 0.0f) {
-            other.getY3D() = 1.0f;
+
+        return Vector3F(x, y, z);
+       
+    }
+    Vector3F& operator/=(const T& other)
+    {
+        if (other != static_cast<T>(0))
+        {
+            m_X /= other;
+            m_Y /= other;
+            m_Z /= other;
         }
-        if (other.getZ3D() == 0.0f) {
-            other.getZ3D() = 1.0f;
-        }
-        return Vector3F(m_X / other, m_Y / other, m_Z / other);
+       
+        return *this;
     }
 
     Vector3F  Crossproduct(Vector3F vector) 
@@ -757,37 +814,41 @@ public:
     //look at function 
     Matrix& LookOfCamera(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU) 
     {  
-       
-       //forward vector
-       Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
-       
-       //right vectorforward
-       Vector3F<float>right = CameraU.CrossProduct(forward).Normalize3d();
-       //true_up vector
-       Vector3F<float> true_up= forward.CrossProduct(right);
-      
+        try {
+            //forward vector
+            Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
 
-       
-       //first row
-       this->setElement(0, 0, right.getX3D());
-       this->setElement(0, 1, right.getY3D());
-       this->setElement(0, 2, right.getZ3D());
-       this->setElement(0, 3, -right.Dotproduct(CameraP));
-       //second row
-       this->setElement(1, 0, true_up.getX3D());
-       this->setElement(1, 1, true_up.getY3D());
-       this->setElement(1, 2, true_up.getZ3D());
-       this->setElement(1, 3, -true_up.Dotproduct(CameraP));
-       //third row 
-       this->setElement(2, 0, -forward.getX3D());
-       this->setElement(2, 1, -forward.getY3D());
-       this->setElement(2, 2, -forward.getZ3D());
-       this->setElement(2, 3, forward.Dotproduct(CameraP));
-       //forth row
-       this->setElement(3, 0, 0);
-       this->setElement(3, 1, 0);
-       this->setElement(3, 2, 0);
-       this->setElement(3, 3, 1);
+            //right vectorforward
+            Vector3F<float>right = CameraU.CrossProduct(forward).Normalize3d();
+            //true_up vector
+            Vector3F<float> true_up = forward.CrossProduct(right);
+
+
+
+            //first row
+            this->setElement(0, 0, right.getX3D());
+            this->setElement(0, 1, right.getY3D());
+            this->setElement(0, 2, right.getZ3D());
+            this->setElement(0, 3, -right.Dotproduct(CameraP));
+            //second row
+            this->setElement(1, 0, true_up.getX3D());
+            this->setElement(1, 1, true_up.getY3D());
+            this->setElement(1, 2, true_up.getZ3D());
+            this->setElement(1, 3, -true_up.Dotproduct(CameraP));
+            //third row 
+            this->setElement(2, 0, -forward.getX3D());
+            this->setElement(2, 1, -forward.getY3D());
+            this->setElement(2, 2, -forward.getZ3D());
+            this->setElement(2, 3, forward.Dotproduct(CameraP));
+            //forth row
+            this->setElement(3, 0, 0);
+            this->setElement(3, 1, 0);
+            this->setElement(3, 2, 0);
+            this->setElement(3, 3, 1);
+        }catch(const std::runtime_error& ex)
+        {
+            std::cout << "Error:" << ex.what() << "\n";
+        }
 
        return *this;
     }

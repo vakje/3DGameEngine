@@ -75,127 +75,136 @@ Matrix<float> Camera::getProjection(const double& fov,const float& aspectRatio, 
 
 void Camera::InputValidation(float deltatime)
 {
-	//to process cameramovement in time
-	float position_y = m_CameraPosition.getY3D();
-	m_Speed = 5.0f* deltatime;
+	try {
+		//to process cameramovement in time
+		float position_y = m_CameraPosition.getY3D();
+		m_Speed = 5.0f * deltatime;
 
-	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
-	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
-	if (Input::getKey(GLFW_KEY_W)) 
-	{
-		
-		m_CameraPosition += forward * m_Speed;
-		m_CameraTarget += forward * m_Speed;
-		
+		Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
+		Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+		if (Input::getKey(GLFW_KEY_W))
+		{
+
+			m_CameraPosition += forward * m_Speed;
+			m_CameraTarget += forward * m_Speed;
+
+		}
+		if (Input::getKey(GLFW_KEY_S))
+		{
+
+			m_CameraPosition -= forward * m_Speed;
+			m_CameraTarget -= forward * m_Speed;
+
+		}
+		if (Input::getKey(GLFW_KEY_A))
+		{
+			m_CameraPosition += right * m_Speed;
+			m_CameraTarget += right * m_Speed;
+
+		}
+		if (Input::getKey(GLFW_KEY_D))
+		{
+			m_CameraPosition -= right * m_Speed;
+			m_CameraTarget -= right * m_Speed;
+
+		}
+		if (Input::getKey(GLFW_KEY_E))
+		{
+
+
+			position_y += m_Speed;
+			m_CameraPosition.setY3D(position_y);
+			float target_y = m_CameraTarget.getY3D();
+			m_CameraTarget.setY3D(target_y + m_Speed);
+		}
+		if (Input::getKey(GLFW_KEY_Q))
+		{
+
+			position_y -= m_Speed;
+			m_CameraPosition.setY3D(position_y);
+			float target_y = m_CameraTarget.getY3D();
+			m_CameraTarget.setY3D(target_y - m_Speed);
+		}
 	}
-	if (Input::getKey(GLFW_KEY_S))
+	catch (const std::runtime_error& ex) 
 	{
-		
-		m_CameraPosition -= forward * m_Speed;
-		m_CameraTarget -= forward * m_Speed;
-		
-	}
-	if (Input::getKey(GLFW_KEY_A))
-	{
-		m_CameraPosition += right * m_Speed;
-		m_CameraTarget += right * m_Speed;
-		
-	}
-	if (Input::getKey(GLFW_KEY_D))
-	{
-		m_CameraPosition -= right * m_Speed;
-		m_CameraTarget -= right * m_Speed;
-		
-	}
-	if (Input::getKey(GLFW_KEY_E))
-	{
-		
-		
-		position_y += m_Speed;
-		m_CameraPosition.setY3D(position_y);
-		float target_y = m_CameraTarget.getY3D();
-		m_CameraTarget.setY3D(target_y + m_Speed);
-	}
-	if (Input::getKey(GLFW_KEY_Q))
-	{
-		
-		position_y -= m_Speed;
-		m_CameraPosition.setY3D(position_y);
-		float target_y = m_CameraTarget.getY3D();
-		m_CameraTarget.setY3D(target_y - m_Speed);
+		std::cout << "Error:" << ex.what() << "\n";
 	}
 	
 }
 
 void Camera::MouseMovement(float deltatime)
 {
+	
+		static bool wasPressed = false;
+		bool isPressed = Input::getMouseKey(GLFW_MOUSE_BUTTON_LEFT);
 
-	static bool wasPressed = false;
-	bool isPressed = Input::getMouseKey(GLFW_MOUSE_BUTTON_LEFT);
+		if (isPressed && !wasPressed)
+		{
+			firstMouse = true;
+		}
 
-	if (isPressed && !wasPressed) 
-	{	 
-		firstMouse = true;   
-	}
+		wasPressed = isPressed;
+		Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
+		Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+		if (isPressed)
+		{
+			//cursor hiddan could dis orient program fixed this with with cursor disabled 
+			glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			Vector2F<double>mousepositions;
+			mousepositions = Vector2F<double>::CursorPos();
+			 
 
-	wasPressed = isPressed;
-	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
-	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();	
-	if (isPressed)
-	{
-		//cursor hiddan could dis orient program fixed this with with cursor disabled 
-		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		Vector2F<double>mousepositions;
-		mousepositions = Vector2F<double>::CursorPos();
-		Vector2F<double> v(123.456, 789.012);
-		
-		float xpos = mousepositions.get_X();
-		float ypos = mousepositions.get_Y();
+			float xpos = mousepositions.get_X();
+			float ypos = mousepositions.get_Y();
 
-		if (firstMouse) {
+			if (firstMouse) {
+
+				lastX = xpos;
+				lastY = ypos;
+				firstMouse = false;
+			}
+			float xoffset = lastX - xpos;
+			float yoffset = lastY - ypos;
 
 			lastX = xpos;
 			lastY = ypos;
-			firstMouse = false;
+
+			float sensitivity = 0.05f;
+			xoffset *= sensitivity;
+			yoffset *= sensitivity;
+
+			yaw += xoffset;
+			pitch += yoffset;
+
+
+
+
+			// this code saves camera from gimbal lock 
+			if (pitch > 89.0f)
+			{
+				pitch = 89.0f;
+			}
+			if (pitch < -89.0f)
+			{
+				pitch = -89.0f;
+			}
+			
+			float r_Yaw = yaw * ToRadians;
+			float r_Pitch = pitch * ToRadians;
+			std::cout << "after calc:" << yaw << "," << pitch << "\n";
+			Vector3F<float> direction;
+			direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
+			direction.setY3D(sin(r_Pitch));
+			direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
+			forward = direction.Normalize3d();
+			m_CameraTarget = m_CameraPosition + forward;
+
 		}
-		float xoffset = lastX - xpos;
-		float yoffset = lastY - ypos;
-		
-		lastX = xpos;
-		lastY = ypos;
-
-		float sensitivity = 0.1f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
-		yaw += xoffset;
-		pitch += yoffset;
-		
-
-
-
-		// this code saves camera from gimbal lock 
-		if (pitch > 89.0f)
-		{
-			pitch = 89.0f;
+		else {
+			glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
-		if (pitch < -89.0f)
-		{
-			pitch = -89.0f;
-		}
-		float r_Yaw = yaw * ToRadians;
-		float r_Pitch = pitch * ToRadians;
-		Vector3F<float> direction;
-		direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
-		direction.setY3D(sin(r_Pitch));
-		direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
-		forward = direction.Normalize3d();
-		m_CameraTarget = m_CameraPosition + forward;	
-		
-	}
-	else {
-		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR,GLFW_CURSOR_NORMAL);
-	}
+	
 	
 }
 

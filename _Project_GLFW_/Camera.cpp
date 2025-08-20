@@ -147,7 +147,8 @@ void Camera::MouseMovement(float deltatime)
 		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		Vector2F<double>mousepositions;
 		mousepositions = Vector2F<double>::CursorPos();
-		 
+		Vector2F<double> v(123.456, 789.012);
+		
 		float xpos = mousepositions.get_X();
 		float ypos = mousepositions.get_Y();
 

@@ -79,92 +79,119 @@ public:
     Vector2F Normalization()
     {
         T length = LengthVector2f();
-        if (length == 0.0f) {
-            return Vector2F<float>(0, 0);
+        if (length == static_cast<T>(0)) {
+            throw(std::runtime_error("Vector division by zero"));
         }
-       
-        m_X /= length;
-        m_Y /= length;
-
-        return *this;
+        return Vector2F<T>(m_X/length,m_Y/length);
     }
-    static Vector2F<double> CursorPos() {
-
+    static Vector2F<double> CursorPos() 
+    {
         double xpos, ypos;
-        glfwGetCursorPos(Window::m_mywindow, &xpos, &ypos);
+        glfwGetCursorPos(Window::m_mywindow, &xpos, &ypos);  
         return Vector2F<double>(xpos, ypos);
 
     }
     // functions for basic operations with vectors 
     //this is to add another vector 2f 
     Vector2F operator+(const Vector2F& num)const
-    {
-       
+    {   
         return Vector2F(m_X + num.get_X(), m_Y + num.get_Y());
     }
-    Vector2F operator+=(const Vector2F& num)
+    Vector2F& operator+=(const Vector2F& num)
     {
-        return Vector2F(m_X += num.get_X(), m_Y += num.get_Y());
+        m_X += num.get_X();
+        m_Y += num.get_Y();
+        return *this;
     }
     Vector2F operator-(const Vector2F& num)const
     {
         return Vector2F(m_X - num.get_X(), m_Y - num.get_Y());
     }
-    Vector2F operator-=(const Vector2F& num)
+    Vector2F& operator-=(const Vector2F& num)
     {
-        return Vector2F(m_X -= num.get_X(), m_Y -= num.get_Y());
+        m_X -= num.get_X();
+        m_Y -= num.get_Y();
+        return *this;
     }
     Vector2F operator*(const Vector2F& num)const
     {
         return Vector2F(m_X * num.get_X(), m_Y * num.get_Y());
     }
+    Vector2F& operator*=(const Vector2F& num)
+    {
+        m_X *= num.get_X();
+        m_Y *= num.get_Y();
+        return *this;
+    }
     Vector2F operator/(const Vector2F& num)const
     {
-        if (num.get_X() == 0.0f) {
-            num.get_X() = 1.0f;
+        if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0) )
+        { 
+            throw(std::runtime_error("Vector division by zero"));
         }
-        if (num.get_Y() == 0.0f) {
-            num.get_Y() = 1.0f;
-        }
+        
         return Vector2F(m_X / num.get_X(), m_Y / num.get_Y());
     }
-    Vector2F operator/=(const Vector2F& num)
+    Vector2F& operator/=(const Vector2F& num)
     {
-        if (num.get_X() == 0.0f) {
-            num.get_X() = 1.0f;
+        if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
+        {
+            throw(std::runtime_error("Vector division by zero"));
         }
-        if (num.get_Y() == 0.0f) {
-            num.get_Y() = 1.0f;
-        }
-        return Vector2F(m_X /= num.get_X(), m_Y /= num.get_Y());
-    }
-    Vector2F operator*=(const Vector2F& num)
-    {
-        return Vector2F(m_X *= num.get_X(), m_Y *= num.get_Y());
+        m_X /= num.get_X();
+        m_Y /= num.get_Y();
+        return *this;
     }
     Vector2F operator+(const T& num)const
     {
         return Vector2F(m_X + num, m_Y + num);
     }
+    Vector2F& operator+=(const T& num) 
+    {
+        m_X += num;
+        m_Y += num;
+        return *this;
+    }
     Vector2F operator-(const T& num)const
     {
         return Vector2F(m_X - num, m_Y - num);
+    }
+    Vector2F& operator-=(const T& num)
+    {
+        m_X -= num;
+        m_Y -= num;
+        return *this;
     }
     Vector2F operator*(const T& num)const
     {
         return Vector2F(m_X * num, m_Y * num);
     }
+    Vector2F& operator*=(const T& num)
+    {
+        m_X *= num;
+        m_Y *= num;
+        return *this;
+    }
     Vector2F operator/(const T& num)const
     {
-        if (num.get_X() == 0.0f) {
-            num.get_X() = 1.0f;
+        if (num == static_cast<T>(0))
+        {
+            throw(std::runtime_error("Vector division by zero"));
         }
-        if (num.get_Y() == 0.0f) {
-            num.get_Y() = 1.0f;
-        }
-        
+
         return Vector2F(m_X / num, m_Y / num);
     }
+    Vector2F& operator/=(const T& num)
+    {
+        if (num == static_cast<T>(0))
+        {
+            throw(std::runtime_error("Vector division by zero"));
+        }
+        m_X /= num;
+        m_Y /= num;
+        return *this;
+    }
+
 
     Vector2F Rotate(const T& angle) 
     {
@@ -244,15 +271,11 @@ public:
     Vector3F Normalize3d() 
     {
         T length = LengthVector3f();
-        if (length == 0.0f) {
-            return Vector3F<float>(0, 0, 0);
+        if (length == static_cast<T>(0)) 
+        {
+            //throw(std::runtime_error("Vector division by zero"));
         }
-        m_X /= length;
-        m_Y /= length;
-        m_Z /= length;
-
-
-        return *this;
+        return Vector3F<T>(m_X/length,m_Y/length,m_Z/length);
     }
     
     T Dotproduct(const Vector3F& r) 
@@ -288,7 +311,10 @@ public:
     }
     Vector3F operator*=(const Vector3F& other)
     {
-        return Vector3F(m_X *= other.getX3D(), m_Y *= other.getY3D(), m_Z *= other.getZ3D());
+        m_X *= other.getX3D();
+        m_Y *= other.getY3D();
+        m_Z *= other.getZ3D();
+        return *this;
     }
     Vector3F operator/(const Vector3F& other) const
     {

@@ -1,6 +1,8 @@
 
 #include "InputSystem.h"
 #include "Util.h"
+#include "Time.h"
+
 
 namespace Input {
 
@@ -32,7 +34,8 @@ namespace Input {
 
 		return false;
 	}
-	
+
+
 	// updates the lists where  i store the states of keys that was
 	// pressed/released 	
 	void Input::Update()
@@ -43,6 +46,10 @@ namespace Input {
 		FillCurrents(false, NUM_MOUSEKEYCODES, CurrentMouseKeys);
 	
 	}
+
+	
+
+	
 
 
 

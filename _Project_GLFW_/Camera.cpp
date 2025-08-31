@@ -8,6 +8,7 @@ Camera::Camera()
 	m_NearPlane = 0.1f;
 	m_FarPlane = 100.0f;
 	m_Speed = 10.00;
+	m_RotSpeed = 100.00;
 	m_Instance = Matrix<float>(4, 4, 1.0f);
 	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
 	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
@@ -37,6 +38,11 @@ float Camera::getFarPlane() const
 double Camera::getSpeed() const
 {
 	return m_Speed;
+}
+
+double Camera::getRotSpeed() const
+{
+	return m_RotSpeed;
 }
 
 Vector3F<float>& Camera::getCameraPosition()
@@ -79,6 +85,8 @@ void Camera::InputValidation(float deltatime)
 	//to process cameramovement in time
 	float position_y = m_CameraPosition.getY3D();
 	m_Speed = 5.0f * deltatime;
+	m_RotSpeed *= deltatime;
+	
 
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
 	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
@@ -110,8 +118,6 @@ void Camera::InputValidation(float deltatime)
 	}
 	if (Input::getKey(GLFW_KEY_E))
 	{
-
-
 		position_y += m_Speed;
 		m_CameraPosition.setY3D(position_y);
 		float target_y = m_CameraTarget.getY3D();
@@ -119,13 +125,32 @@ void Camera::InputValidation(float deltatime)
 	}
 	if (Input::getKey(GLFW_KEY_Q))
 	{
-
 		position_y -= m_Speed;
 		m_CameraPosition.setY3D(position_y);
 		float target_y = m_CameraTarget.getY3D();
 		m_CameraTarget.setY3D(target_y - m_Speed);
 	}
-
+	if (Input::getKey(GLFW_KEY_UP)) 
+	{
+		m_Instance.RollRotation(-m_RotSpeed);
+		
+		std::cout << "up\n";
+	}
+	if (Input::getKey(GLFW_KEY_DOWN))
+	{
+		m_Instance.RollRotation(m_RotSpeed);
+		std::cout << "down\n";
+	}
+	if (Input::getKey(GLFW_KEY_LEFT))
+	{
+		m_Instance.PitchRotation(-m_RotSpeed);
+		std::cout << "left\n";
+	}
+	if (Input::getKey(GLFW_KEY_RIGHT))
+	{
+		m_Instance.PitchRotation(m_RotSpeed);
+		std::cout << "right\n";
+	}
 
 
 }
@@ -142,15 +167,14 @@ void Camera::MouseMovement(float deltatime)
 	}
 
 	wasPressed = isPressed;
-	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
-	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+
 	if (isPressed)
 	{
 		
 		//cursor hiddan could dis orient program fixed this with with cursor disabled 
 		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		Vector2F<double>mousepositions;
-		mousepositions = Vector2F<double>::CursorPos();
+		Vector2F<double>mousepositions = Vector2F<double>::CursorPos();
+	 
 
 
 		float xpos = mousepositions.get_X();
@@ -162,13 +186,13 @@ void Camera::MouseMovement(float deltatime)
 			lastY = ypos;
 			firstMouse = false;
 		}
-		float xoffset = lastX - xpos;
+		float xoffset =  xpos- lastX;
 		float yoffset = lastY - ypos;
 
 		lastX = xpos;
 		lastY = ypos;
 
-		float sensitivity = 0.005f;
+		float sensitivity = 0.1f;
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -179,14 +203,9 @@ void Camera::MouseMovement(float deltatime)
 
 
 		// this code saves camera from gimbal lock 
-		if (pitch > 89.0f)
-		{
-			pitch = 89.0f;
-		}
-		if (pitch < -89.0f)
-		{
-			pitch = -89.0f;
-		}
+		if (pitch > 89.0f)pitch = 89.0f;
+		else if (pitch < -89.0f)pitch = -89.0f;
+
 
 		float r_Yaw = yaw * ToRadians;
 		float r_Pitch = pitch * ToRadians;
@@ -195,8 +214,9 @@ void Camera::MouseMovement(float deltatime)
 		direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
 		direction.setY3D(sin(r_Pitch));
 		direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
-		forward = direction.Normalize3d();
+		Vector3F<float> forward = direction.Normalize3d();
 		m_CameraTarget = m_CameraPosition + forward;
+		
 
 	}
 	else {

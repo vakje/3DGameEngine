@@ -8,21 +8,6 @@ void Renderer::ClearScreen()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-
-
-void Renderer::SetWindowICON()
-{
-	//TODO icon 
-	std::filesystem::path Toolspath = std::filesystem::current_path() / "TOOLS";
-	std::string path = Toolspath.string();
-
-	GLFWimage images[1];
-
-
-	glfwSetWindowIcon(Window::m_mywindow, 1, images);
-
-}
-
 void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices)
 {
 		//this line makes full path of the file must be like ..root\\user\\tools\\file.obj
@@ -32,7 +17,7 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 		//this must split the string and take last file
 		std::string splitedtoken = UTils::FileChecker(PATH, "\\");
 		std::cout << "Meshe's Name:  " << splitedtoken << "  " << std::endl;
-		if (!splitedtoken.find(".obj"))
+		if (splitedtoken.find(".obj") == std::string::npos)
 		{
 			std::cout << "this is not a obj file" << std::endl;
 		}

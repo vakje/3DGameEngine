@@ -12,8 +12,8 @@
 
 constexpr double PI = 3.14159265358979323846;
 constexpr float ToRadians = PI / 180;
-const int Width = 1920;
-const int Height = 1080;
+const int Width = 2560;
+const int Height = 1440;
 
 
 template<typename T>
@@ -288,8 +288,9 @@ public:
 		T length = LengthVector3f();
 		if (std::abs(length) <= 1e-6)
 		{
+			std::cerr << m_X << "," << m_Y << "," << m_Z << ":this was vector which length was 0\n";
 			std::cerr << "this is the error cause by division by 0" << "\n";
-			return Vector3F<T>(0, 0, 0);
+			return Vector3F<T>(0, 0, 0);			
 		}
 		return Vector3F<T>(m_X / length, m_Y / length, m_Z / length);
 	}
@@ -695,7 +696,7 @@ public:
 	//todo view,projection, uniformmatrixes functions
 	// ---------------------------------------------------------
 	// Rotations in 3d space 
-	//ROLL Rotation
+	//ROLL Rotation x
 	Matrix& RollRotation(double alpha)
 	{
 		if (this->getRow() != 4 || this->getCols() != 4)
@@ -715,7 +716,7 @@ public:
 		return *this;
 
 	}
-	//PITCH Rotation
+	//PITCH Rotation y
 	Matrix& PitchRotation(double alpha) {
 		// Ensure matrix is 4x4
 		if (this->getRow() != 4 || this->getCols() != 4) {
@@ -734,7 +735,7 @@ public:
 		// Return reference to the current matrix
 		return *this;
 	}
-	//YAW Rotation
+	//YAW Rotation y
 	Matrix& YawRotation(double alpha)
 	{
 		if (this->getRow() != 4 || this->getCols() != 4)

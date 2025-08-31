@@ -1,6 +1,6 @@
 #include "WindowComponent.h"
 #include "Game.h"
-#include <thread>
+#include "Clock.h"
 
 GLFWwindow* Window::m_mywindow;
 
@@ -8,11 +8,6 @@ Game game;
 
 void Window::SetWindow(int width, int height, const char* title)
 {
-
-	const int FramesPerSecond = 60;//cap for framerate
-	const double FrameDelay = 1000.0 / FramesPerSecond;//making framedelay 
-
-
 	if (!glfwInit())
 		return;
 
@@ -30,34 +25,20 @@ void Window::SetWindow(int width, int height, const char* title)
 		return;
 	}
 	int frames = 0;
-	//before loop time 
-	double lastTime = glfwGetTime() * 1000.0;//to make it in miliseconds
-
-	//--------------------------------------------------------------
+	//before loop time to make it in miliseconds
+	double lastTime = glfwGetTime() * 1000.0;
+	
+	Time time;
+	
 	game.Initilize();
-	
-	//--------------------------------------------------------------
-	
-	
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(m_mywindow))
-	{
-		
-		// putting seconds in milliseconds 
-		// framestart before the loop
-		double FrameStart = glfwGetTime() * 1000;
-		/* Render here */
-
-		
+	{		
+		/* Render here */		
 		game.Clear();
-
 		/* Swap front and back buffers */
-
-
-		game.MainCharacter();
-		
-       
+		game.MainCharacter();     
 		glfwSwapBuffers(m_mywindow);
 		/* Poll for and process events */
 		glfwPollEvents();
@@ -65,10 +46,6 @@ void Window::SetWindow(int width, int height, const char* title)
 		double currentTime = glfwGetTime() * 1000.0;
 		//adding frames 
 		frames++;
-
-	
-		
-
 		//if the time in the loop - time before loop  is more than 1 miliseconds
 		if (currentTime - lastTime >= 1000.0) // Print every second
 		{
@@ -79,18 +56,7 @@ void Window::SetWindow(int width, int height, const char* title)
 			// and assingn to the timer before loop to update the value 
 			lastTime = currentTime;
 		}
-		//end time in loop
-		double FrameEndTime = glfwGetTime() * 1000.0;
-		// elapsed time is the time which is subtraction of two times before and after window pops
-		double elapsedTime = FrameEndTime - FrameStart;
-		//if elapsedtime value is less than 16.67 re calculate it 
-		while (elapsedTime < FrameDelay)
-		{
-			FrameEndTime = glfwGetTime() * 1000.0;//updating currenttime
-			elapsedTime = FrameEndTime - FrameStart;//recalculate elapsed time
-		}
-		 
-
+		
 	}
 
 }

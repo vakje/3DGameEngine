@@ -27,7 +27,7 @@ Here’s what the renderer looks like in action:
 
 
 ## Build Instructions
-
+### Important: This project is 32-bit only. Make sure the platform in Visual Studio is set to x86. Using x64 will fail to build due to 32-bit library dependencies.
 1. Clone the repo.
 2. Open `_Project_GLFW_.sln` in Visual Studio.
 3. Build the project. No external setup needed.

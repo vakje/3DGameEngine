@@ -50,8 +50,10 @@ public:
     Matrix<float> getLookat(const Vector3F<float>& CameraP, const Vector3F<float>& CameraT, const Vector3F<float>& CameraU);
     Matrix<float> getProjection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane);
 
+   
     void InputValidation(float deltatime);
     void MouseMovement(float deltatime);
+    
 
 };
 

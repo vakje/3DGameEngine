@@ -1,6 +1,6 @@
 #include "WindowComponent.h"
 #include "Game.h"
-#include "Clock.h"
+
 
 GLFWwindow* Window::m_mywindow;
 
@@ -28,7 +28,7 @@ void Window::SetWindow(int width, int height, const char* title)
 	//before loop time to make it in miliseconds
 	double lastTime = glfwGetTime() * 1000.0;
 	
-	Time time;
+	
 	
 	game.Initilize();
 

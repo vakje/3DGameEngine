@@ -31,10 +31,11 @@ void Window::SetWindow(int width, int height, const char* title)
 	
 	
 	game.Initilize();
-
+	const double FrameDelay = 1000.0 / 75;//making framedelay 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(m_mywindow))
 	{		
+		
 		/* Render here */		
 		game.Clear();
 		/* Swap front and back buffers */
@@ -56,6 +57,7 @@ void Window::SetWindow(int width, int height, const char* title)
 			// and assingn to the timer before loop to update the value 
 			lastTime = currentTime;
 		}
+		
 		
 	}
 

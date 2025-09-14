@@ -7,6 +7,7 @@
 #include <utility>
 #include <fstream>
 #include "Util.h"
+#include "Clock.h"
 #include <sstream>
 
 class Renderer
@@ -26,6 +27,8 @@ class Renderer
 	 std::vector<unsigned int> m_Indices;
 	 //camera instance for function calls from this class
 	 Camera m_Cam;
+	 Time m_Time;
+	 
 	
 public:	
 	void ClearScreen();	
@@ -41,7 +44,7 @@ public:
 public:
 	 std::string getVertex()const;
 	 std::string getFragment()const;
-	
+	 
 	 
 
 };

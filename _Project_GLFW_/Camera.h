@@ -15,6 +15,7 @@ private:
     Vector3F<float> m_CameraPosition;
     Vector3F<float> m_CameraTarget;
     Vector3F<float> m_CameraUp;
+   
  
 
 
@@ -24,6 +25,8 @@ private:
     float lastX = Width / 2.0f;
     float lastY = Height / 2.0f;
     bool firstMouse = true;
+    float r_Yaw;
+    float r_Pitch;
     
 public:
    
@@ -52,7 +55,8 @@ public:
 
    
     void InputValidation(float deltatime);
-    void MouseMovement(float deltatime);
+    void MouseMovement();
+    
     
 
 };

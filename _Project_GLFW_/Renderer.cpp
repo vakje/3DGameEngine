@@ -186,8 +186,8 @@ unsigned int Renderer::CreateShaderFromStrings(std::string& VertexShadersource, 
 
 	return program;
 }
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+
+double angle = 0.0;
 
 void Renderer::SetupMVP(unsigned int ShaderProgram)
 {
@@ -195,26 +195,26 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	Vector3F<float> forRotation(0.0f, 1.0f, 0.0f);
 	Vector3F<float> forScale(1.0f, 1.0f, 1.0f);
 	
-	float current = static_cast<float>(glfwGetTime());
-	deltaTime = current - lastFrame;
-	lastFrame = current;
-	
-	double angle = 0.0;
-	
-
 	Matrix<float> I(4, 4, 1.0f);
 	I.Initidentity(4);
 	
-	
+	float m_Deltatime = m_Time.getDeltaTime();
 	Matrix<float> M(4, 4, 1.0f);
  
-	angle = m_Cam.getSpeed() * m_Cam.getFov() * deltaTime;
+	angle += m_Cam.getSpeed() * m_Cam.getFov() * 2;
 	
-	angle *= ToRadians;
+	 
+	double R_mydegree = 45;
+	if (angle >= 360) 
+	{
+		angle = 0;
+	}
+	
 	I = M.Scale(I, forScale) * M.Rotate(I, angle,forRotation) * M.Translate(I, forTranslation);
+
 	
-	m_Cam.InputValidation(deltaTime);
-	m_Cam.MouseMovement(deltaTime);
+	m_Cam.InputValidation(m_Deltatime);
+	m_Cam.MouseMovement();
 	//view matrix creation
 	Matrix<float> view = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());
 	

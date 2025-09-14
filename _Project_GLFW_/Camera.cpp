@@ -13,6 +13,7 @@ Camera::Camera()
 	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
 	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
 	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
+	
 }
 
 double Camera::getFov() const
@@ -82,12 +83,11 @@ Matrix<float> Camera::getProjection(const double& fov, const float& aspectRatio,
 
 
 void Camera::InputValidation(float deltatime)
-{
-
+{	
 	//to process cameramovement in time
 	float position_y = m_CameraPosition.getY3D();
 	m_Speed = 5.0f * deltatime;
-	m_RotSpeed *= deltatime;
+	
 	
 
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
@@ -134,7 +134,7 @@ void Camera::InputValidation(float deltatime)
 	}
 }
 
-void Camera::MouseMovement(float deltatime)
+void Camera::MouseMovement()
 {
 	glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -159,22 +159,25 @@ void Camera::MouseMovement(float deltatime)
 	if (pitch > 89.0f) pitch = 89.0f;
 	if (pitch < -89.0f) pitch = -89.0f;
 
-	float r_Yaw = yaw * ToRadians;
-	float r_Pitch = pitch * ToRadians;
+	r_Yaw = yaw * ToRadians;
+	r_Pitch = pitch * ToRadians;
 
 	Vector3F<float> direction;
 	direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
 	direction.setY3D(sin(r_Pitch));
 	direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
-	Vector3F<float> forward = direction.Normalize3d();
-	m_CameraTarget = m_CameraPosition + forward;
+	m_CameraTarget = m_CameraPosition + direction.Normalize3d();
 
 	// recenter cursor to screen middle
 	glfwSetCursorPos(Window::m_mywindow, Width / 2, Height / 2);
 	lastX = Width / 2;
 	lastY = Height / 2;
 
+	
+
 }
+
+
 
 
 

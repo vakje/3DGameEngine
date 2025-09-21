@@ -10,11 +10,11 @@ private:
     float m_NearPlane;
     float m_FarPlane;
     double m_Speed;
-    double m_RotSpeed;
     Matrix<float> m_Instance;
     Vector3F<float> m_CameraPosition;
     Vector3F<float> m_CameraTarget;
     Vector3F<float> m_CameraUp;
+   
    
  
 
@@ -39,11 +39,12 @@ public:
     float getFarPlane() const;
 
     double getSpeed() const;
-    double getRotSpeed()const;
+   
     //camera's movement positions ..
     Vector3F<float>& getCameraPosition();
     Vector3F<float> getCameraTarget()const;
     Vector3F<float> getCameraUp()const;
+   
  
 
     double setSpeed(double s_speed);
@@ -56,6 +57,8 @@ public:
    
     void InputValidation(float deltatime);
     void MouseMovement();
+
+
     
     
 

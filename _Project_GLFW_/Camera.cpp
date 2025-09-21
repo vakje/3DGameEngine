@@ -8,11 +8,11 @@ Camera::Camera()
 	m_NearPlane = 0.1f;
 	m_FarPlane = 100.0f;
 	m_Speed = 10.00;
-	m_RotSpeed = 100.00;
 	m_Instance = Matrix<float>(4, 4, 1.0f);
 	m_CameraPosition = Vector3F<float>(4.0f, 3.0f, 4.0f);
-	m_CameraTarget += Vector3F<float>(0.0f, 0.0f, -1.0f);
+	m_CameraTarget = Vector3F<float>(0.0f, 0.0f, -1.0f);
 	m_CameraUp = Vector3F<float>(0.0f, 4.0f, 0.0f);
+	
 	
 }
 
@@ -41,10 +41,6 @@ double Camera::getSpeed() const
 	return m_Speed;
 }
 
-double Camera::getRotSpeed() const
-{
-	return m_RotSpeed;
-}
 
 Vector3F<float>& Camera::getCameraPosition()
 {
@@ -64,6 +60,8 @@ Vector3F<float> Camera::getCameraUp() const
 
 
 
+
+
 double Camera::setSpeed(double s_speed)
 {
 	return this->m_Speed = s_speed;
@@ -80,8 +78,6 @@ Matrix<float> Camera::getProjection(const double& fov, const float& aspectRatio,
 	return m_Instance.Projection(fov, aspectRatio, nearplane, farplane);
 }
 
-
-
 void Camera::InputValidation(float deltatime)
 {	
 	//to process cameramovement in time
@@ -92,11 +88,14 @@ void Camera::InputValidation(float deltatime)
 
 	Vector3F<float> forward = (m_CameraTarget - m_CameraPosition).Normalize3d();
 	Vector3F<float> right = forward.CrossProduct(m_CameraUp).Normalize3d();
+	
+	
 	if (Input::getKey(GLFW_KEY_W))
 	{
 
 		m_CameraPosition += forward * m_Speed;
 		m_CameraTarget += forward * m_Speed;
+		
 
 	}
 	if (Input::getKey(GLFW_KEY_S))
@@ -104,18 +103,23 @@ void Camera::InputValidation(float deltatime)
 
 		m_CameraPosition -= forward * m_Speed;
 		m_CameraTarget -= forward * m_Speed;
+		
+		
 
 	}
 	if (Input::getKey(GLFW_KEY_A))
 	{
 		m_CameraPosition += right * m_Speed;
 		m_CameraTarget += right * m_Speed;
+		
 
 	}
 	if (Input::getKey(GLFW_KEY_D))
 	{
 		m_CameraPosition -= right * m_Speed;
 		m_CameraTarget -= right * m_Speed;
+		
+		
 
 	}
 	if (Input::getKey(GLFW_KEY_E))
@@ -124,6 +128,7 @@ void Camera::InputValidation(float deltatime)
 		m_CameraPosition.setY3D(position_y);
 		float target_y = m_CameraTarget.getY3D();
 		m_CameraTarget.setY3D(target_y + m_Speed);
+
 	}
 	if (Input::getKey(GLFW_KEY_Q))
 	{
@@ -132,48 +137,72 @@ void Camera::InputValidation(float deltatime)
 		float target_y = m_CameraTarget.getY3D();
 		m_CameraTarget.setY3D(target_y - m_Speed);
 	}
+	
 }
 
 void Camera::MouseMovement()
 {
-	glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	Vector2F<double> mousepositions = Vector2F<double>::CursorPos();
 	float xpos = mousepositions.get_X();
 	float ypos = mousepositions.get_Y();
+	std::cerr << xpos << "," << ypos << "\n";
      
+	if(firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+		return;
+	}
 
 	float xoffset = xpos - lastX;
 	float yoffset = lastY - ypos;
-
+   
 	lastX = xpos;
 	lastY = ypos;
 
-	float sensitivity = 0.1f;
+	float sensitivity = 0.01f;
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
 
 	yaw += xoffset;
 	pitch += yoffset;
+	
 
-	if (pitch > 89.0f) pitch = 89.0f;
-	if (pitch < -89.0f) pitch = -89.0f;
+	if (pitch > 89.0f)
+	{
+		pitch = 89.0f;
+		
+	}
+	if (pitch < -89.0f)
+	{
+		pitch = -89.0f;
+		
+	}
+	//lock horizontal movement 
+	while (yaw > 180.0f) yaw -= 360.0f;
+	while (yaw <= -180.0f) yaw += 360.0f;
 
 	r_Yaw = yaw * ToRadians;
 	r_Pitch = pitch * ToRadians;
 
+	std::cerr << "Yaw:" << r_Yaw << "\n";
+	std::cerr << "Pitch:" << r_Pitch << "\n";
+
 	Vector3F<float> direction;
+
 	direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
 	direction.setY3D(sin(r_Pitch));
 	direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
-	m_CameraTarget = m_CameraPosition + direction.Normalize3d();
+	direction.Normalize3d();
 
-	// recenter cursor to screen middle
-	glfwSetCursorPos(Window::m_mywindow, Width / 2, Height / 2);
-	lastX = Width / 2;
-	lastY = Height / 2;
+	Vector3F<float> right = direction.CrossProduct(m_CameraUp).Normalize3d();
+	Vector3F<float> up = right.CrossProduct(direction).Normalize3d();
 
-	
+	m_CameraTarget = m_CameraPosition.Normalize3d() + direction;
+	 
 
 }
 

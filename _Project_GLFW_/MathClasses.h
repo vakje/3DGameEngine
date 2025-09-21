@@ -469,10 +469,10 @@ public:
 	//todo  *  operators and alos << operator
 	Quatornion operator*(const Quatornion& other)
 	{
-		T w_ = m_w * other.get_w() - m_x * other.get_x() - m_y * other.get_y() - m_z * other.get_z();
-		T x_ = m_x * other.get_w() + m_w * other.get_x() + m_y * other.get_z() - m_z * other.get_y();
-		T y_ = m_y * other.get_w() + m_w * other.get_y() + m_z * other.get_x() - m_x * other.get_z();
-		T z_ = m_z * other.get_w() + m_w * other.get_z() + m_x * other.get_y() - m_y * other.get_x();
+		T w_ = m_w * other.getW() - m_x * other.getX() - m_y * other.getY() - m_z * other.getZ();
+		T x_ = m_x * other.getW() + m_w * other.getX() + m_y * other.getZ() - m_z * other.getY();
+		T y_ = m_y * other.getW() + m_w * other.getY() + m_z * other.getX() - m_x * other.getZ();
+		T z_ = m_z * other.getW() + m_w * other.getZ() + m_x * other.getY() - m_y * other.getX();
 
 		return  Quatornion(x_, y_, z_, w_);
 	}
@@ -823,13 +823,13 @@ public:
 
 		//forward vector
 		Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
-
+		
 		//right vectorforward
 		Vector3F<float>right = CameraU.CrossProduct(forward).Normalize3d();
 		//true_up vector
 		Vector3F<float> true_up = forward.CrossProduct(right);
 
-
+		
 
 		//first row
 		this->setElement(0, 0, right.getX3D());

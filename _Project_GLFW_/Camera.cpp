@@ -107,14 +107,16 @@ void Camera::InputValidation(float deltatime)
 		
 
 	}
-	if (Input::getKey(GLFW_KEY_A))
+	if (Input::getKey(GLFW_KEY_D))
 	{
+		//changed D and A input here because apparently according to opengl you should calculate 
+		//lookat matrix with right handed style so because of that i made this change
 		m_CameraPosition += right * m_Speed;
 		m_CameraTarget += right * m_Speed;
 		
 
 	}
-	if (Input::getKey(GLFW_KEY_D))
+	if (Input::getKey(GLFW_KEY_A))
 	{
 		m_CameraPosition -= right * m_Speed;
 		m_CameraTarget -= right * m_Speed;

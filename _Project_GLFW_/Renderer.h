@@ -10,6 +10,7 @@
 #include "Clock.h"
 #include <sstream>
 
+
 class Renderer
 {
 	 //strings that represeting actual code of the file shader glcl

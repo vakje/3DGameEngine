@@ -239,7 +239,7 @@ public:
 		}
 		m_X = other.getX3D();
 		m_Y = other.getY3D();
-		m_Z = other.getX3D();
+		m_Z = other.getZ3D();
 		return *this;
 	}
 	Vector3F(const Vector3F<T>& other)
@@ -283,9 +283,9 @@ public:
 		return Vector3F(m_Y * Vec.m_Z - m_Z * Vec.m_Y, m_Z * Vec.m_X - m_X * Vec.m_Z, m_X * Vec.m_Y - m_Y * Vec.m_X);
 	}
 
-	Vector3F Normalize3d()
+	Vector3F Normalize3d() const
 	{
-		T length = LengthVector3f();
+		T length = sqrt(m_X * m_X + m_Y * m_Y + m_Z * m_Z);
 		if (std::abs(length) <= 1e-6)
 		{
 			std::cerr << m_X << "," << m_Y << "," << m_Z << ":this was vector which length was 0\n";
@@ -400,9 +400,9 @@ public:
 	}
 	Vector3F& operator*=(const T& other)
 	{
-		m_X -= other;
-		m_Y -= other;
-		m_Z -= other;
+		m_X *= other;
+		m_Y *= other;
+		m_Z *= other;
 		return *this;
 	}
 
@@ -603,23 +603,26 @@ public:
 
 public:
 	//mathmatical operations
-	Matrix<T> operator*(const Matrix<T>& other)
+	Matrix<T> operator*(const Matrix<T>& other) const
 	{
-		if (this->m_N != other.m_M) {
+		if (this->m_N != other.m_M) 
 			throw std::invalid_argument("Matrix dimensions do not match for multiplication");
-		}
-		int rows = other.m_M;
-		int cols = other.m_N;
-		Matrix result(rows, cols, 0.0);
+		
+		int rows = this->m_M;         // result rows = left rows
+		int cols = other.m_N;         // result cols = right cols
+		int inner = this->m_N;        // inner = left.cols = right.rows
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				for (int k = 0; k < rows; k++) {
-					result(i, j) += (*this)(i, k) * other(k, j);
+		Matrix result(rows, cols, (T)0);
+
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				T sum = (T)0;
+				for (int k = 0; k < inner; ++k) {
+					sum += (*this)(i, k) * other(k, j);
 				}
+				result(i, j) = sum;
 			}
 		}
-
 		return result;
 	}
 	Matrix operator*=(const Matrix& other)
@@ -825,9 +828,9 @@ public:
 		Vector3F<float> forward = (CameraT - CameraP).Normalize3d();
 		
 		//right vectorforward
-		Vector3F<float>right = CameraU.CrossProduct(forward).Normalize3d();
+		Vector3F<float>right = forward.CrossProduct(CameraU).Normalize3d();
 		//true_up vector
-		Vector3F<float> true_up = forward.CrossProduct(right);
+		Vector3F<float> true_up = right.CrossProduct(forward);
 
 		
 
@@ -861,24 +864,24 @@ public:
 	Matrix& Projection(const double& fov, const float& aspectRatio, const float& nearplane, const float& farplane)
 	{
 		//first row
-		this->setElement(0, 0, 1.0f / (aspectRatio * tan(fov / 2)));
+		this->setElement(0, 0, 1.0f / (aspectRatio * tan(fov / 2.0f)));
 		this->setElement(0, 1, 0);
 		this->setElement(0, 2, 0);
 		this->setElement(0, 3, 0);
 		//second row
 		this->setElement(1, 0, 0);
-		this->setElement(1, 1, 1 / tan(fov / 2));
+		this->setElement(1, 1, 1 / tan(fov / 2.0f));
 		this->setElement(1, 2, 0);
 		this->setElement(1, 3, 0);
 		//third row
 		this->setElement(2, 0, 0);
 		this->setElement(2, 1, 0);
 		this->setElement(2, 2, -(farplane + nearplane) / (farplane - nearplane));
-		this->setElement(2, 3, -(2 * farplane * nearplane) / (farplane - nearplane));
+		this->setElement(2, 3, -(2.0f * farplane * nearplane) / (farplane - nearplane));
 		//forth row
 		this->setElement(3, 0, 0);
 		this->setElement(3, 1, 0);
-		this->setElement(3, 2, -1);
+		this->setElement(3, 2, -1.0f);
 		this->setElement(3, 3, 0);
 
 		return *this;

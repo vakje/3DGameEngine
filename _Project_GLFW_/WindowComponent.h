@@ -11,7 +11,8 @@ class Window
 	
 public:
 	static GLFWwindow* m_mywindow;	
-	Window() = default;
-	void SetWindow(int width, int height, const char* title);	
+	Window(int width, int height, const char* title);
 	~Window();
+	Window(const Window&) = delete;
+	Window& operator=(const Window&) = delete;
 };

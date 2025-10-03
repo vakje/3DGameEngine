@@ -15,9 +15,9 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 		// this must take and transform that in string
 		std::string PATH = Toolspath.string();
 		//this must split the string and take last file
-		std::string splitedtoken = UTils::FileChecker(PATH, "\\");
-		std::cout << "Meshe's Name:  " << splitedtoken << "  " << std::endl;
-		if (splitedtoken.find(".obj") == std::string::npos)
+		std::string lastfile = UTils::SplitPath(PATH);
+		std::cout << "Meshe's Name:  " << lastfile << "  " << std::endl;
+		if (lastfile.find(".obj") == std::string::npos)
 		{
 			std::cout << "this is not a obj file" << std::endl;
 		}
@@ -27,7 +27,7 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 		{
 			std::cout << "file not found" << std::endl;
 		}
-
+		
 		std::string line;
 		std::string v;
 		std::string i;
@@ -89,7 +89,7 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 
 void Renderer::InitilizeOpengl()
 {
-	std::filesystem::path Toolspath = fullpath / "TOOLS\\M_Shaders.txt";
+	std::filesystem::path Toolspath = fullpath / "TOOLS" / "M_Shaders.txt";
 	std::string ShaderPATH = Toolspath.string();
 	std::pair<std::string, std::string> Shaders;
 	try {

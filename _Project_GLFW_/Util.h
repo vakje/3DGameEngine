@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <filesystem>
 
 namespace UTils
 {
@@ -44,6 +45,20 @@ namespace UTils
         tokens.push_back(str);
 
         return tokens;
+    }
+    static std::string SplitPath(const std::filesystem::path path)
+    {
+        if (path.empty())
+        {
+            std::cerr << "you must pass non empty filepath\n";
+        }
+        std::string Parts;
+        for(auto& part : path)
+        {
+            Parts = part.string();
+        }
+       
+        return Parts;
     }
    
 }

@@ -7,13 +7,8 @@ const int HEIGHT = 1440;
 const char* TITLE = "3D GAME ENGINE";
 
 Game game;
-int main(void)
+int main()
 {
-    
-    
-   /* Window win;
-    win.SetWindow(WIDTH, HEIGHT, TITLE);
-    std::cout << "-----------------------------------------------\n" << std::flush;*/
 	try {
 		Window win(WIDTH, HEIGHT, TITLE);
 		int frames = 0;

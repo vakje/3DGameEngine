@@ -89,7 +89,7 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 
 void Renderer::InitilizeOpengl()
 {
-	std::filesystem::path Toolspath = fullpath / "TOOLS" / "M_Shaders.txt";
+	std::filesystem::path Toolspath = fullpath / "TOOLS" / "M_Shaders.shader";
 	std::string ShaderPATH = Toolspath.string();
 	std::pair<std::string, std::string> Shaders;
 	try {

@@ -3,6 +3,8 @@
 ###############################################################################
 * text=auto
 
+# Force .shader files to be recognized as GLSL
+*.shader linguist-language=GLSL
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

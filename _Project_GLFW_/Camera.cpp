@@ -144,68 +144,84 @@ void Camera::InputValidation(float deltatime)
 
 void Camera::MouseMovement()
 {
-	glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-	Vector2F<double> mousepositions = Vector2F<double>::CursorPos();
-	float xpos = mousepositions.get_X();
-	float ypos = mousepositions.get_Y();
-	std::cerr << xpos << "," << ypos << "\n";
-     
-	if(firstMouse)
+	static bool wasPressed = false;
+	bool isPressed = Input::getMouseKey(GLFW_MOUSE_BUTTON_LEFT);
+
+	if (isPressed && !wasPressed) {
+		// Mouse button just pressed this frame
+		firstMouse = true;  // reset so next offset calc is clean
+	}
+
+
+	wasPressed = isPressed;
+
+	if (isPressed)
 	{
+		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		Vector2F<double> mousepositions = Vector2F<double>::CursorPos();
+		float xpos = mousepositions.get_X();
+		float ypos = mousepositions.get_Y();
+
+
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+			return;
+		}
+
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
+
 		lastX = xpos;
 		lastY = ypos;
-		firstMouse = false;
-		return;
+
+		float sensitivity = 0.1f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		yaw += xoffset;
+		pitch += yoffset;
+
+
+		if (pitch > 89.0f)
+		{
+			pitch = 89.0f;
+
+		}
+		if (pitch < -89.0f)
+		{
+			pitch = -89.0f;
+
+		}
+		//lock horizontal movement 
+		while (yaw > 180.0f) yaw -= 360.0f;
+		while (yaw <= -180.0f) yaw += 360.0f;
+
+		r_Yaw = yaw * ToRadians;
+		r_Pitch = pitch * ToRadians;
+
+
+
+		Vector3F<float> direction;
+
+		direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
+		direction.setY3D(sin(r_Pitch));
+		direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
+		direction.Normalize3d();
+
+		Vector3F<float> right = direction.CrossProduct(m_CameraUp).Normalize3d();
+		Vector3F<float> up = right.CrossProduct(direction).Normalize3d();
+
+		m_CameraTarget = m_CameraPosition + direction;
+
 	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
-   
-	lastX = xpos;
-	lastY = ypos;
-
-	float sensitivity = 0.01f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-	
-
-	if (pitch > 89.0f)
-	{
-		pitch = 89.0f;
-		
+	else {
+		glfwSetInputMode(Window::m_mywindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
-	if (pitch < -89.0f)
-	{
-		pitch = -89.0f;
-		
-	}
-	//lock horizontal movement 
-	while (yaw > 180.0f) yaw -= 360.0f;
-	while (yaw <= -180.0f) yaw += 360.0f;
-
-	r_Yaw = yaw * ToRadians;
-	r_Pitch = pitch * ToRadians;
-
-	std::cerr << "Yaw:" << r_Yaw << "\n";
-	std::cerr << "Pitch:" << r_Pitch << "\n";
-
-	Vector3F<float> direction;
-
-	direction.setX3D(cos(r_Yaw) * cos(r_Pitch));
-	direction.setY3D(sin(r_Pitch));
-	direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
-	direction.Normalize3d();
-
-	Vector3F<float> right = direction.CrossProduct(m_CameraUp).Normalize3d();
-	Vector3F<float> up = right.CrossProduct(direction).Normalize3d();
-
-	m_CameraTarget = m_CameraPosition.Normalize3d() + direction;
-	 
-
 }
 
 

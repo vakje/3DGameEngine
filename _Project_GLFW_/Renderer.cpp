@@ -212,7 +212,7 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 
 	
 	m_Cam.InputValidation(m_Deltatime);
-	//m_Cam.MouseMovement();
+	m_Cam.MouseMovement();
 	//view matrix creation
 	Matrix<float> view = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());
 	

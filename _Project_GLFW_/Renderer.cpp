@@ -105,18 +105,23 @@ void Renderer::InitilizeOpengl()
 	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);
 
 	
-	float m_time = glfwGetTime();
-	int Vertices_size = m_Vertices.size();
-	float* colors = new float[Vertices_size];
-	for (int i = 0; i < Vertices_size; i++)
-	{
-		colors[i] = 0.5f * (cos(m_time + i * 0.9f) + 1.0f);
-	}
+
+	std::vector<Vector2F<float>> textcoords = {
+		 Vector2F<float>(0.0f, 0.0f),
+		 Vector2F<float>(0.0f, 1.0f),
+		 Vector2F<float>(1.0f, 0.0f),
+		 Vector2F<float>(1.0f, 1.0f)
+		
+	};
+	
+
 	//now giving this data to our GPU
     // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
 	glGenBuffers(1, &m_EBO);
+	glGenBuffers(1, &tex_VBO);
+	
 	
 	glBindVertexArray(m_VAO);
 	// The following commands will talk about our 'vertexbuffer' buffer
@@ -129,17 +134,25 @@ void Renderer::InitilizeOpengl()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
+	tex = new Texture(GL_TEXTURE_2D, "TOOLS\\stone.jpg");
+	if (!tex->load())
+	{
+		std::cerr << "Loading process terminated!\n";
+	}
+	tex->bind(GL_TEXTURE0);
+	glUniform1i(gSamplerLocation, 0);
 
-	glGenBuffers(1, &m_CBO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_CBO);
-	
-	glBufferData(GL_ARRAY_BUFFER, Vertices_size * sizeof(float), colors, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, tex_VBO);
+	glBufferData(GL_ARRAY_BUFFER, textcoords.size() * sizeof(Vector2F<float>), textcoords.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
 	
 	// Unbind VAO 
 	glBindVertexArray(0);
-	delete[] colors;
+
+	
+	
 
 }
 
@@ -227,7 +240,10 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 
 	//mvp matrix realization 
 	unsigned int mvplocation = glGetUniformLocation(ShaderProgram, "u_MVP");
-	
+	if(mvplocation ==-1)
+	{
+		std::cerr << "Error getting uniform location of mvp\n";
+	}
 	std::vector<GLfloat> glvector;
 	for (size_t col = 0; col < 4; ++col) {
 		for (size_t row = 0; row < 4; ++row) {
@@ -236,6 +252,14 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	}
 	
 	glUniformMatrix4fv(mvplocation, 1, false, glvector.data());
+
+	gSamplerLocation = glGetUniformLocation(ShaderProgram, "gSampler");
+	if(gSamplerLocation == -1)
+	{
+		std::cout << "Error getting uniform location of gSampler\n";
+	}
+
+
 }
 
 void Renderer::Draw()
@@ -303,7 +327,9 @@ Renderer::~Renderer()
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
-	glDeleteBuffers(1, &m_CBO);
+	glDeleteBuffers(1, &tex_VBO);
+	delete tex;
+	
 }
 
 std::string Renderer::getVertex()const { return m_VertexShaderSource; }

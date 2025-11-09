@@ -9,6 +9,7 @@
 #include "Util.h"
 #include "Clock.h"
 #include <sstream>
+#include "Texture.h"
 
 
 class Renderer
@@ -22,13 +23,14 @@ class Renderer
      // VBO - stores vertex data (positions)
      // CBO - stores color data 
      // EBO - stores element/index data for indexed Drawing
-	 unsigned int m_ShaderProgram,m_VAO,m_VBO,m_CBO,m_EBO;
+	 unsigned int m_ShaderProgram,m_VAO,m_VBO,m_EBO, gSamplerLocation,tex_VBO;
 	 //containers that has data about vertices and indices of an object (mesh)
 	 std::vector<float> m_Vertices;
 	 std::vector<unsigned int> m_Indices;
 	 //camera instance for function calls from this class
 	 Camera m_Cam;
 	 Time m_Time;
+	 Texture* tex = nullptr;
 	 
 	
 public:	

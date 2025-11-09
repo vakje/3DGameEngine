@@ -198,7 +198,7 @@ void Camera::MouseMovement()
 
 		}
 		//lock horizontal movement 
-		while (yaw > 180.0f) yaw -= 360.0f;
+		while (yaw >= 180.0f) yaw -= 360.0f;
 		while (yaw <= -180.0f) yaw += 360.0f;
 
 		r_Yaw = yaw * ToRadians;

@@ -2,30 +2,33 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPos;  
-layout (location = 1) in vec3 aColor; 
+layout (location = 1) in vec2 TexCoord; 
 
 uniform mat4 u_MVP;         // Model-View-Projection matrix
 
-
-out vec3 fragColor; // Color passed to the fragment shader
+out vec2 TexCoord0;
+// texture passed to the fragment shader
 
 void main()
 {    
     
     gl_Position = u_MVP * vec4(aPos, 1.0);
-    
-    fragColor = aColor;
+    TexCoord0 = TexCoord;
+  
 }
 
 #shader fragment
 #version 330 core
 
-in vec3 fragColor; // Color from the vertex shader
+                      
+in vec2 TexCoord0; // texture from the vertex shader
+
 out vec4 FragColor; // Final output color
 
+uniform sampler2D gSampler;
 void main()
 {
     
-    FragColor = vec4(fragColor, 1.0);
+    FragColor = texture2D(gSampler,TexCoord0);
+    
 }
-//vec4(1.0, 0.0, 0.0, 1.0)

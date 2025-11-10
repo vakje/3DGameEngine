@@ -30,7 +30,7 @@ class Renderer
 	 //camera instance for function calls from this class
 	 Camera m_Cam;
 	 Time m_Time;
-	 Texture* tex = nullptr;
+	 std::unique_ptr<Texture> tex;
 	 
 	
 public:	

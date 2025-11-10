@@ -89,8 +89,8 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 
 void Renderer::InitilizeOpengl()
 {
-	std::filesystem::path Toolspath = fullpath / "TOOLS" / "M_Shaders.shader";
-	std::string ShaderPATH = Toolspath.string();
+	std::filesystem::path Shaderspath = fullpath / "TOOLS" / "M_Shaders.shader";
+	std::string ShaderPATH = Shaderspath.string();
 	std::pair<std::string, std::string> Shaders;
 	try {
 		Shaders = ReadFromShaderFile(ShaderPATH);
@@ -134,7 +134,7 @@ void Renderer::InitilizeOpengl()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
-	tex = new Texture(GL_TEXTURE_2D, "TOOLS\\stone.jpg");
+	tex = std::make_unique<Texture>(GL_TEXTURE_2D, "TOOLS\\stone.jpg");
 	if (!tex->load())
 	{
 		std::cerr << "Loading process terminated!\n";
@@ -328,7 +328,7 @@ Renderer::~Renderer()
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
 	glDeleteBuffers(1, &tex_VBO);
-	delete tex;
+	//delete tex;
 	
 }
 

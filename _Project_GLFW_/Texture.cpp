@@ -2,7 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Texture.h"
 
-Texture::Texture(GLenum TextureTarget, const std::string& filename)
+Texture::Texture(GLenum TextureTarget, const std::filesystem::path& filename)
 {
 	m_Texturetarget = TextureTarget;
 	m_Texturepath = filename;
@@ -16,11 +16,11 @@ bool Texture::load()
 	
 	//defining image itself loading texture from file
 	int width = 0, height = 0, bitsperpixel = 0;
-	unsigned char* image_data = stbi_load(m_Texturepath.c_str(),&width,&height,&bitsperpixel,0);
+	unsigned char* image_data = stbi_load(m_Texturepath.string().c_str(), &width, &height, &bitsperpixel, 0);
 
 	if(!image_data)
 	{
-		std::cerr << "Cant Load texture from this file path" << m_Texturepath.c_str() << " because of:"
+		std::cerr << "Cant Load texture from this file path" << m_Texturepath.string().c_str() << " because of:"
 			<< stbi_failure_reason() << "\n";
 		return false;
 	}

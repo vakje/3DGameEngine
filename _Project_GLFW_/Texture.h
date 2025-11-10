@@ -3,15 +3,16 @@
 #include "../External/stb/stb_image.h"
 #include <string>
 #include <iostream>
+#include <filesystem>
 
 class Texture
 {
 	std::string m_Texturename;
-	std::string m_Texturepath;
+	std::filesystem::path m_Texturepath;
 	unsigned int m_TextureObject;
 	GLenum m_Texturetarget;
 public:
-	Texture(GLenum TextureTarget, const std::string& filename);
+	Texture(GLenum TextureTarget, const std::filesystem::path& filename);
 
 	bool load();
 

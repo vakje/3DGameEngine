@@ -12,6 +12,8 @@
 #include "Texture.h"
 
 
+
+
 class Renderer
 {
 	 //strings that represeting actual code of the file shader glcl

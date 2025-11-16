@@ -10,6 +10,11 @@ std::vector<float> Vertices;
 std::vector<unsigned int> Indices;
 std::vector<float>UVcoordinates;
 
+Materials material;
+Meshes model;
+std::ostream& operator<<( std::ostream& os, const Materials& mat) {
+	return os <<"(" << mat.m_Materialname << "," << mat.m_Diffusecolor << ")";	 
+}
 void TexturedObjectFileParser(const std::string& filename, std::vector<float>& Vertices, std::vector<unsigned int>& Indices,
 	std::vector<float>&UVcoordinates)
 {
@@ -32,8 +37,6 @@ void TexturedObjectFileParser(const std::string& filename, std::vector<float>& V
 	}
 
 	std::string line;
-	std::string v;
-	std::string i;
 	std::vector<std::string> StringV;
 	std::vector<std::string> StringI;
 	std::vector<std::string> StringIV;
@@ -93,6 +96,50 @@ void TexturedObjectFileParser(const std::string& filename, std::vector<float>& V
 		}	
 	}
 	file.close();
+}
+void MTLfileparser(const std::string& filename, std::string& newmtl,std::string& map_kd,
+  std::unordered_map<std::string,Materials>&materials)
+{
+	
+	std::filesystem::path Toolspath = std::filesystem::current_path() / "TOOLS" / filename;
+	
+	std::string PATH = Toolspath.string();
+	
+	std::string lastfile = UTils::SplitPath(PATH);
+	std::cout << "\nMeshe's material name is:  " << lastfile << "  " << std::endl;
+	if (lastfile.find(".mtl") == std::string::npos)
+	{
+		std::cout << "this is not a mtl file" << std::endl;
+	}
+	std::ifstream file(PATH);
+
+	if (!file.is_open())
+	{
+		std::cout << "file not found" << std::endl;
+	}
+	
+	std::string line;
+	std::vector<std::string>matnames;
+	std::vector<std::string>textnames;
+	std::string currentname;
+	
+	while(std::getline(file,line))
+	{	
+		std::istringstream iss(line);
+		std::string keyword;
+		iss >> keyword;
+		if (keyword == "newmtl") {
+			
+			matnames = UTils::SplitString(line," ");
+			model.m_materials[matnames[1]] = Materials{ matnames[1],"" };
+		}
+		else if (keyword == "map_Kd") {
+			textnames = UTils::SplitString(line, " ");
+			model.m_materials[matnames[1]].m_Diffusecolor = textnames[1];
+			
+		}
+	}
+	
 }
 
 int main()
@@ -155,6 +202,13 @@ int main()
 	std::cout << "\n-----------------Indices----------------------\n";
 	std::for_each(Indices.begin(), Indices.end(), [](float x) {std::cout << x << " "; });
 	
+	
 
+	MTLfileparser("TexturedCube.mtl", material.m_Materialname, material.m_Diffusecolor, model.m_materials);
+
+	
+	for (auto& pair : model.m_materials) {
+		std::cout << "(" << pair.first << "," << pair.second << ")\n";
+	}
      
 }

@@ -328,7 +328,7 @@ Renderer::~Renderer()
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
 	glDeleteBuffers(1, &tex_VBO);
-	//delete tex;
+	 
 	
 }
 

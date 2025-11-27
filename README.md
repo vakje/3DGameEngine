@@ -5,11 +5,11 @@ Project that is in progress.
 ## Current state
 
 - For now I have implemented basic stuff like input system, rendering, math classes.  
-- It is my personal dicision to write math classes from scratch, With a foundational background in Calculus II and Linear Algebra from university,
+- It is my personal decision to write math classes from scratch, With a foundational background in Calculus II and Linear Algebra from university,
   I'm looking to deepen my understanding of the mathematics essential for game engines and 3D game development. 
 - My rendering class can visually display simple .obj files created in Blender or other 3D modeling software. It has simple graphics pipeline
-  that allows my program to create 3D models with indicies and verticies data.
-  this class also has simple glsl file parser to use shaders for coloring or math calculations.
+  that allows my program to create 3D models with indices and vertices data.
+  this class also has simple GLSL file parser to use shaders for coloring or math calculations.
 - I use windows and since it is my first pet project, I did not want to bother with compatibility for other operative systems.
 
 
@@ -27,7 +27,7 @@ Here’s what the renderer looks like in action:
 
 
 ## Build Instructions
-### Important: This project is 32-bit only. Make sure the platform in Visual Studio is set to x86. Using x64 will fail to build due to 32-bit library dependencies.
+### This project is configured on 32-bit and 64-bit architectures now. you can run this project in VS with both configurations.
 1. Clone the repo.
 2. Open `_Project_GLFW_.sln` in Visual Studio.
 3. Build the project. No external setup needed.

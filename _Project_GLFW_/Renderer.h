@@ -38,9 +38,7 @@ class Renderer
      // CBO - stores color data 
      // EBO - stores element/index data for indexed Drawing
 	 unsigned int m_ShaderProgram,m_VAO,m_VBO,m_EBO, gSamplerLocation,tex_VBO;
-	 //containers that has data about vertices and indices of an object (mesh)
-	 std::vector<float> m_Vertices;
-	 std::vector<unsigned int> m_Indices;
+	 //containers that has data about vertices and indices of an object (meshes)
 	 std::vector<Vertex> vertices;
 	 std::vector<uint32_t> indices;
 	 std::vector<tinyobj::material_t> materials;
@@ -55,8 +53,6 @@ class Renderer
 	
 public:	
 	void ClearScreen();	
-	void ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices);
-	void OtimizedObjectFileParser(const std::string& path, std::vector<float>& vertices, std::vector<unsigned int>& indices);
 	void Load_OBJ_withlib();
 	void InitilizeOpengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);

@@ -10,166 +10,6 @@ void Renderer::ClearScreen()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices)
-{
-		//this line makes full path of the file must be like ..root\\user\\tools\\file.obj
-		std::filesystem::path Toolspath = std::filesystem::current_path() / "TOOLS" / path;
-		// this must take and transform that in string
-		std::string PATH = Toolspath.string();
-		//this must split the string and take last file
-		std::string lastfile = UTils::SplitPath(PATH);
-		std::cout << "Meshe's Name:  " << lastfile << "  " << std::endl;
-		if (lastfile.find(".obj") == std::string::npos)
-		{
-			std::cout << "this is not a obj file" << std::endl;
-		}
-		std::ifstream file(PATH);
-
-		if (!file.is_open())
-		{
-			std::cout << "file not found" << std::endl;
-		}
-		
-		std::string line;
-		std::string v;
-		std::string i;
-		std::vector<std::string> StringV;
-		std::vector<std::string> StringI;
-		std::getline(file, line);
-
-
-		while (std::getline(file, line))
-		{
-			// 'v' lines contain vertex positions
-			if (line[0] == 'v')
-			{
-
-
-				//somehow in this chunck of code Indices are puted into the vector not vertices		
-				StringV = UTils::SplitString(line, " ");
-
-				// transfer this data to original Indices vector
-				//also parsing it to float 
-				for (auto& V : StringV)
-				{
-					try {
-						
-						Vertices.push_back(std::stof(V));
-					}
-					catch (std::exception ex)
-					{
-						//really nothing i need to do with it... its complaining about some characters in the beginning of vertices data
-					}
-				}
-
-			 // 'f' lines contain face indices
-			}if (line[0] == 'f')
-			{
-				
-				StringI = UTils::SplitString(line, " ");
-
-				// transfer this data to original vertex vector
-				//also parsing it to float 
-				for (auto& Index : StringI)
-				{
-					try {
-						
-						Indices.push_back(std::stoul(Index) - 1);
-					}
-					catch (std::exception ex)
-					{
-						//really nothing i need to do with it... its complaining about some characters  in the beginning of vertices data
-					}
-				}
-
-
-			}
-		}
-		file.close();
-	
-}
-//AI optimized my stupid version of obj file parser will have it here like idle  
-void Renderer::OtimizedObjectFileParser(const std::string& path, std::vector<float>& vertices, std::vector<unsigned int>& indices)
-{
-	// Read whole file at once
-	std::ifstream file(path, std::ios::binary | std::ios::ate);
-	if (!file.is_open()) {
-		std::cerr << "File not found: " << path << "\n";
-		return;
-	}
-
-	std::streamsize size = file.tellg();
-	file.seekg(0, std::ios::beg);
-	std::string buffer(size, '\0');
-	if (!file.read(buffer.data(), size)) {
-		std::cerr << "Failed to read file\n";
-		return;
-	}
-
-	// Reserve vectors to avoid reallocations
-	vertices.reserve(1000000); // adjust based on expected model
-	indices.reserve(1000000);
-
-	std::string_view view(buffer);
-	size_t line_start = 0;
-
-	while (line_start < view.size()) {
-		size_t line_end = view.find('\n', line_start);
-		if (line_end == std::string_view::npos)
-			line_end = view.size();
-
-		std::string_view line = view.substr(line_start, line_end - line_start);
-		line_start = line_end + 1;
-
-		if (line.empty() || line[0] == '#') continue; // skip empty or comment
-
-		if (line[0] == 'v' && (line.size() > 1 && line[1] == ' ')) {
-			// Vertex line
-			line.remove_prefix(2); // skip "v "
-			while (!line.empty()) {
-				// Skip whitespace
-				size_t start = line.find_first_not_of(" \t\r");
-				if (start == std::string_view::npos) break;
-				line.remove_prefix(start);
-
-				size_t end = line.find_first_of(" \t\r");
-				std::string_view token = line.substr(0, end);
-				line.remove_prefix(token.size());
-
-				float value;
-				auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), value);
-				if (ec == std::errc()) {
-					vertices.push_back(value);
-				}
-			}
-		}
-		else if (line[0] == 'f' && (line.size() > 1 && line[1] == ' ')) {
-			// Face line
-			line.remove_prefix(2); // skip "f "
-			while (!line.empty()) {
-				size_t start = line.find_first_not_of(" \t\r");
-				if (start == std::string_view::npos) break;
-				line.remove_prefix(start);
-
-				size_t end = line.find_first_of(" \t\r");
-				std::string_view token = line.substr(0, end);
-				line.remove_prefix(token.size());
-
-				// Handle possible slashes (v/vt/vn)
-				size_t slash_pos = token.find('/');
-				if (slash_pos != std::string_view::npos)
-					token.remove_suffix(token.size() - slash_pos);
-
-				unsigned int idx;
-				auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), idx);
-				if (ec == std::errc()) {
-					indices.push_back(idx - 1); // OBJ indices are 1-based
-				}
-			}
-		}
-	}
-}
-
 void Renderer::Load_OBJ_withlib()
 {
 	tinyobj::attrib_t attrib;
@@ -184,7 +24,7 @@ void Renderer::Load_OBJ_withlib()
 		&materials,
 		&warn,
 		&err,
-		"TOOLS/cubeTextured.obj",
+		"TOOLS/InteriorTest.obj",
 		"TOOLS/",
 		true
 	);
@@ -312,10 +152,10 @@ void Renderer::InitilizeOpengl()
 	materialTextures.reserve(materials.size());
 	for (auto& mat : materials) {
 		if (!mat.diffuse_texname.empty()) {
-			
+			std::string texPath = "TOOLS/" + mat.diffuse_texname;
 			auto tex = std::make_unique<Texture>(
 				GL_TEXTURE_2D,
-				("TOOLS/" + mat.diffuse_texname).c_str()
+				texPath
 			);
 			
 			tex->load();

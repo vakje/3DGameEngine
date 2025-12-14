@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd book.jpg
+map_Kd book2.jpg
 
 newmtl Book2
 Ns 225.000000
@@ -88,7 +88,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd parquet_floor.jpg
+map_Kd carpet.jpg
 
 newmtl Gelas
 Ns 225.000000
@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd marble.png
+map_Kd marble.jpg
 map_Ns Texture\\Marble09_MR_2K\\Marble09_2K_Roughness.png
 
 newmtl InsideBook
@@ -111,7 +111,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd book.jpg
+map_Kd book2.jpg
 
 newmtl Jam
 Ns 225.000000
@@ -144,7 +144,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd KerangkaLemari.png
+map_Kd piano.png
 
 newmtl Lemari
 Ns 225.000000
@@ -242,7 +242,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd picture=border.jpg
+map_Kd woodenedge.jpg
 
 newmtl Roof
 Ns 225.000000
@@ -264,7 +264,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd logo.png
+map_Kd woodenedge.jpg
 
 newmtl Side_Wall
 Ns 225.000000

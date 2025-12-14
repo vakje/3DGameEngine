@@ -10,57 +10,65 @@ Texture::Texture(GLenum TextureTarget, const std::filesystem::path& filename)
 
 bool Texture::load()
 {
-	//first flipping the texture
+    // Flip the image vertically so it matches OpenGL's coordinate system
+    stbi_set_flip_vertically_on_load(0);
 
-	stbi_set_flip_vertically_on_load(0);
-	
-	//defining image itself loading texture from file
-	int width = 0, height = 0, bitsperpixel = 0;
-	unsigned char* image_data = stbi_load(m_Texturepath.string().c_str(), &width, &height, &bitsperpixel, 0);
+    // Load the image
+    int width = 0, height = 0, channels = 0;
+    unsigned char* image_data = stbi_load(m_Texturepath.string().c_str(), &width, &height, &channels, 0);
+    
 
-	if(!image_data)
-	{
-		std::cerr << "Cant Load texture from this file path" << m_Texturepath.string().c_str() << " because of:"
-			<< stbi_failure_reason() << "\n";
-		return false;
-	}
-	std::cout << "Width:" << width << ",Height:" << height << ",Bitsperpixel:" << bitsperpixel << "\n";
-	
-	glGenTextures(1, &m_TextureObject);
-	glBindTexture(m_Texturetarget, m_TextureObject);
-	
-	GLenum format = GL_RGB;
-	if (bitsperpixel == 1) format = GL_RED;
-	else if (bitsperpixel == 3) format = GL_RGB;
-	else if (bitsperpixel == 4) format = GL_RGBA;
-	if (m_Texturetarget == GL_TEXTURE_2D)
-	{
-		//GL_texture_2d out 2d texture
-		//mip levels 
-		//format of textures types channels of colors
-		//sizes width height
-		//image type 
-		//texture type 
-		//image itself
-		glTexImage2D(m_Texturetarget, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
+    if (!image_data)
+    {
+        std::cerr << "Cannot load texture from path: " << m_Texturepath.string()
+            << " | Reason: " << stbi_failure_reason() << "\n";
+        return false;
+    }
+    std::cout << "Loaded texture: " << m_Texturepath.string()
+        << " | Width: " << width << ", Height: " << height
+        << ", Channels: " << channels << "\n";
 
-	}else
-	{
-		std::cerr << "Support for texture target is not implemented" << "\n";
-		return false;
-	}
-	
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // Determine OpenGL format
+    GLenum format = 0;
+    if (channels == 1) format = GL_RED;
+    else if (channels == 3) format = GL_RGB;
+    else if (channels == 4) format = GL_RGBA;
+    else
+    {
+        std::cerr << "Unsupported number of channels: " << channels << "\n";
+        stbi_image_free(image_data);
+        return false;
+    }
 
-	glBindTexture(m_Texturetarget, 0);
+    // Generate and bind texture
+    glGenTextures(1, &m_TextureObject);
+    glBindTexture(m_Texturetarget, m_TextureObject);
 
-	stbi_image_free(image_data);
+    if (m_Texturetarget == GL_TEXTURE_2D)
+    {
+        GLenum internalFormat = (channels == 3) ? GL_SRGB : (channels == 4) ? GL_SRGB_ALPHA : format;
+        glTexImage2D(m_Texturetarget, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, image_data);
 
-	
-	return true;
+        // Set texture filtering and wrapping
+        glTexParameteri(m_Texturetarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(m_Texturetarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    }
+    else
+    {
+        std::cerr << "Texture target not supported\n";
+        stbi_image_free(image_data);
+        return false;
+    }
+
+    glBindTexture(m_Texturetarget, 0);
+
+    // Free image memory
+    stbi_image_free(image_data);
+    
+
+    return true;
 }
 
 void Texture::bind(GLenum Textureunit)

@@ -1,4 +1,6 @@
+#define TINYOBJLOADER_IMPLEMENTATION
 #include "Renderer.h"
+
 
 std::filesystem::path fullpath = std::filesystem::current_path();
 
@@ -86,6 +88,168 @@ void Renderer::ObjectFileParser(const std::string& path, std::vector<float>& Ver
 		file.close();
 	
 }
+//AI optimized my stupid version of obj file parser will have it here like idle  
+void Renderer::OtimizedObjectFileParser(const std::string& path, std::vector<float>& vertices, std::vector<unsigned int>& indices)
+{
+	// Read whole file at once
+	std::ifstream file(path, std::ios::binary | std::ios::ate);
+	if (!file.is_open()) {
+		std::cerr << "File not found: " << path << "\n";
+		return;
+	}
+
+	std::streamsize size = file.tellg();
+	file.seekg(0, std::ios::beg);
+	std::string buffer(size, '\0');
+	if (!file.read(buffer.data(), size)) {
+		std::cerr << "Failed to read file\n";
+		return;
+	}
+
+	// Reserve vectors to avoid reallocations
+	vertices.reserve(1000000); // adjust based on expected model
+	indices.reserve(1000000);
+
+	std::string_view view(buffer);
+	size_t line_start = 0;
+
+	while (line_start < view.size()) {
+		size_t line_end = view.find('\n', line_start);
+		if (line_end == std::string_view::npos)
+			line_end = view.size();
+
+		std::string_view line = view.substr(line_start, line_end - line_start);
+		line_start = line_end + 1;
+
+		if (line.empty() || line[0] == '#') continue; // skip empty or comment
+
+		if (line[0] == 'v' && (line.size() > 1 && line[1] == ' ')) {
+			// Vertex line
+			line.remove_prefix(2); // skip "v "
+			while (!line.empty()) {
+				// Skip whitespace
+				size_t start = line.find_first_not_of(" \t\r");
+				if (start == std::string_view::npos) break;
+				line.remove_prefix(start);
+
+				size_t end = line.find_first_of(" \t\r");
+				std::string_view token = line.substr(0, end);
+				line.remove_prefix(token.size());
+
+				float value;
+				auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), value);
+				if (ec == std::errc()) {
+					vertices.push_back(value);
+				}
+			}
+		}
+		else if (line[0] == 'f' && (line.size() > 1 && line[1] == ' ')) {
+			// Face line
+			line.remove_prefix(2); // skip "f "
+			while (!line.empty()) {
+				size_t start = line.find_first_not_of(" \t\r");
+				if (start == std::string_view::npos) break;
+				line.remove_prefix(start);
+
+				size_t end = line.find_first_of(" \t\r");
+				std::string_view token = line.substr(0, end);
+				line.remove_prefix(token.size());
+
+				// Handle possible slashes (v/vt/vn)
+				size_t slash_pos = token.find('/');
+				if (slash_pos != std::string_view::npos)
+					token.remove_suffix(token.size() - slash_pos);
+
+				unsigned int idx;
+				auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), idx);
+				if (ec == std::errc()) {
+					indices.push_back(idx - 1); // OBJ indices are 1-based
+				}
+			}
+		}
+	}
+}
+
+void Renderer::Load_OBJ_withlib()
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	
+
+	std::string warn, err;
+
+	bool ok = tinyobj::LoadObj(
+		&attrib,
+		&shapes,
+		&materials,
+		&warn,
+		&err,
+		"TOOLS/cubeTextured.obj",
+		"TOOLS/",
+		true
+	);
+
+	if (!warn.empty()) std::cout << warn << std::endl;
+	if (!err.empty())  std::cerr << err << std::endl;
+	if (!ok) throw std::runtime_error("OBJ load failed");
+
+	int currentMat = -1;
+	uint32_t batchStart = 0;
+	for (const auto& shape : shapes) {
+		size_t index_offset = 0;
+
+		for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); f++) {
+			int fv = shape.mesh.num_face_vertices[f];
+			int matId = shape.mesh.material_ids[f];
+			// start new batch if material changed
+			if (matId != currentMat)
+			{
+				if (currentMat != -1)
+				{
+					materialBatches.push_back({
+						currentMat,
+						batchStart,
+						uint32_t(indices.size() - batchStart)
+						});
+				}
+
+				currentMat = matId;
+				batchStart = indices.size();
+			}
+			for (int v = 0; v < fv; v++) {
+				tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
+
+				Vertex vert{};
+
+				vert.px = attrib.vertices[3 * idx.vertex_index + 0];
+				vert.py = attrib.vertices[3 * idx.vertex_index + 1];
+				vert.pz = attrib.vertices[3 * idx.vertex_index + 2];
+
+				if (idx.texcoord_index >= 0) {
+					vert.u = attrib.texcoords[2 * idx.texcoord_index + 0];
+					vert.v = 1.0f - attrib.texcoords[2 * idx.texcoord_index + 1];
+				}
+
+				vertices.push_back(vert);
+				indices.push_back(indices.size());
+			}
+
+			index_offset += fv;
+		}
+	}
+	// push last batch
+	if (currentMat != -1)
+	{
+		materialBatches.push_back({
+			currentMat,
+			batchStart,
+			uint32_t(indices.size() - batchStart)
+			});
+	}
+
+
+	
+}
 
 void Renderer::InitilizeOpengl()
 {
@@ -100,57 +264,69 @@ void Renderer::InitilizeOpengl()
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
 	std::string ObjPATH = "cube.obj";
-	
-	
-	ObjectFileParser(ObjPATH, m_Vertices, m_Indices);
+	auto start = std::chrono::high_resolution_clock::now();
+	try {
+		Load_OBJ_withlib();
+		if (vertices.empty() || indices.empty())
+			throw std::runtime_error("OBJ file did not load vertices or indices correctly");
 
-	
+		for (size_t i = 0; i < indices.size(); ++i) {
+			if (indices[i] >= vertices.size()) {
+				throw std::runtime_error("Index out of range");
+			}
+		}
+	}
+	catch (std::exception& ex) {
+		std::cout << " " << ex.what() << std::endl;
+	}
 
-	std::vector<Vector2F<float>> textcoords = {
-		 Vector2F<float>(0.0f, 0.0f),
-		 Vector2F<float>(0.0f, 1.0f),
-		 Vector2F<float>(1.0f, 0.0f),
-		 Vector2F<float>(1.0f, 1.0f)
-		
-	};
-	
+	auto end = std::chrono::high_resolution_clock::now();
+	std::cout << std::chrono::duration<double>(end - start).count() << " seconds\n";
 
 	//now giving this data to our GPU
     // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
 	glGenBuffers(1, &m_EBO);
-	glGenBuffers(1, &tex_VBO);
+	
 	
 	
 	glBindVertexArray(m_VAO);
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(float), m_Vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, px));
 	glEnableVertexAttribArray(0);
-
-	tex = std::make_unique<Texture>(GL_TEXTURE_2D, "TOOLS\\stone.jpg");
-	if (!tex->load())
-	{
-		std::cerr << "Loading process terminated!\n";
-	}
-	tex->bind(GL_TEXTURE0);
-	glUniform1i(gSamplerLocation, 0);
-
-
-	glBindBuffer(GL_ARRAY_BUFFER, tex_VBO);
-	glBufferData(GL_ARRAY_BUFFER, textcoords.size() * sizeof(Vector2F<float>), textcoords.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, u));
 	glEnableVertexAttribArray(1);
+	
 	
 	// Unbind VAO 
 	glBindVertexArray(0);
 
+	materialTextures.reserve(materials.size());
+	for (auto& mat : materials) {
+		if (!mat.diffuse_texname.empty()) {
+			
+			auto tex = std::make_unique<Texture>(
+				GL_TEXTURE_2D,
+				("TOOLS/" + mat.diffuse_texname).c_str()
+			);
+			
+			tex->load();
+			materialTextures.push_back(std::move(tex));
+		}
+		else {
+			materialTextures.push_back(nullptr);
+		}
+
+	}
+	
 	
 	
 
@@ -221,8 +397,8 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 		angle = 0;
 	}
 	
-	I = M.Scale(I, forScale) * M.Rotate(I, angle,forRotation) * M.Translate(I, forTranslation);
-
+	I = M.Scale(I, forScale)  * M.Translate(I, forTranslation);
+	//* M.Rotate(I, angle,forRotation)
 	
 	m_Cam.InputValidation(m_Deltatime);
 	m_Cam.MouseMovement();
@@ -267,12 +443,27 @@ void Renderer::Draw()
 	glUseProgram(m_ShaderProgram);
 	//function that setups projection and calculations for objects to rotate
 	SetupMVP(m_ShaderProgram);
-
+	
 	// Bind VAO and draw the triangle
 	glBindVertexArray(m_VAO);
 	
 	
-	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+	for (const auto& batch : materialBatches)
+	{
+		if (materialTextures[batch.materialId])
+		{
+			materialTextures[batch.materialId]->bind(GL_TEXTURE0);
+		}
+
+		glUniform1i(gSamplerLocation, 0);
+
+		glDrawElements(
+			GL_TRIANGLES,
+			batch.indexCount,
+			GL_UNSIGNED_INT,
+			(void*)(batch.indexOffset * sizeof(uint32_t))
+		);
+	}
 	
 
 	glBindVertexArray(0);

@@ -9,11 +9,23 @@
 #include "Util.h"
 #include "Clock.h"
 #include <sstream>
+#include <charconv>
+#include <string_view>
 #include "Texture.h"
+#include "../External/tinyloader/tiny_obj_loader.h"
 
 
+struct Vertex {
+	float px, py, pz;
+	float u, v;
+};
 
-
+struct MaterialBatch
+{
+	int materialId;          // index into tinyobj::materials
+	uint32_t indexOffset;    // start index in EBO
+	uint32_t indexCount;     // number of indices to draw
+};
 class Renderer
 {
 	 //strings that represeting actual code of the file shader glcl
@@ -29,6 +41,12 @@ class Renderer
 	 //containers that has data about vertices and indices of an object (mesh)
 	 std::vector<float> m_Vertices;
 	 std::vector<unsigned int> m_Indices;
+	 std::vector<Vertex> vertices;
+	 std::vector<uint32_t> indices;
+	 std::vector<tinyobj::material_t> materials;
+	 std::vector<std::unique_ptr<Texture>> materialTextures;
+	 std::vector<MaterialBatch> materialBatches;
+	
 	 //camera instance for function calls from this class
 	 Camera m_Cam;
 	 Time m_Time;
@@ -38,6 +56,8 @@ class Renderer
 public:	
 	void ClearScreen();	
 	void ObjectFileParser(const std::string& path, std::vector<float>& Vertices, std::vector<unsigned int>& Indices);
+	void OtimizedObjectFileParser(const std::string& path, std::vector<float>& vertices, std::vector<unsigned int>& indices);
+	void Load_OBJ_withlib();
 	void InitilizeOpengl();
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);

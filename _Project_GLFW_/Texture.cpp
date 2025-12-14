@@ -12,7 +12,7 @@ bool Texture::load()
 {
 	//first flipping the texture
 
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(0);
 	
 	//defining image itself loading texture from file
 	int width = 0, height = 0, bitsperpixel = 0;
@@ -29,6 +29,10 @@ bool Texture::load()
 	glGenTextures(1, &m_TextureObject);
 	glBindTexture(m_Texturetarget, m_TextureObject);
 	
+	GLenum format = GL_RGB;
+	if (bitsperpixel == 1) format = GL_RED;
+	else if (bitsperpixel == 3) format = GL_RGB;
+	else if (bitsperpixel == 4) format = GL_RGBA;
 	if (m_Texturetarget == GL_TEXTURE_2D)
 	{
 		//GL_texture_2d out 2d texture
@@ -38,7 +42,7 @@ bool Texture::load()
 		//image type 
 		//texture type 
 		//image itself
-		glTexImage2D(m_Texturetarget, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
+		glTexImage2D(m_Texturetarget, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
 
 	}else
 	{
@@ -48,10 +52,9 @@ bool Texture::load()
 	
 	glTexParameteri(m_Texturetarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(m_Texturetarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(m_Texturetarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	//
 	glBindTexture(m_Texturetarget, 0);
 
 	stbi_image_free(image_data);

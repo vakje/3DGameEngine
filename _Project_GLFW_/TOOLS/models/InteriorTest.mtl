@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd marble.jpg
+map_Kd marble.png
 map_Ns Texture\\Marble09_MR_2K\\Marble09_2K_Roughness.png
 
 newmtl InsideBook
@@ -198,7 +198,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd vangog.jpg
+map_Kd nature.jpg
 
 newmtl Picture2
 Ns 225.000000
@@ -209,7 +209,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd vangog.jpg
+map_Kd nature.jpg
 
 newmtl Picture3
 Ns 225.000000
@@ -220,7 +220,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd vangog.jpg
+map_Kd nature.jpg
 
 newmtl Picture4
 Ns 225.000000
@@ -231,7 +231,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd vangog.jpg
+map_Kd nature.jpg
 
 newmtl PictureBorder
 Ns 225.000000

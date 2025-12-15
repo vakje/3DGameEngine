@@ -24,8 +24,8 @@ void Renderer::Load_OBJ_withlib()
 		&materials,
 		&warn,
 		&err,
-		"TOOLS/InteriorTest.obj",
-		"TOOLS/",
+		"TOOLS/models/InteriorTest.obj",
+		"TOOLS/models/",
 		true
 	);
 
@@ -64,6 +64,8 @@ void Renderer::Load_OBJ_withlib()
 				vert.px = attrib.vertices[3 * idx.vertex_index + 0];
 				vert.py = attrib.vertices[3 * idx.vertex_index + 1];
 				vert.pz = attrib.vertices[3 * idx.vertex_index + 2];
+
+				
 
 				if (idx.texcoord_index >= 0) {
 					vert.u = attrib.texcoords[2 * idx.texcoord_index + 0];
@@ -131,6 +133,7 @@ void Renderer::InitilizeOpengl()
 	
 	
 	
+	
 	glBindVertexArray(m_VAO);
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -146,13 +149,15 @@ void Renderer::InitilizeOpengl()
 	glEnableVertexAttribArray(1);
 	
 	
+
+	
 	// Unbind VAO 
 	glBindVertexArray(0);
 
 	materialTextures.reserve(materials.size());
 	for (auto& mat : materials) {
 		if (!mat.diffuse_texname.empty()) {
-			std::string texPath = "TOOLS/" + mat.diffuse_texname;
+			std::string texPath = "TOOLS/textures/" + mat.diffuse_texname;
 			auto tex = std::make_unique<Texture>(
 				GL_TEXTURE_2D,
 				texPath
@@ -358,7 +363,7 @@ Renderer::~Renderer()
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
-	glDeleteBuffers(1, &tex_VBO);
+	
 	 
 	
 }

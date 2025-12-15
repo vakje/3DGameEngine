@@ -18,6 +18,7 @@
 struct Vertex {
 	float px, py, pz;
 	float u, v;
+	
 };
 
 struct MaterialBatch
@@ -37,7 +38,7 @@ class Renderer
      // VBO - stores vertex data (positions)
      // CBO - stores color data 
      // EBO - stores element/index data for indexed Drawing
-	 unsigned int m_ShaderProgram,m_VAO,m_VBO,m_EBO, gSamplerLocation,tex_VBO;
+	 unsigned int m_ShaderProgram, m_VAO, m_VBO, m_EBO, gSamplerLocation;
 	 //containers that has data about vertices and indices of an object (meshes)
 	 std::vector<Vertex> vertices;
 	 std::vector<uint32_t> indices;

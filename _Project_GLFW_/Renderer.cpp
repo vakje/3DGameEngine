@@ -24,7 +24,7 @@ void Renderer::Load_OBJ_withlib()
 		&materials,
 		&warn,
 		&err,
-		"TOOLS/models/InteriorTest.obj",
+		"TOOLS/models/cubeTextured.obj",
 		"TOOLS/models/",
 		true
 	);

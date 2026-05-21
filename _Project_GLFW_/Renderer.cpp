@@ -242,7 +242,7 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 		angle = 0;
 	}
 	
-	I = M.Scale(I, forScale)  * M.Translate(I, forTranslation);
+	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
 	//* M.Rotate(I, angle,forRotation)
 	
 	m_Cam.InputValidation(m_Deltatime);

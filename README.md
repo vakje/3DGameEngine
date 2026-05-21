@@ -20,12 +20,6 @@ Here’s what the renderer looks like in action:
 ![cubetextured](https://github.com/user-attachments/assets/89a7d88d-14e1-4b42-b8ee-b7ce53aab3ac)
 
 
-
-
-- room
-![badtexturedroom](https://github.com/user-attachments/assets/99585d3d-5537-49dd-9a5f-e61e7f4e0fcc)
-
-
 ## Build Instructions
 ### This project is configured on 32-bit and 64-bit architectures now. you can run this project in VS with both configurations.
 1. Clone the repo.

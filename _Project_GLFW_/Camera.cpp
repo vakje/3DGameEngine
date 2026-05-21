@@ -213,8 +213,7 @@ void Camera::MouseMovement()
 		direction.setZ3D(sin(r_Yaw) * cos(r_Pitch));
 		direction.Normalize3d();
 
-		Vector3F<float> right = direction.CrossProduct(m_CameraUp).Normalize3d();
-		Vector3F<float> up = right.CrossProduct(direction).Normalize3d();
+		
 
 		m_CameraTarget = m_CameraPosition + direction;
 

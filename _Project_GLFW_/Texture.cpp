@@ -46,8 +46,8 @@ bool Texture::load()
 
     if (m_Texturetarget == GL_TEXTURE_2D)
     {
-        GLenum internalFormat = (channels == 3) ? GL_SRGB : (channels == 4) ? GL_SRGB_ALPHA : format;
-        glTexImage2D(m_Texturetarget, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, image_data);
+        
+        glTexImage2D(m_Texturetarget, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, image_data);
 
         // Set texture filtering and wrapping
         glTexParameteri(m_Texturetarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

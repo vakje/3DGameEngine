@@ -6,7 +6,6 @@ std::filesystem::path fullpath = std::filesystem::current_path();
 
 void Renderer::ClearScreen()
 {	
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -95,18 +94,16 @@ void Renderer::Load_OBJ_withlib()
 
 void Renderer::InitilizeOpengl()
 {
-	std::filesystem::path Shaderspath = fullpath / "TOOLS" / "M_Shaders.shader";
-	std::string ShaderPATH = Shaderspath.string();
+	const auto shaderpath = (fullpath / "TOOLS" / "M_Shaders.shader").string();
 	std::pair<std::string, std::string> Shaders;
 	try {
-		Shaders = ReadFromShaderFile(ShaderPATH);
+		Shaders = ReadFromShaderFile(shaderpath);
 	}
-	catch (std::exception ex) { std::cout << " " << ex.what() << std::endl; }
+	catch (std::exception& ex) { std::cout << " " << ex.what() << std::endl; }
 
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	
-	std::string ObjPATH = "cube.obj";
-	auto start = std::chrono::high_resolution_clock::now();
+	
 	try {
 		Load_OBJ_withlib();
 		if (vertices.empty() || indices.empty())
@@ -122,8 +119,7 @@ void Renderer::InitilizeOpengl()
 		std::cout << " " << ex.what() << std::endl;
 	}
 
-	auto end = std::chrono::high_resolution_clock::now();
-	std::cout << std::chrono::duration<double>(end - start).count() << " seconds\n";
+	
 
 	//now giving this data to our GPU
     // Generate  buffers, put the resulting identifier in vertexbuffer|| indexbuffer
@@ -171,10 +167,6 @@ void Renderer::InitilizeOpengl()
 		}
 
 	}
-	
-	
-	
-
 }
 
 unsigned int Renderer::CompileShaderFromSource(unsigned int TYPE, std::string& src)
@@ -363,9 +355,6 @@ Renderer::~Renderer()
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
-	
-	 
-	
 }
 
 std::string Renderer::getVertex()const { return m_VertexShaderSource; }

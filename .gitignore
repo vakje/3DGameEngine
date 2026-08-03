@@ -75,7 +75,6 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
 *.iobj
 *.pch
 *.pdb
@@ -98,8 +97,33 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+
+# Compiler generated object files
+**/Debug/**/*.obj
+**/Release/**/*.obj
+**/x64/**/*.obj
+**/x86/**/*.obj
+**/obj/**/*.obj
+**/build/**/*.obj
+
+# Allow Git to look inside the TOOLS directory and all its subdirectories
+!_Project_GLFW_/TOOLS/
+!_Project_GLFW_/TOOLS/**/
+
 # But don't ignore .obj files inside the mesh folder
-!_Project_GLFW_/TOOLS/*.obj
+!_Project_GLFW_/TOOLS/**/*.obj
+!_Project_GLFW_/TOOLS/**/*.mtl
+
+# Allow Git to look inside your dependencies folder and all its subfolders
+!dependencies/
+!dependencies/**/
+
+# Track all include headers, static libs, and dynamic links inside dependencies
+!dependencies/**/*.h
+!dependencies/**/*.hpp
+!dependencies/**/*.lib
+!dependencies/**/*.dll
+
 # Chutzpah Test files
 _Chutzpah*
 

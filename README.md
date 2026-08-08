@@ -1,27 +1,53 @@
-# "3D Game Engine"
+# 3D Game Engine
 
-Project that is in progress.
+A C++/OpenGL rendering engine built from scratch (including its own math library) as a way to actually keep the linear algebra and calculus I learned in my first year of university, instead of watching it fade the way it does for most students once the exams are over.
 
-## Current state
+## Backstory
 
-- In current state I have implemented basic stuff like Camera movement, input system, rendering, math classes.  
-- It is my personal decision to write math classes from scratch(horrible dicision), With a foundational background in Calculus II and Linear Algebra from university,
-  I'm looking to deepen my understanding of the mathematics essential for game engines and 3D game development. 
-- My rendering class can visually display .obj .mtl with png texture files created in Blender or other 3D modeling software. It has simple graphics pipeline
-  that allows my program to view 3D models.
-  this class also has simple GLSL file parser to use shaders for coloring or math calculations.
-- for now only thing I care about is finishing this project and after that I will absolutely make it portable for linux
+When I started my first year of university, I learned C++ alongside linear algebra and calculus. Like most students, I assumed I'd forget most of it the moment the semester ended. 
+That bothered me. all that effort just to let it disappear. I wanted to build something that combined the language I liked most with the math I'd just spent a year fighting through, 
+but the idea felt too big. Systems programming and "real" math felt out of reach for someone with as little experience as I had, so I shelved it.
 
+A year later, my brother encouraged me to just start and learn as I went rather than waiting to feel ready. I found a tutorial series on building a game engine in Java, 
+followed it to get oriented, then found LearnOpenGL and switched over. The first milestone was a triangle on screen. 
+Then I decided (deliberately) to write my own math library instead of using an existing one like GLM, 
+so I'd actually understand the matrices and vectors I was using rather than treating them as a black box.
 
-  ## Demo
+Moving from 2D to 3D is where it got hard. I spent close to three weeks just trying to get a cube to stop stretching and squashing on screen. 
+Eventually I worked through the projection and rotation math, got it rotating correctly with `glfwGetTime()`, and from there kept building outward: texture mapping, 
+a first attempt at an OBJ loader (later replaced with a more robust one), and a camera system that took a real fight with Euler angles to get right. 
+The result is an engine that loads and renders textured OBJ/MTL models with a first-person camera, running smoothly in real time.
 
-Here’s what the renderer looks like in action:
-- Cube
-![cubetextured](https://github.com/user-attachments/assets/89a7d88d-14e1-4b42-b8ee-b7ce53aab3ac)
+## Current State
 
+- Custom math library (vectors, matrices, transforms) written from scratch to build real intuition for the underlying linear algebra
+- OBJ/MTL model loading with multi material batch rendering
+- GLSL shader pipeline for coloring and per-vertex/fragment math
+- Free-moving camera system (Euler-angle based)
+- Real-time rendering loop
+
+## Performance
+
+- [VERIFY] Renders textured OBJ/MTL models at steady approximately ~2000 FPS with an active rotating/free camera
+- Tested on: [RTX 3050 8gb]
+
+## Demo
+
+<img width="800" height="450" alt="niva-ezgif com-optimize" src="https://github.com/user-attachments/assets/da98c071-2a18-425e-ae47-10a6a41c26ed" />
+## Niva Lada 2121 FBX model is from sketchfab Made by Greg McKechnie
+
+## Roadmap
+
+- Linux portability
+- lighting
+- FBX importing
+- AABB collision detection
+- IMGUI integretion
 
 ## Build Instructions
-### This project is configured on 32-bit and 64-bit architectures now. you can run this project in VS with both configurations.
+
+This project is configured for 32-bit and 64-bit architectures. *currently works only in Visual Studio
+
 1. Clone the repo.
 2. Open `_Project_GLFW_.sln` in Visual Studio.
 3. Build the project. No external setup needed.

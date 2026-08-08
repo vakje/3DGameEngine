@@ -23,7 +23,7 @@ void Renderer::Load_OBJ_withlib()
 		&materials,
 		&warn,
 		&err,
-		"TOOLS/models/cubeTextured.obj",
+		"TOOLS/models/niva.obj",
 		"TOOLS/models/",
 		true
 	);
@@ -227,15 +227,15 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	float m_Deltatime = m_Time.getDeltaTime();
 	Matrix<float> M(4, 4, 1.0f);
  
-	angle += m_Cam.getSpeed() * m_Cam.getFov() * 2;
+	angle += m_Cam.getSpeed() * m_Cam.getFov() * 2;//just for acceleration 
 	
 	if (angle >= 360) 
 	{
 		angle = 0;
 	}
 	
-	I = M.Scale(I, forScale) * M.Rotate(I, angle, forRotation) * M.Translate(I, forTranslation);
-	//* M.Rotate(I, angle,forRotation)
+	I = M.Scale(I, forScale)  * M.Translate(I, forTranslation);
+	//* M.Rotate(I, angle, forRotation)
 	
 	m_Cam.InputValidation(m_Deltatime);
 	m_Cam.MouseMovement();

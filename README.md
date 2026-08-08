@@ -8,9 +8,9 @@ When I started my first year of university, I learned C++ alongside linear algeb
 That bothered me. all that effort just to let it disappear. I wanted to build something that combined the language I liked most with the math I'd just spent a year fighting through, 
 but the idea felt too big. Systems programming and "real" math felt out of reach for someone with as little experience as I had, so I shelved it.
 
-A year later, my brother encouraged me to just start and learn as I went rather than waiting to feel ready. I found a tutorial series on building a game engine in Java, 
-followed it to get oriented, then found LearnOpenGL and switched over. The first milestone was a triangle on screen. 
-Then I decided (deliberately) to write my own math library instead of using an existing one like GLM, 
+A year later, my brother encouraged me to just start and learn as I went rather than waiting to feel ready. 
+I found a tutorial series on building a game engine in Java, followed it to get oriented, then found LearnOpenGL and switched over.
+The first milestone was a triangle on screen. Then I decided (deliberately) to write my own math library instead of using an existing one like GLM, 
 so I'd actually understand the matrices and vectors I was using rather than treating them as a black box.
 
 Moving from 2D to 3D is where it got hard. I spent close to three weeks just trying to get a cube to stop stretching and squashing on screen. 
@@ -28,12 +28,13 @@ The result is an engine that loads and renders textured OBJ/MTL models with a fi
 
 ## Performance
 
-- [VERIFY] Renders textured OBJ/MTL models at steady approximately ~2000 FPS with an active rotating/free camera
+- Renders textured OBJ/MTL models at steady approximately ~2000 FPS with an active rotating/free camera
 - Tested on: [RTX 3050 8gb]
 
 ## Demo
 
 <img width="800" height="450" alt="niva-ezgif com-optimize" src="https://github.com/user-attachments/assets/da98c071-2a18-425e-ae47-10a6a41c26ed" />
+
 ## Niva Lada 2121 FBX model is from sketchfab Made by Greg McKechnie
 
 ## Roadmap

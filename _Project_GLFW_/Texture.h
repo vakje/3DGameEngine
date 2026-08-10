@@ -1,5 +1,5 @@
 #pragma once
-#include <GL/glew.h>
+#include "glad/glad.h"
 #include "../External/stb/stb_image.h"
 #include <string>
 #include <iostream>

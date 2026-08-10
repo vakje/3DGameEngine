@@ -15,11 +15,15 @@ Window::Window(int width, int height, const char* title)
 		glfwTerminate();
 		throw std::runtime_error("Failed to init GLFW");
 	}
+	// Change from 3.3 to 4.5
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	/* Make the window's context current */
 	glfwMakeContextCurrent(m_mywindow);
 	glfwSwapInterval(0);
-	if (glewInit() != GLEW_OK) {
-		throw std::runtime_error("GLEW initialization failed!");
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		throw std::exception("Failed to initialize GLAD");
 	}
 }
 

@@ -1,8 +1,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Renderer.h"
 
-
 std::filesystem::path fullpath = std::filesystem::current_path();
+
 
 void Renderer::ClearScreen()
 {	
@@ -95,14 +95,22 @@ void Renderer::Load_OBJ_withlib()
 void Renderer::InitilizeOpengl()
 {
 	const auto shaderpath = (fullpath / "TOOLS" / "M_Shaders.shader").string();
+
+	const auto skyboxshader = (fullpath / "TOOLS" / "skybox.shader").string();
+	
 	std::pair<std::string, std::string> Shaders;
+	std::pair<std::string, std::string> sky_shaders;
+	
+	
+
 	try {
 		Shaders = ReadFromShaderFile(shaderpath);
+		sky_shaders = ReadFromShaderFile(skyboxshader);
 	}
 	catch (std::exception& ex) { std::cout << " " << ex.what() << std::endl; }
 
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
-	
+	m_skyShaderProgram = CreateShaderFromStrings(sky_shaders.first, sky_shaders.second);
 	
 	try {
 		Load_OBJ_withlib();
@@ -146,10 +154,9 @@ void Renderer::InitilizeOpengl()
 	
 	
 
-	
 	// Unbind VAO 
 	glBindVertexArray(0);
-
+	
 	materialTextures.reserve(materials.size());
 	for (auto& mat : materials) {
 		if (!mat.diffuse_texname.empty()) {
@@ -167,6 +174,14 @@ void Renderer::InitilizeOpengl()
 		}
 
 	}
+
+	try
+	{
+		m_cubemapTexture = sky.loadCubemap();
+	}
+	catch (const std::runtime_error& ex) { std::cout << " " << ex.what() << "\n"; }
+
+	
 }
 
 unsigned int Renderer::CompileShaderFromSource(unsigned int TYPE, std::string& src)
@@ -271,18 +286,88 @@ void Renderer::SetupMVP(unsigned int ShaderProgram)
 	{
 		std::cout << "Error getting uniform location of gSampler\n";
 	}
+	
+}
+
+void Renderer::setupSkyBoxMVP(unsigned int skyShaderProgram)
+{
+	
+	Matrix<float> skyboxview = m_Cam.getLookat(m_Cam.getCameraPosition(), m_Cam.getCameraTarget(), m_Cam.getCameraUp());;
+	Matrix<float> projection = m_Cam.getProjection(m_Cam.getFov(), m_Cam.getAspectRatio(), m_Cam.getNearPlane(), m_Cam.getFarPlane());
+	skyboxview.RemoveTranslation(skyboxview);
+
+	std::vector<GLfloat> glvector;
+	unsigned int SViewLocation = glGetUniformLocation(skyShaderProgram, "view");
+	glvector.clear();
+	for (size_t col = 0; col < 4; ++col) {
+		for (size_t row = 0; row < 4; ++row) {
+			glvector.push_back(skyboxview(row, col)); 
+		}
+	}
+	glUniformMatrix4fv(SViewLocation, 1, false, glvector.data());
 
 
+	unsigned int SProjectionLocation = glGetUniformLocation(skyShaderProgram, "projection");
+	glvector.clear();
+	for (size_t col = 0; col < 4; ++col) {
+		for (size_t row = 0; row < 4; ++row) {
+			glvector.push_back(projection(row, col));  
+		}
+	}
+	glUniformMatrix4fv(SProjectionLocation, 1, false, glvector.data());
+
+	
 }
 
 void Renderer::Draw()
 {
+	
+	
+	glDepthFunc(GL_LEQUAL);
+
+
+	glGenVertexArrays(1, &m_SkyBoxVAO);
+	glGenBuffers(1, &m_SkyBoxVBO);
+
+	glUseProgram(m_skyShaderProgram);
+
+	setupSkyBoxMVP(m_skyShaderProgram);
+
+	glBindVertexArray(m_SkyBoxVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_SkyBoxVBO);
+
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sky.m_SkyBoxVertices.size() * sizeof(float),
+		sky.m_SkyBoxVertices.data(),
+		GL_STATIC_DRAW
+	);
+
+	glVertexAttribPointer(
+		0,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		3 * sizeof(float),
+		nullptr
+	);
+
+	glEnableVertexAttribArray(0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemapTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	glDepthFunc(GL_LESS);
+	
+	
 	glUseProgram(m_ShaderProgram);
 	//function that setups projection and calculations for objects to rotate
+	
 	SetupMVP(m_ShaderProgram);
 	
 	// Bind VAO and draw the triangle
 	glBindVertexArray(m_VAO);
+	
 	
 	
 	for (const auto& batch : materialBatches)

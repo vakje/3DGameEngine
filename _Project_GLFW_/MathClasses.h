@@ -900,6 +900,15 @@ public:
 	{
 		m_matrix[x][y] = value;
 	}
+	void RemoveTranslation(Matrix<float>& viewmatrix) 
+	{
+		viewmatrix.setElement(3, 0, 0.0f);
+		viewmatrix.setElement(3, 1, 0.0f);
+		viewmatrix.setElement(3, 2, 0.0f);
+		viewmatrix.setElement(0, 3, 0.0f);
+		viewmatrix.setElement(1, 3, 0.0f);
+		viewmatrix.setElement(2, 3, 0.0f);
+	}
 	int getRow()const { return this->m_M; }
 	int getCols()const { return this->m_N; }
 

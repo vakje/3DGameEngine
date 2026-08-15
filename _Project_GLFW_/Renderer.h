@@ -11,6 +11,7 @@
 #include <sstream>
 #include <charconv>
 #include <string_view>
+#include "SkyBox.h"
 #include "Texture.h"
 #include "../External/tinyloader/tiny_obj_loader.h"
 
@@ -25,7 +26,7 @@ struct MaterialBatch
 {
 	int materialId;          // index into tinyobj::materials
 	uint32_t indexOffset;    // start index in EBO
-	uint32_t indexCount;     // number of indices to draw
+	uint32_t indexCount;     // number of indices to draws
 };
 class Renderer
 {
@@ -49,7 +50,11 @@ class Renderer
 	 //camera instance for function calls from this class
 	 Camera m_Cam;
 	 Time m_Time;
+	 //textures
 	 std::unique_ptr<Texture> tex;
+	 SkyBox sky;
+	 unsigned int m_SkyBoxVAO, m_SkyBoxVBO, m_skyShaderProgram, m_cubemapTexture;
+
 	 
 	
 public:	
@@ -59,6 +64,7 @@ public:
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
 	void SetupMVP(unsigned int ShaderProgram);
+	void setupSkyBoxMVP(unsigned int ShaderProgram);
 	void Draw();
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
 	~Renderer();

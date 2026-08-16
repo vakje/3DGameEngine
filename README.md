@@ -38,7 +38,7 @@ The result is an engine that loads and renders textured OBJ/MTL models with a fi
 ## Niva Lada 2121 FBX model is from sketchfab Made by Greg McKechnie
 
 ## Assets used
-You can find Assets used such as obj/mtl models, textures pngs, shaders, skyboxes. [in path](/_Project_GLFW/TOOLS/)
+You can find Assets used such as obj/mtl models, textures pngs, shaders, skyboxes. [in path](_Project_GLFW/TOOLS/)
 
 ## Roadmap
 

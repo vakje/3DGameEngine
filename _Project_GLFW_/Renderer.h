@@ -55,18 +55,29 @@ class Renderer
 	 SkyBox sky;
 	 unsigned int m_SkyBoxVAO, m_SkyBoxVBO, m_skyShaderProgram, m_cubemapTexture;
 
-	 
-	
+public: 
+	 //need for creating default constructor for renderer
+	 Renderer() = default;
+	 //preventing important copy and assignment operator copies from user side.
+	 Renderer(const Renderer&) = delete;
+	 Renderer& operator =(const Renderer&) = delete;
 public:	
 	void ClearScreen();	
-	void Load_OBJ_withlib();
+
+	void LoadObjWithLib();
+
 	void InitilizeOpengl();
+
 	unsigned int CompileShaderFromSource(unsigned int shader_id, std::string& src);
 	unsigned int CreateShaderFromStrings(std::string& VertexShader, std::string& fragmentshader);
-	void SetupMVP(unsigned int ShaderProgram);
-	void setupSkyBoxMVP(unsigned int ShaderProgram);
-	void Draw();
 	std::pair<std::string ,std::string> ReadFromShaderFile(const std::string& path);	
+	
+	void SetupMVP(unsigned int ShaderProgram);
+	
+	void setupSkyBoxMVP(unsigned int ShaderProgram);
+	
+	void Draw();
+	
 	~Renderer();
 //tools
 public:

@@ -9,7 +9,7 @@ void Renderer::ClearScreen()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::Load_OBJ_withlib()
+void Renderer::LoadObjWithLib()
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -35,10 +35,10 @@ void Renderer::Load_OBJ_withlib()
 	int currentMat = -1;
 	uint32_t batchStart = 0;
 
+	vertices.reserve(vertices.size());
 	for (const auto& shape : shapes) {
 		size_t index_offset = 0;
 
-		vertices.reserve(shape.mesh.indices.size() * 8);
 		for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); f++) {
 			int fv = shape.mesh.num_face_vertices[f];
 			int matId = shape.mesh.material_ids[f];
@@ -115,7 +115,7 @@ void Renderer::InitilizeOpengl()
 	m_skyShaderProgram = CreateShaderFromStrings(sky_shaders.first, sky_shaders.second);
 	auto start = std::chrono::high_resolution_clock::now();
 	try {
-		Load_OBJ_withlib();
+		LoadObjWithLib();
 		if (vertices.empty() || indices.empty())
 			throw std::runtime_error("OBJ file did not load vertices or indices correctly");
 
@@ -142,6 +142,8 @@ void Renderer::InitilizeOpengl()
 	
 	
 	glBindVertexArray(m_VAO);
+	glGenVertexArrays(1, &m_SkyBoxVAO);
+	glGenBuffers(1, &m_SkyBoxVBO);
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	// Give our vertices to OpenGL.
@@ -324,13 +326,7 @@ void Renderer::setupSkyBoxMVP(unsigned int skyShaderProgram)
 
 void Renderer::Draw()
 {
-	
-	
 	glDepthFunc(GL_LEQUAL);
-
-
-	glGenVertexArrays(1, &m_SkyBoxVAO);
-	glGenBuffers(1, &m_SkyBoxVBO);
 
 	glUseProgram(m_skyShaderProgram);
 
@@ -441,8 +437,10 @@ std::pair<std::string, std::string> Renderer::ReadFromShaderFile(const std::stri
 Renderer::~Renderer()
 {
 	glDeleteVertexArrays(1, &m_VAO);
+	glDeleteVertexArrays(1, &m_SkyBoxVAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
+	glDeleteBuffers(1, &m_SkyBoxVBO);
 }
 
 std::string Renderer::getVertex()const { return m_VertexShaderSource; }

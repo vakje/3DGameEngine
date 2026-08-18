@@ -70,6 +70,8 @@ unsigned int SkyBox::loadCubemap()
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP,textureID);
 
+   
+   
 
     int width, height, Channels;
     unsigned char* data;
@@ -93,11 +95,14 @@ unsigned int SkyBox::loadCubemap()
         }
 
     }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    // generate the actual mipmap images to blur the image with this i can blur the image with function texturedlod
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
     return textureID;
 }

@@ -26,6 +26,7 @@ int main()
 			game.Clear();
 			/* Swap front and back buffers */
 			game.MainCharacter();
+			
 			glfwSwapBuffers(Window::m_mywindow);
 			/* Poll for and process events */
 			glfwPollEvents();

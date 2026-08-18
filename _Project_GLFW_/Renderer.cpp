@@ -34,9 +34,11 @@ void Renderer::Load_OBJ_withlib()
 
 	int currentMat = -1;
 	uint32_t batchStart = 0;
+
 	for (const auto& shape : shapes) {
 		size_t index_offset = 0;
 
+		vertices.reserve(shape.mesh.indices.size() * 8);
 		for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); f++) {
 			int fv = shape.mesh.num_face_vertices[f];
 			int matId = shape.mesh.material_ids[f];
@@ -111,7 +113,7 @@ void Renderer::InitilizeOpengl()
 
 	m_ShaderProgram = CreateShaderFromStrings(Shaders.first, Shaders.second);
 	m_skyShaderProgram = CreateShaderFromStrings(sky_shaders.first, sky_shaders.second);
-	
+	auto start = std::chrono::high_resolution_clock::now();
 	try {
 		Load_OBJ_withlib();
 		if (vertices.empty() || indices.empty())
@@ -126,7 +128,8 @@ void Renderer::InitilizeOpengl()
 	catch (std::exception& ex) {
 		std::cout << " " << ex.what() << std::endl;
 	}
-
+	auto end = std::chrono::high_resolution_clock::now();
+	std::cout << std::chrono::duration<double>(end - start).count() << " seconds\n";
 	
 
 	//now giving this data to our GPU

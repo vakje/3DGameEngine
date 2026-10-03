@@ -1,18 +1,18 @@
 #include "SkyBox.h"
-std::filesystem::path current = std::filesystem::current_path();
+const std::filesystem::path current = std::filesystem::current_path();
 SkyBox::SkyBox()
 {
 	m_Faces = 
 	{
 		// right left 
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\px.png",
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\nx.png",
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\px.png",
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\nx.png",
 		// top bottom 
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\py.png",
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\ny.png",
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\py.png",
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\ny.png",
 		// front back
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\pz.png",
-        current.string() + "\\TOOLS\\SkyBox\\chronicals\\nz.png"
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\pz.png",
+        current.string() + "\\TOOLS\\SkyBox\\didgori\\nz.png"
 	};
 	m_SkyBoxVertices =
 	{

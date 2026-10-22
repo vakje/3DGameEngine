@@ -74,12 +74,12 @@ public:
 		return sqrt(m_X * m_X + m_Y * m_Y);
 	}
 	// overloading dot product for my vector2f c++ feature:)
-	T Dotproduct(const Vector2F& r)
+	T Dotproduct(const Vector2F& r) const
 	{
 		return m_X * r.get_X() + m_Y * r.get_Y();
 	}
 	// returning vector it self after normalization(or making it equal to 1)
-	Vector2F Normalization()
+	Vector2F Normalization() const
 	{
 		T length = LengthVector2f();
 		if (std::abs(length) <= 1e-6)
@@ -98,7 +98,7 @@ public:
 	}
 	// functions for basic operations with vectors 
 	//this is to add another vector 2f 
-	Vector2F operator+(const Vector2F& num)const
+	Vector2F operator+(const Vector2F& num) const
 	{
 		return Vector2F(m_X + num.get_X(), m_Y + num.get_Y());
 	}
@@ -108,7 +108,7 @@ public:
 		m_Y += num.get_Y();
 		return *this;
 	}
-	Vector2F operator-(const Vector2F& num)const
+	Vector2F operator-(const Vector2F& num) const
 	{
 		return Vector2F(m_X - num.get_X(), m_Y - num.get_Y());
 	}
@@ -118,7 +118,7 @@ public:
 		m_Y -= num.get_Y();
 		return *this;
 	}
-	Vector2F operator*(const Vector2F& num)const
+	Vector2F operator*(const Vector2F& num) const
 	{
 		return Vector2F(m_X * num.get_X(), m_Y * num.get_Y());
 	}
@@ -128,35 +128,32 @@ public:
 		m_Y *= num.get_Y();
 		return *this;
 	}
-	Vector2F operator/(const Vector2F& num)const
+	Vector2F operator/(const Vector2F& num) const
 	{
 		T x = m_X, y = m_Y;
-		if (num.get_X() != static_cast<T>(0))
+		if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
 		{
-			x = m_X / num.get_X();
+			std::cerr << "\ninvalid devider issue with / operator in Vector2F class\n";
 		}
-		if (num.get_Y() != static_cast<T>(0))
-		{
-			y = m_Y / num.get_Y();
-		}
+		
+		x = m_X / num.get_X();
+		y = m_Y / num.get_Y();
 
 		return Vector2F(x, y);
 	}
 	Vector2F& operator/=(const Vector2F& num)
 	{
-
-		if (num.get_X() != static_cast<T>(0))
+		if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
 		{
-			m_X /= num.get_X();
+			std::cerr << "\ninvalid devider issue with /= operator in Vector2F class\n";
+		}
 
-		}
-		if (num.get_Y() != static_cast<T>(0))
-		{
-			m_Y /= num.get_Y();
-		}
+		this->m_X / num.get_X();
+		this->m_Y / num.get_Y();
+
 		return *this;
 	}
-	Vector2F operator+(const T& num)const
+	Vector2F operator+(const T& num) const
 	{
 		return Vector2F(m_X + num, m_Y + num);
 	}
@@ -166,7 +163,7 @@ public:
 		m_Y += num;
 		return *this;
 	}
-	Vector2F operator-(const T& num)const
+	Vector2F operator-(const T& num) const
 	{
 		return Vector2F(m_X - num, m_Y - num);
 	}
@@ -176,7 +173,7 @@ public:
 		m_Y -= num;
 		return *this;
 	}
-	Vector2F operator*(const T& num)const
+	Vector2F operator*(const T& num) const
 	{
 		return Vector2F(m_X * num, m_Y * num);
 	}
@@ -186,11 +183,11 @@ public:
 		m_Y *= num;
 		return *this;
 	}
-	Vector2F operator/(const T& num)const
+	Vector2F operator/(const T& num) const
 	{
 		if (std::abs(num) <= 1e-6)
 		{
-			return Vector2F(m_X / 1, m_Y / 1);
+			return Vector2F<T>(0, 0);
 		}
 
 		return Vector2F(m_X / num, m_Y / num);
@@ -199,15 +196,13 @@ public:
 	{
 		if (std::abs(num) <= 1e-6)
 		{
-			return *this;
+			return Vector2F<T>(0, 0);
 		}
 		m_X /= num;
 		m_Y /= num;
 		return *this;
 	}
-
-
-	Vector2F Rotate(const T& angle)
+	Vector2F Rotate(const T& angle) const
 	{
 		T rad = angle * ToRadians;
 		T sin = std::sin(rad);
@@ -248,15 +243,15 @@ public:
 		m_Y = other.getY3D();
 		m_Z = other.getZ3D();
 	}
-	T getX3D()const
+	T getX3D() const
 	{
 		return m_X;
 	}
-	T getY3D()const
+	T getY3D() const
 	{
 		return m_Y;
 	}
-	T getZ3D()const
+	T getZ3D() const
 	{
 		return m_Z;
 	}
@@ -274,7 +269,7 @@ public:
 	}
 public:
 
-	T LengthVector3f()
+	T LengthVector3f() const
 	{
 		return  sqrt(m_X * m_X + m_Y * m_Y + m_Z * m_Z);
 	}
@@ -295,12 +290,12 @@ public:
 		return Vector3F<T>(m_X / length, m_Y / length, m_Z / length);
 	}
 
-	T Dotproduct(const Vector3F& r)
+	T Dotproduct(const Vector3F& r) const
 	{
 		return m_X * r.getX3D() + m_Y * r.getY3D() + m_Z * r.getZ3D();
 	}
 
-	Vector3F operator+(const Vector3F& other)const
+	Vector3F operator+(const Vector3F& other) const
 	{
 		return Vector3F(m_X + other.getX3D(), m_Y + other.getY3D(), m_Z + other.getZ3D());
 	}
@@ -311,7 +306,7 @@ public:
 		m_Z += other.getZ3D();
 		return *this;
 	}
-	Vector3F operator-(const Vector3F& other)const
+	Vector3F operator-(const Vector3F& other) const
 	{
 		return Vector3F(m_X - other.getX3D(), m_Y - other.getY3D(), m_Z - other.getZ3D());
 	}
@@ -333,41 +328,33 @@ public:
 		m_Z *= other.getZ3D();
 		return *this;
 	}
+	// partially initilized data need to fix it somehow :)
 	Vector3F operator/(const Vector3F& other) const
 	{
 		T x = m_X, y = m_Y, z = m_Z;
 
-		if (std::abs(other.getX3D()) >= 1e-6)
+		if (std::abs(other.getX3D()) <= 1e-6 || std::abs(other.getY3D()) <= 1e-6 || std::abs(other.getZ3D()) <= 1e-6)
 		{
-			x = m_X / other.getX3D();
+			std::cerr << "\ninvalid devider in / operator inside Vector3F class\n";
 		}
 
-		if (std::abs(other.getY3D()) >= 1e-6)
-		{
-			y = m_Y / other.getY3D();
-		}
-		if (std::abs(other.getZ3D()) >= 1e-6)
-		{
-			z = m_Z / other.getZ3D();
-		}
+		x = m_X / other.getX3D();
+		y = m_Y / other.getY3D();
+		z = m_Z / other.getZ3D();
+		
 
 		return Vector3F(x, y, z);
 	}
 	Vector3F& operator/=(const Vector3F& other)
 	{
-		if (std::abs(other.getX3D()) >= 1e-6)
+		if (std::abs(other.getX3D()) <= 1e-6 || std::abs(other.getY3D()) <= 1e-6 || std::abs(other.getZ3D()) <= 1e-6)
 		{
-			m_X /= other.getX3D();
+			std::cerr << "\ninvalid devider in /= operator inside Vector3F class\n";
 		}
 
-		if (std::abs(other.getY3D()) >= 1e-6)
-		{
-			m_Y /= other.getY3D();
-		}
-		if (std::abs(other.getZ3D()) >= 1e-6)
-		{
-			m_Z /= other.getZ3D();
-		}
+		this->m_X /= other.getX3D();
+		this->m_Y /= other.getY3D();
+		this->m_Z /= other.getZ3D();
 
 
 		return *this;
@@ -383,7 +370,7 @@ public:
 		m_Z += other;
 		return *this;
 	}
-	Vector3F operator-(const T& other)const
+	Vector3F operator-(const T& other) const
 	{
 		return Vector3F(m_X - other, m_Y - other, m_Z - other);
 	}
@@ -394,7 +381,7 @@ public:
 		m_Z -= other;
 		return *this;
 	}
-	Vector3F operator*(const T& other)const
+	Vector3F operator*(const T& other) const
 	{
 		return Vector3F(m_X * other, m_Y * other, m_Z * other);
 	}
@@ -406,7 +393,7 @@ public:
 		return *this;
 	}
 
-	Vector3F operator/(const T& other)const
+	Vector3F operator/(const T& other) const
 	{
 		T x = m_X, y = m_Y, z = m_Z;
 
@@ -432,7 +419,7 @@ public:
 		return *this;
 	}
 
-	Vector3F  Crossproduct(Vector3F vector)
+	Vector3F  Crossproduct(Vector3F vector) const
 	{
 		T X_x = m_Y * vector.getZ3D() - m_Z * vector.getY3D();
 		T Y_y = m_Z * vector.getX3D() - m_X * vector.getZ3D();
@@ -442,7 +429,7 @@ public:
 		return Vector3F(X_x, Y_y, Z_z);
 	}
 
-	std::string to_String()const
+	std::string to_String() const
 	{
 		return "(" + std::to_string(m_X) + "," + std::to_string(m_Y) + "," + std::to_string(m_Z) + ")" + "\n";
 	}
@@ -454,85 +441,7 @@ std::ostream& operator<<(std::ostream& os, const Vector3F<T>& v)
 	os << v.to_String();
 	return os;
 }
-//TODO object's rotation by axis
-template<Numeric T>
-class Quatornion
-{
-	T m_x;
-	T m_y;
-	T m_z;
-	T m_w;
-public:
-	//functions
-	Quatornion(T x, T y, T z, T w) :m_x(x), m_y(y), m_z(z), m_w(w) {}
-	Quatornion() = default;
-	//todo  *  operators and alos << operator
-	Quatornion operator*(const Quatornion& other)
-	{
-		T w_ = m_w * other.getW() - m_x * other.getX() - m_y * other.getY() - m_z * other.getZ();
-		T x_ = m_x * other.getW() + m_w * other.getX() + m_y * other.getZ() - m_z * other.getY();
-		T y_ = m_y * other.getW() + m_w * other.getY() + m_z * other.getX() - m_x * other.getZ();
-		T z_ = m_z * other.getW() + m_w * other.getZ() + m_x * other.getY() - m_y * other.getX();
 
-		return  Quatornion(x_, y_, z_, w_);
-	}
-	Quatornion operator*(const Vector3F<T>& other)
-	{
-		T w_ = -m_x * other.getX3D() - m_y * other.getY3D() - m_z * other.getZ3D();
-		T x_ = m_w * other.getX3D() + m_y * other.getZ3D() - m_z * other.getY3D();
-		T y_ = m_w * other.getY3D() + m_z * other.getX3D() - m_x * other.getZ3D();
-		T z_ = m_w * other.getZ3D() + m_x * other.getY3D() - m_y * other.getX3D();
-
-		return  Quatornion(x_, y_, z_, w_);
-	}
-
-
-public:
-	T QuatornionLength()
-	{
-		return sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
-	}
-	Quatornion Normalization()
-	{
-		T length = QuatornionLength();
-
-		if (length == 0.0f) {
-			return Quatornion<float>(0, 0, 0, 0);
-		}
-		m_x /= length;
-		m_y /= length;
-		m_z /= length;
-		m_w /= length;
-
-		return *this;
-	}
-	Quatornion Conjugate()
-	{
-		return  Quatornion(-m_x, -m_y, -m_z, m_w);
-	}
-	//r should be (1,1,0)normalized for vertical spinning need to be fixed ..
-	Quatornion Rotation(double& alpha, Vector3F<float>& r)
-	{
-		r.Normalize3d();
-		double rad = alpha * PI / 180.0;
-		Quatornion Q1(0, 1, 0, 0);
-		Quatornion Q2(cos(rad / 2), r.getX3D() * sin(rad / 2), r.getY3D() * sin(rad / 2), r.getZ3D() * sin(rad / 2));
-		Quatornion Q3 = Q2 * Q1 * Q2;
-
-		return Q3;
-
-	}
-public:
-	// getters and setters
-	T getX()const { return this->m_x; }
-	T getY()const { return this->m_y; }
-	T getZ()const { return this->m_z; }
-	T getW()const { return this->m_w; }
-	void setX(T& x) { this->m_x = x; }
-	void setY(T& y) { this->m_y = y; }
-	void setZ(T& z) { this->m_z = z; }
-	void setW(T& w) { this->m_w = w; }
-};
 
 template<Numeric T>
 class Matrix
@@ -556,8 +465,6 @@ public:
 		{
 			m_matrix[i].resize(n, initial);
 		}
-
-
 	}
 	// copy constructor
 	Matrix(const Matrix& other)
@@ -644,39 +551,9 @@ public:
 
 		return result;
 	}
-	//for 3d rotation by object's axis
-	Matrix& ConvertQuatornian(Matrix<float>& model, const Quatornion<float>& q)
-	{
 
-		float xx = q.getX() * q.getX(), yy = q.getY() * q.getY(), zz = q.getZ() * q.getZ();
-		float xy = q.getX() * q.getY(), xz = q.getX() * q.getZ(), yz = q.getY() * q.getZ();
-		float wx = q.getW() * q.getX(), wy = q.getW() * q.getY(), wz = q.getW() * q.getZ();
-		//first row
-		model.setElement(0, 0, 1 - 2 * (yy + zz));
-		model.setElement(0, 1, 2 * (xy - wz));
-		model.setElement(0, 2, 2 * (xz + wy));
-		model.setElement(0, 3, 0);
-		//second row
-		model.setElement(1, 0, 2 * (xy + wz));
-		model.setElement(1, 1, 1 - 2 * (xx + zz));
-		model.setElement(1, 2, 2 * (yz - wx));
-		model.setElement(1, 3, 0);
-		//third row
-		model.setElement(2, 0, 2 * (xz - wy));
-		model.setElement(2, 1, 2 * (yz + wx));
-		model.setElement(2, 2, 1 - 2 * (xx + yy));
-		model.setElement(2, 3, 0);
-		//forth row
-		model.setElement(3, 0, 0);
-		model.setElement(3, 1, 0);
-		model.setElement(3, 2, 0);
-		model.setElement(3, 3, 1);
-
-		return model;
-	}
 	Matrix& Initidentity(int M)
 	{
-
 		if (this->getRow() != M || this->getCols() != M)
 		{
 			throw std::invalid_argument("parameter must be same as the column/row of the matrix");
@@ -696,9 +573,7 @@ public:
 		}
 		return *this;
 	}
-	//todo view,projection, uniformmatrixes functions
-	// ---------------------------------------------------------
-	// Rotations in 3d space 
+	
 	//ROLL Rotation x
 	Matrix& RollRotation(double alpha)
 	{
@@ -897,8 +772,13 @@ public:
 		this->m_matrix = mat;
 	}
 	void setElement(int x, int y, const T& value)
-	{
-		m_matrix[x][y] = value;
+	{	
+		if (x < 0 || y < 0) 
+		{
+			std::cerr << "invalid dimensions in the input of setElement function Matrix class\n";
+		}
+
+		m_matrix[x][y] = value;		
 	}
 	void RemoveTranslation(Matrix<float>& viewmatrix) 
 	{

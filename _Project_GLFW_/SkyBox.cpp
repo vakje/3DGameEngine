@@ -66,30 +66,30 @@ SkyBox::SkyBox()
 
 unsigned int SkyBox::loadCubemap()
 {
+    std::vector<std::future<CubeMapFaces>> jobs;
+
+    for (auto& p : m_Faces) 
+    {
+        jobs.push_back(std::async(std::launch::async, &SkyBox::loadFace, this, p));
+    }
+
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP,textureID);
 
-   
-   
-
-    int width, height, Channels;
-    unsigned char* data;
-    for (unsigned int i = 0; i < m_Faces.size(); i++) 
+    for (unsigned int i = 0; i < jobs.size(); i++) 
     {
-       
-        
-        data = stbi_load(m_Faces[i].c_str(), &width, &height, &Channels, 0);
-        if (data) 
+        CubeMapFaces face = jobs[i].get();
+        if (face.data)
         {
-            GLenum format = (Channels == 4) ? GL_RGBA : GL_RGB;
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
+            GLenum format = (face.Channels == 4) ? GL_RGBA : GL_RGB;
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, face.width, face.height, 0, format, GL_UNSIGNED_BYTE, face.data);
+            stbi_image_free(face.data);
         }
         else 
         {
             std::string message = std::format("Cubemap tex failed to load at path: {}", m_Faces[i], stbi_failure_reason());
-            stbi_image_free(data);
+            stbi_image_free(face.data);
             throw std::runtime_error(message);
 
         }
@@ -105,4 +105,14 @@ unsigned int SkyBox::loadCubemap()
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
     return textureID;
+}
+
+CubeMapFaces SkyBox::loadFace(const std::string& path)
+{
+    CubeMapFaces cmf;
+   
+    cmf.data = stbi_load(path.c_str(), &cmf.width, &cmf.height, &cmf.Channels, 0);
+ 
+
+    return cmf;
 }

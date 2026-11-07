@@ -7,6 +7,16 @@
 #include <array>
 #include <format>
 #include <filesystem>
+#include <future>
+
+struct CubeMapFaces 
+{
+	unsigned char* data = nullptr;
+	int width = 0;
+	int height = 0;
+	int Channels = 0;
+
+};
 
 class SkyBox
 {
@@ -18,6 +28,7 @@ public:
 	SkyBox();
 
 	unsigned int loadCubemap();
+	CubeMapFaces loadFace(const std::string& path);
 
 };
 

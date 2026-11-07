@@ -134,6 +134,7 @@ public:
 		if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
 		{
 			std::cerr << "\ninvalid devider issue with / operator in Vector2F class\n";
+			return this;
 		}
 		
 		x = m_X / num.get_X();
@@ -146,6 +147,7 @@ public:
 		if (num.get_X() == static_cast<T>(0) || num.get_Y() == static_cast<T>(0))
 		{
 			std::cerr << "\ninvalid devider issue with /= operator in Vector2F class\n";
+			return *this;
 		}
 
 		this->m_X / num.get_X();
@@ -336,6 +338,7 @@ public:
 		if (std::abs(other.getX3D()) <= 1e-6 || std::abs(other.getY3D()) <= 1e-6 || std::abs(other.getZ3D()) <= 1e-6)
 		{
 			std::cerr << "\ninvalid devider in / operator inside Vector3F class\n";
+			return this;
 		}
 
 		x = m_X / other.getX3D();
@@ -350,6 +353,7 @@ public:
 		if (std::abs(other.getX3D()) <= 1e-6 || std::abs(other.getY3D()) <= 1e-6 || std::abs(other.getZ3D()) <= 1e-6)
 		{
 			std::cerr << "\ninvalid devider in /= operator inside Vector3F class\n";
+			return *this;
 		}
 
 		this->m_X /= other.getX3D();
